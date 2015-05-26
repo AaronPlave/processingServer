@@ -23,6 +23,7 @@ def runSketch(number, imgPath):
 	# Print exit code
 	print p
 	if p == 0:
+		# move the image into static/img/
 		imgSrc = os.path.join(sketchPath,"test.jpg")
 		shutil.move(imgSrc,imgPath)
 		return True
