@@ -44,7 +44,10 @@ def runSketch(number, imgPath):
 	print p
 	if p == 0:
 		# move the image into static/img/
-		imgSrc = os.path.join(sketchPath,"test.jpg")
+		if not SERVER:
+			imgSrc = os.path.join(sketchPath,"test.jpg")
+		else:
+			imgSrc = os.path.join("","test.jpg")
 		shutil.move(imgSrc,imgPath)
 		return True
 	else:
