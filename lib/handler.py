@@ -47,7 +47,7 @@ def runSketch(number, imgPath):
 		if not SERVER:
 			imgSrc = os.path.join(sketchPath,"test.jpg")
 		else:
-			imgSrc = os.path.join("","test.jpg")
+			imgSrc = os.path.join(currDir,"test.jpg")
 		shutil.move(imgSrc,imgPath)
 		return True
 	else:
