@@ -1,8 +1,21 @@
 import os, subprocess, shlex, shutil
 
 def runSketch(number, imgPath):
+	try:
+		if os.environ["SERVER"] == "0":
+			SERVER = False
+		else:
+			SERVER = True
+		print "SERVER?",SERVER
+	except:
+		return False
+
 	currDir = os.getcwd()
-	sketchDir = "lib/testSketch/"
+	if not SERVER:
+		sketchDir = "lib/testSketch/" 
+	else:
+		sketchDir = "lib/testSketch/application.linux64/"
+	print sketchDir,"sd"
 	sketchPath = os.path.join(currDir,sketchDir)
 		
 	outputDir = "lib/tmp/"
@@ -17,7 +30,12 @@ def runSketch(number, imgPath):
 	f.close()
 
 	# Create the processing os process
-	args = shlex.split("processing-java --sketch="+sketchPath+" --output="+outputPath+" --force --run")
+	if SERVER:
+		args = os.path.join(sketchDir,"testSketch")
+	else:
+		cmd = "processing-java --sketch="+sketchPath+" --output="+outputPath+" --force --run"
+		args = shlex.split(cmd)
+
 	p = subprocess.call(args)
 
 	# Print exit code

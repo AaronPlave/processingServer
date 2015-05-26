@@ -1,2 +1,3 @@
 static/img/*
 *.pyc
+logs/*
