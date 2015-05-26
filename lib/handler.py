@@ -22,8 +22,10 @@ def runSketch(number, imgPath):
 	outputPath = os.path.join(currDir,outputDir)
 
 	settingsFileName = "settings.txt"
-	settingsFilePath = os.path.join(sketchPath,settingsFileName)
-
+	if not SERVER:
+		settingsFilePath = os.path.join(sketchPath,settingsFileName)
+	else:
+		settingsFilePath = settingsFileName
 	# Create the settings file
 	f = open(settingsFilePath,"w")
 	f.write(str(number))
