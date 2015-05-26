@@ -1,11 +1,11 @@
-import os, subprocess, shlex
+import os, subprocess, shlex, shutil
 
-def runSketch(number):
+def runSketch(number, imgPath):
 	currDir = os.getcwd()
-	sketchDir = "testSketch/"
+	sketchDir = "lib/testSketch/"
 	sketchPath = os.path.join(currDir,sketchDir)
 		
-	outputDir = "tmp/"
+	outputDir = "lib/tmp/"
 	outputPath = os.path.join(currDir,outputDir)
 
 	settingsFileName = "settings.txt"
@@ -22,5 +22,9 @@ def runSketch(number):
 
 	# Print exit code
 	print p
-
-runSketch(100)
+	if p == 0:
+		imgSrc = os.path.join(sketchPath,"test.jpg")
+		shutil.move(imgSrc,imgPath)
+		return True
+	else:
+		return False

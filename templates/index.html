@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<div class="text-center">
+  <h1 class="title">Generator v1</h1>
+</div>
+
+<br>
+
+<form action="/" method="POST">
+  <div class="form-group">
+    <input id="generate-input" name="text" class="form-control input-lg" type="text" placeholder="Enter a number between 1 - 10000" required>
+  </div>	
+  <input id="generate-submit" type="submit" class="btn btn-primary btn-lg btn-block" value="Submit">
+</form>
+
+<br>
+<hr>
+
+<div>
+  <img src="{{ img }}">
+  <div>{{ errors }}</div>
+</div>
+
+{% endblock %}
