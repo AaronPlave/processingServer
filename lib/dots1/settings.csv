@@ -1,2 +1,2 @@
-dotsPerRow,fill
-10,True
+dotsPerRow,dotRadius,stroke,dotRadiusRandomize,dotDist,fill
+20,15.0,False,True,45.0,True

@@ -50,9 +50,9 @@ boolean U_DOT_OFFSET = false;
 float U_DOT_OFFSET_MAX = 10;
 
 // dot radius
-float U_DOT_RADIUS_DEFAULT = 20.0f;
-float U_DOT_RADIUS_MIN = 1;
-float U_DOT_RADIUS_MAX = 10;
+int U_DOT_RADIUS = 20;
+int U_DOT_RADIUS_MIN = 1;
+int U_DOT_RADIUS_MAX = 10;
 
 // background color
 int U_BG_COLOR_R = 255;
@@ -88,8 +88,8 @@ int U_DOT_SINGLE_STROKE_COLOR_B = 50;
 int IMG_HEIGHT = 700;
 int IMG_WIDTH = IMG_HEIGHT;
 int U_DOTS_PER_ROW = 50;
-int DOT_DIST = 10;
-int IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * DOT_DIST)) / 2;
+int U_DOT_DIST = 10;
+int IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
 int MAX_DOTS_PER_ROW = 100;
 //// END PREDEFINED PARAMS
 
@@ -99,9 +99,17 @@ public void setup() {
   Table settingsTable = loadTable("settings.csv", "header, csv");
   for (TableRow row : settingsTable.rows()) {
     U_DOT_FILL = row.getString("fill").equals("True") ? true : false;
+    U_DOT_STROKE = row.getString("stroke").equals("True") ? true : false;
+    U_DOT_RANDOM_RADIUS = row.getString("dotRadiusRandomize").equals("True") ? true : false;
     U_DOTS_PER_ROW = PApplet.parseInt(row.getString("dotsPerRow")) <= MAX_DOTS_PER_ROW ? 
                       PApplet.parseInt(row.getString("dotsPerRow")) : MAX_DOTS_PER_ROW;
-    IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * DOT_DIST)) / 2;
+    
+    U_DOT_RADIUS = PApplet.parseInt(row.getString("dotRadius")) <= U_DOT_RADIUS_MAX ? 
+                      PApplet.parseInt(row.getString("dotRadius")) : U_DOT_RADIUS_MAX;
+    
+    U_DOT_DIST = PApplet.parseInt(row.getString("dotDist"));
+                      
+    IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
                       
     println(U_DOT_FILL,U_DOTS_PER_ROW);
   }
@@ -118,10 +126,10 @@ public void draw() {
 //  background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
   for (int i = 0; i < U_DOTS_PER_ROW; i++) {
     for (int j = 0; j < U_DOTS_PER_ROW; j++) {
-      int x1 = IMG_PADDING + DOT_DIST * j;
-      int y1 = IMG_PADDING + i * DOT_DIST;
+      int x1 = IMG_PADDING + U_DOT_DIST * j;
+      int y1 = IMG_PADDING + i * U_DOT_DIST;
       setColor();
-      drawDot(x1, y1, U_DOT_RADIUS_DEFAULT);
+      drawDot(x1, y1, U_DOT_RADIUS);
     }
   }
   save("test.jpg");
