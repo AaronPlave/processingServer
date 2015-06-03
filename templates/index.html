@@ -1,6 +1,6 @@
 {% extends "_base.html" %} {% block content %}
 <div class="text-center">
-    <h1 class="title">Generator v2: Dots</h1>
+    <h1 class="title">Generator v2–Dots</h1>
 </div>
 <br>
 <form action="/" method="POST">
@@ -18,6 +18,12 @@
         <input name="dotRadiusRandomize" type="radio" value="True" required>True
         <br>
         <input name="dotRadiusRandomize" type="radio" value="False" checked required>False
+        <br>
+        <br>
+        <div class="option">Randomize Dot Center Offset</div>
+        <input name="dotCenterRandomize" type="radio" value="True" required>True
+        <br>
+        <input name="dotCenterRandomize" type="radio" value="False" checked required>False
         <br>
         <br>
         <div class="option">Dot Fill</div>

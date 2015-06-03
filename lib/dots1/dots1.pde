@@ -85,6 +85,7 @@ void setup() {
     U_DOT_FILL = row.getString("fill").equals("True") ? true : false;
     U_DOT_STROKE = row.getString("stroke").equals("True") ? true : false;
     U_DOT_RANDOM_RADIUS = row.getString("dotRadiusRandomize").equals("True") ? true : false;
+    U_DOT_OFFSET = row.getString("dotCenterRandomize").equals("True") ? true : false;
     U_DOTS_PER_ROW = int(row.getString("dotsPerRow")) <= MAX_DOTS_PER_ROW ? 
                       int(row.getString("dotsPerRow")) : MAX_DOTS_PER_ROW;
     
@@ -95,7 +96,7 @@ void setup() {
                       
     IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
                       
-    println(U_DOT_FILL,U_DOTS_PER_ROW);
+    println(U_DOT_FILL,U_DOTS_PER_ROW,U_DOT_RANDOM_RADIUS);
   }
   size(IMG_HEIGHT, IMG_WIDTH);
   smooth(); 

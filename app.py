@@ -17,6 +17,9 @@ def index():
         dotRadiusRandomize = request.form['dotRadiusRandomize']
         uDotRadiusRandomize = True if dotRadiusRandomize == "True" else False 
 
+        dotCenterRandomize = request.form['dotCenterRandomize']
+        uDotCenterRandomize = True if dotCenterRandomize == "True" else False 
+
         stroke = request.form['stroke']
         uStroke = True if stroke == "True" else False 
 
@@ -32,6 +35,7 @@ def index():
                     "fill":uFill,
                     "stroke":uStroke,
                     "dotRadiusRandomize":uDotRadiusRandomize,
+                    "dotCenterRandomize":uDotCenterRandomize,
                     "dotRadius":uDotRadius,
                     "dotDist":uDotDist
                     }
