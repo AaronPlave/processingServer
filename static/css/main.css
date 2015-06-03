@@ -19,7 +19,7 @@ img {
     height: 100%;
 }
 
-#generate-input:focus {
+#gen-dotsPerRow:focus {
     border: solid 1px #ccc;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -29,16 +29,15 @@ img {
     -webkit-transition: none;
 }
 
-#generate-input {
+#gen-dotsPerRow {
     border-radius: 0px;
     box-shadow: none;
     letter-spacing: 0.02em;
     font-size: 1em;
-    font-weight: 200;;
-    ;
+    font-weight: 200;
 }
 
-#generate-submit {
+#gen-submit {
     background: none;
     border-color: rgba(51, 51, 51, 0.63);
     border-radius: 0px;
@@ -49,10 +48,10 @@ img {
     color: rgba(66, 207, 196, 0.71);
 }
 
-#generate-submit:focus {
+#gen-submit:focus {
     outline: none;
     box-shadow: none;
 }
-#generate-submit:hover {
+#gen-submit:hover {
     color: rgba(59, 236, 222, 0.71);
 }

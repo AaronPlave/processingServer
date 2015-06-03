@@ -7,13 +7,26 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        text = request.form['text']
+        dotsPerRow = request.form['dotsPerRow']
+        fill = request.form['fill']
+        if fill == "True":
+            uFill = True
+        else:
+            uFill = False
     	try:
-            userNum = int(text)
+            uDotsPerRow = int(dotsPerRow)
         except:
             return render_template('index.html',img="",errors="Invalid input, please enter a number between 1-1000")
+
+        # Create settings dict
+        settings = {"dotsPerRow":uDotsPerRow,
+                    "fill":uFill}
+
+        # Create some sort of unique image path
         imgPath = "static/img/"+str(datetime.datetime.now())+".jpg"
-        runResult = handler.runSketch(userNum,imgPath)
+
+        # Run the sketch
+        runResult = handler.runSketch(settings,imgPath, "dots1")
     	if not runResult:
             return render_template('index.html',img="",errors="Unable to process sketch.")
         else:
