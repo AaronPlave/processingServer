@@ -8,6 +8,7 @@ app = Flask(__name__)
 def index():
     if request.method == 'POST':
         dotsPerRow = request.form['dotsPerRow']
+        numIters = request.form['numIters']
         dotRadius = request.form['dotRadius']
         dotRadiusMin = request.form['dotRadiusMin']
         dotRadiusMax = request.form['dotRadiusMax']
@@ -29,6 +30,7 @@ def index():
 
     	try:
             uDotsPerRow = int(dotsPerRow)
+            uNumIters = int(numIters)
             uDotRadius = float(dotRadius)
             uDotRadiusMin = float(dotRadiusMin)
             uDotRadiusMax = float(dotRadiusMax)
@@ -40,6 +42,7 @@ def index():
 
         # Create settings dict
         settings = {"dotsPerRow":uDotsPerRow,
+                    "numIters":uNumIters,
                     "fill":uFill,
                     "stroke":uStroke,
                     "strokeWeight":uStrokeWeight,

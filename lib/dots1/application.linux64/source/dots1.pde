@@ -20,7 +20,7 @@
 //  Dot shape:
 //    Circle, ellipse, triangle, square, etc.
 //  More complex random effects such as using perlin noise to randomly warp the dot plane
-//  Number of draw iterations: redraw background yes/no, change conditions randomly or in order?
+//  Number of draw iterations:  change conditions randomly or in order?
 //  Shape noise, could add some amount of random *wiggliness* to each shape, uniformly or not. 
 
 boolean U_DOT_SINGLE_COLOR = false;
@@ -28,10 +28,14 @@ boolean U_DOT_THEME = true;
 boolean U_DOT_STROKE = false;
 boolean U_DOT_FILL = true;
 boolean U_DOT_RANDOM_RADIUS = true;
-boolean U_DOT_OFFSET = false;
+boolean U_DOT_OFFSET = true;
+
+// draw iterations
+int U_NUM_ITERS = 1;
+int U_NUM_ITERS_MAX = 20;
 
 // dot center offset
-float U_DOT_OFFSET_MAX = 10;
+float U_DOT_OFFSET_MAX = 40;
 
 // dot radius
 int U_DOT_RADIUS = 20;
@@ -86,12 +90,13 @@ void setup() {
     U_DOT_STROKE = row.getString("stroke").equals("True") ? true : false;
     U_DOT_RANDOM_RADIUS = row.getString("dotRadiusRandomize").equals("True") ? true : false;
     U_DOT_OFFSET = row.getString("dotCenterRandomize").equals("True") ? true : false;
+
     U_DOTS_PER_ROW = int(row.getString("dotsPerRow")) <= MAX_DOTS_PER_ROW ? 
     int(row.getString("dotsPerRow")) : MAX_DOTS_PER_ROW;
 
     U_DOT_RADIUS = int(row.getString("dotRadius")) <= U_DOT_RADIUS_MAX ? 
     int(row.getString("dotRadius")) : U_DOT_RADIUS_MAX;
-    
+
     U_DOT_RADIUS_MIN = int(row.getString("dotRadiusMin"));
     U_DOT_RADIUS_MAX = int(row.getString("dotRadiusMax"));
 
@@ -101,7 +106,10 @@ void setup() {
 
     U_DOT_OFFSET_MAX = int(row.getString("dotOffsetMax"));
 
-
+    U_NUM_ITERS = int(row.getString("numIters")) <= U_NUM_ITERS_MAX ? 
+    int(row.getString("numIters")) : U_NUM_ITERS_MAX;
+  
+    // recalculate image padding
     IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
 
     println(U_DOT_RANDOM_RADIUS, U_DOT_RADIUS_MIN, U_DOT_RADIUS_MAX);
@@ -111,18 +119,20 @@ void setup() {
   background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
 
   // Determine blend mode
-  // blendMode(EXCLUSION); 
+  //  blendMode(MULTIPLY); 
   noLoop();
   // frameRate(2);
 }
 void draw() {
-  //  background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
-  for (int i = 0; i < U_DOTS_PER_ROW; i++) {
-    for (int j = 0; j < U_DOTS_PER_ROW; j++) {
-      int x1 = IMG_PADDING + U_DOT_DIST * j;
-      int y1 = IMG_PADDING + i * U_DOT_DIST;
-      setColor();
-      drawDot(x1, y1, U_DOT_RADIUS);
+  for (int ite = 0; ite < U_NUM_ITERS; ite++) {
+    //    background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
+    for (int i = 0; i < U_DOTS_PER_ROW; i++) {
+      for (int j = 0; j < U_DOTS_PER_ROW; j++) {
+        int x1 = IMG_PADDING + U_DOT_DIST * j;
+        int y1 = IMG_PADDING + i * U_DOT_DIST;
+        setColor();
+        drawDot(x1, y1, U_DOT_RADIUS);
+      }
     }
   }
   save("test.jpg");
