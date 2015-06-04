@@ -6,13 +6,13 @@
 <form action="/" method="POST">
     <div class="form-group">
         <div class="option">Dots Per Row</div>
-        <input name="dotsPerRow" class="form-control input-lg" type="text" placeholder="Enter a number between 1 - 1000" required>
+        <input name="dotsPerRow" class="form-control input-sm" type="text" placeholder="Enter a number between 1 - 1000" value="20" required>
         <br>
         <div class="option">Dot Radius (pixels)</div>
-        <input name="dotRadius" class="form-control input-lg" type="text" placeholder="Enter a number between 1 - 1000" required>
+        <input name="dotRadius" class="form-control input-sm" type="text" placeholder="Enter a number between 1 - 1000" value="15" required>
         <br>
         <div class="option">Distance Between Dots (pixels)</div>
-        <input name="dotDist" class="form-control input-lg" type="text" placeholder="Enter a number between 1 - 1000" required>
+        <input name="dotDist" class="form-control input-sm" type="text" placeholder="Enter a number between 1 - 1000" value="30" required>
         <br>
         <div class="option">Randomize Dot Radius</div>
         <input name="dotRadiusRandomize" type="radio" value="True" required>True
@@ -20,11 +20,20 @@
         <input name="dotRadiusRandomize" type="radio" value="False" checked required>False
         <br>
         <br>
+        <div class="option">Dot Random Radius Min (pixels)</div>
+        <input name="dotRadiusMin" class="form-control input-sm" type="text" placeholder="Enter a number between 1 - 1000" value="1" required>
+        <br>
+        <div class="option">Dot Random Radius Max (pixels)</div>
+        <input name="dotRadiusMax" class="form-control input-sm" type="text" placeholder="Enter a number between 1 - 1000" value="40" required>
+        <br>
         <div class="option">Randomize Dot Center Offset</div>
         <input name="dotCenterRandomize" type="radio" value="True" required>True
         <br>
         <input name="dotCenterRandomize" type="radio" value="False" checked required>False
         <br>
+        <br>
+        <div class="option">Maximum Dot Center Offset (pixels)</div>
+        <input name="dotOffsetMax" class="form-control input-sm" type="text" placeholder="Enter a number between 0 - 500" value="100" required>
         <br>
         <div class="option">Dot Fill</div>
         <input name="fill" type="radio" value="True" checked required>True
@@ -36,6 +45,10 @@
         <input name="stroke" type="radio" value="True" required>True
         <br>
         <input name="stroke" type="radio" value="False" checked required>False
+        <br>
+        <br>
+        <div class="option">Dot Stroke Weight (pixels)</div>
+        <input name="strokeWeight" class="form-control input-sm" type="text" placeholder="Enter a number between 0.0 - 1000.0" value="0.5" required>
         <br>
     </div>
     <input id="gen-submit" type="submit" class="btn btn-primary btn-lg btn-block" value="Submit">

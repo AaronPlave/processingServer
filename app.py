@@ -9,7 +9,11 @@ def index():
     if request.method == 'POST':
         dotsPerRow = request.form['dotsPerRow']
         dotRadius = request.form['dotRadius']
+        dotRadiusMin = request.form['dotRadiusMin']
+        dotRadiusMax = request.form['dotRadiusMax']
         dotDist = request.form['dotDist']
+        dotOffsetMax = request.form['dotOffsetMax']
+        strokeWeight = request.form['strokeWeight']
 
         fill = request.form['fill']
         uFill = True if fill == "True" else False 
@@ -26,7 +30,11 @@ def index():
     	try:
             uDotsPerRow = int(dotsPerRow)
             uDotRadius = float(dotRadius)
+            uDotRadiusMin = float(dotRadiusMin)
+            uDotRadiusMax = float(dotRadiusMax)
             uDotDist = float(dotDist)
+            uDotOffsetMax = float(dotOffsetMax)
+            uStrokeWeight = float(strokeWeight)
         except:
             return render_template('index.html',img="",errors="Invalid input, please enter a number between 1-1000")
 
@@ -34,9 +42,13 @@ def index():
         settings = {"dotsPerRow":uDotsPerRow,
                     "fill":uFill,
                     "stroke":uStroke,
+                    "strokeWeight":uStrokeWeight,
                     "dotRadiusRandomize":uDotRadiusRandomize,
                     "dotCenterRandomize":uDotCenterRandomize,
+                    "dotOffsetMax":uDotOffsetMax,
                     "dotRadius":uDotRadius,
+                    "dotRadiusMin":uDotRadiusMin,
+                    "dotRadiusMax":uDotRadiusMax,
                     "dotDist":uDotDist
                     }
 

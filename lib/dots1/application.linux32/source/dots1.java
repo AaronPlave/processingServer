@@ -52,7 +52,7 @@ float U_DOT_OFFSET_MAX = 10;
 // dot radius
 int U_DOT_RADIUS = 20;
 int U_DOT_RADIUS_MIN = 1;
-int U_DOT_RADIUS_MAX = 10;
+int U_DOT_RADIUS_MAX = 30;
 
 // background color
 int U_BG_COLOR_R = 255;
@@ -90,29 +90,37 @@ int IMG_WIDTH = IMG_HEIGHT;
 int U_DOTS_PER_ROW = 50;
 int U_DOT_DIST = 10;
 int IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
-int MAX_DOTS_PER_ROW = 100;
+int MAX_DOTS_PER_ROW = 1000;
 //// END PREDEFINED PARAMS
 
 //// DRAWING CODE
 public void setup() {
   // Read from CSV
   Table settingsTable = loadTable("settings.csv", "header, csv");
-  for (TableRow row : settingsTable.rows()) {
+  for (TableRow row : settingsTable.rows ()) {
     U_DOT_FILL = row.getString("fill").equals("True") ? true : false;
     U_DOT_STROKE = row.getString("stroke").equals("True") ? true : false;
     U_DOT_RANDOM_RADIUS = row.getString("dotRadiusRandomize").equals("True") ? true : false;
     U_DOT_OFFSET = row.getString("dotCenterRandomize").equals("True") ? true : false;
     U_DOTS_PER_ROW = PApplet.parseInt(row.getString("dotsPerRow")) <= MAX_DOTS_PER_ROW ? 
-                      PApplet.parseInt(row.getString("dotsPerRow")) : MAX_DOTS_PER_ROW;
-    
+    PApplet.parseInt(row.getString("dotsPerRow")) : MAX_DOTS_PER_ROW;
+
     U_DOT_RADIUS = PApplet.parseInt(row.getString("dotRadius")) <= U_DOT_RADIUS_MAX ? 
-                      PApplet.parseInt(row.getString("dotRadius")) : U_DOT_RADIUS_MAX;
+    PApplet.parseInt(row.getString("dotRadius")) : U_DOT_RADIUS_MAX;
     
+    U_DOT_RADIUS_MIN = PApplet.parseInt(row.getString("dotRadiusMin"));
+    U_DOT_RADIUS_MAX = PApplet.parseInt(row.getString("dotRadiusMax"));
+
     U_DOT_DIST = PApplet.parseInt(row.getString("dotDist"));
-                      
+
+    U_DOT_STROKE_WEIGHT = PApplet.parseInt(row.getString("strokeWeight"));
+
+    U_DOT_OFFSET_MAX = PApplet.parseInt(row.getString("dotOffsetMax"));
+
+
     IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
-                      
-    println(U_DOT_FILL,U_DOTS_PER_ROW,U_DOT_RANDOM_RADIUS);
+
+    println(U_DOT_RANDOM_RADIUS, U_DOT_RADIUS_MIN, U_DOT_RADIUS_MAX);
   }
   size(IMG_HEIGHT, IMG_WIDTH);
   smooth(); 
@@ -124,7 +132,7 @@ public void setup() {
   // frameRate(2);
 }
 public void draw() {
-//  background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
+  //  background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
   for (int i = 0; i < U_DOTS_PER_ROW; i++) {
     for (int j = 0; j < U_DOTS_PER_ROW; j++) {
       int x1 = IMG_PADDING + U_DOT_DIST * j;
