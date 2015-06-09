@@ -1,2 +1,2 @@
 dotRadiusMin,strokeWeight,dotsPerRow,dotRadius,dotRadiusMax,stroke,dotRadiusRandomize,dotDist,fill,dotOffsetMax,dotCenterRandomize,numIters
-13.0,10.0,3,15.0,80.0,True,False,30.0,True,100.0,False,1
+1.0,0.5,100,15.0,20.0,True,True,10.0,True,100.0,True,3

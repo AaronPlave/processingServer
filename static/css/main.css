@@ -34,12 +34,20 @@ img {
     -webkit-transition: none;
 }
 
-.form-control {
+.form {
     border-radius: 0px;
     box-shadow: none;
     letter-spacing: 0.02em;
     font-size: 1em;
     font-weight: 200;
+    height: 22px;
+    padding: 0px;
+    border: none;
+    width: 18%;
+    border-bottom: 1px black solid;
+    display: inline;
+    line-height: 2.3em !important;
+    margin-bottom: 13px;
 }
 
 #gen-submit {
@@ -66,10 +74,16 @@ img {
     font-weight: 800;
     text-transform: uppercase;
     color: black;
-    display: block;
-    border-bottom: black 1px solid;
+    display: inline-block;
+    line-height: 2.5em;
+    margin-right: 4px;
 }
-
+.form:focus {
+    border-bottom: 1px black solid;
+    outline: none;
+    box-shadow: none;
+    border: none;;
+} 
 .home {
     position: absolute;
     top: 0;
