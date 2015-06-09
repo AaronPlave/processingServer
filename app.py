@@ -1,34 +1,39 @@
-import os, datetime
+import os, datetime, json
 from flask import Flask, request, render_template
 import lib.handler as handler
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method == 'POST':
-        dotsPerRow = request.form['dotsPerRow']
-        numIters = request.form['numIters']
-        dotRadius = request.form['dotRadius']
-        dotRadiusMin = request.form['dotRadiusMin']
-        dotRadiusMax = request.form['dotRadiusMax']
-        dotDist = request.form['dotDist']
-        dotOffsetMax = request.form['dotOffsetMax']
-        strokeWeight = request.form['strokeWeight']
+    return render_template('landing.html')
 
-        fill = request.form['fill']
-        uFill = True if fill == "True" else False 
+@app.route('/dotsV2/submit', methods=['GET'])
+def index3():
+    if request.method == 'GET':
+        print request.args
+        dotsPerRow = request.args.get('dotsPerRow')
+        numIters = request.args.get('numIters')
+        dotRadius = request.args.get('dotRadius')
+        dotRadiusMin = request.args.get('dotRadiusMin')
+        dotRadiusMax = request.args.get('dotRadiusMax')
+        dotDist = request.args.get('dotDist')
+        dotOffsetMax = request.args.get('dotOffsetMax')
+        strokeWeight = request.args.get('strokeWeight')
 
-        dotRadiusRandomize = request.form['dotRadiusRandomize']
-        uDotRadiusRandomize = True if dotRadiusRandomize == "True" else False 
+        fill = request.args.get('fill')
+        uFill = True if fill == "true" else False 
 
-        dotCenterRandomize = request.form['dotCenterRandomize']
-        uDotCenterRandomize = True if dotCenterRandomize == "True" else False 
+        dotRadiusRandomize = request.args.get('dotRadiusRandomize')
+        uDotRadiusRandomize = True if dotRadiusRandomize == "true" else False 
 
-        stroke = request.form['stroke']
-        uStroke = True if stroke == "True" else False 
+        dotCenterRandomize = request.args.get('dotCenterRandomize')
+        uDotCenterRandomize = True if dotCenterRandomize == "true" else False 
 
-    	try:
+        stroke = request.args.get('stroke')
+        uStroke = True if stroke == "true" else False 
+
+        try:
             uDotsPerRow = int(dotsPerRow)
             uNumIters = int(numIters)
             uDotRadius = float(dotRadius)
@@ -54,17 +59,20 @@ def index():
                     "dotRadiusMax":uDotRadiusMax,
                     "dotDist":uDotDist
                     }
+        print settings
 
         # Create some sort of unique image path
         imgPath = "static/img/"+str(datetime.datetime.now())+".jpg"
 
         # Run the sketch
         runResult = handler.runSketch(settings,imgPath, "dots1")
-    	if not runResult:
-            return render_template('index.html',img="",errors="Unable to process sketch.")
+        if not runResult:
+            return json.dumps({"img":""})
         else:
-            return render_template('index.html',img=imgPath,errors="")
-    else:
-        return render_template('index.html',img="",errors="")
+            return json.dumps({"img":imgPath})
+
+@app.route('/dotsV2', methods=['GET'])
+def index2():
+    return render_template('index.html')
 if __name__ == "__main__":
     app.run(debug=True)

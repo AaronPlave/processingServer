@@ -1,0 +1,21 @@
+.nav-choice {
+	font-weight: 900;
+	letter-spacing: 0.01em;
+	font-size: 2em;
+	text-transform: uppercase;;
+	color: black;
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+	text-decoration: none !important;
+	margin-top: 2.5em;
+	margin-bottom: -20px;
+}
+.nav-choice:hover {
+	border-bottom: 8px black solid;
+	color: inherit;
+}
+#landing-container {
+	text-align: center;
+	margin-top: 40%;
+}

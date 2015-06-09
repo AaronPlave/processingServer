@@ -1,9 +1,10 @@
 {% extends "_base.html" %} {% block content %}
+<span class="home"><a href="/">Home</a></span>
 <div class="text-center">
     <h1 class="title">Generator v2–Dots</h1>
 </div>
 <br>
-<form action="/" method="POST">
+<form action="/dotsV2" method="POST">
     <div class="form-group">
         <div class="option">Dots Per Row</div>
         <input name="dotsPerRow" class="form-control input-sm" type="text" placeholder="Enter a number between 1 - 1000" value="20" required>
@@ -59,7 +60,9 @@
 <br>
 <hr>
 <div>
-    <img src="{{ img }}">
-    <div>{{ errors }}</div>
+    <img id="gen-image" src="">
+    <!-- <div>{{ errors }}</div> -->
 </div>
-{% endblock %}
+{% block js %}
+<script type="text/javascript" src="static/js/index.js"></script>
+{% endblock %} {% endblock %}
