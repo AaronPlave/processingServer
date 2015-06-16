@@ -1,4 +1,5 @@
-{% extends "_base.html" %} {% block content %}
+{% extends "_base.html" %} {% block css %}
+<link href="static/css/dotsV2.css" rel="stylesheet">{% endblock %} {% block content %}
 <span class="home"><a href="/">Home</a></span>
 <div class="text-center">
     <h1 class="title">Generator v2–Dots</h1>
@@ -56,5 +57,5 @@
     <!-- <div>{{ errors }}</div> -->
 </div>
 {% block js %}
-<script type="text/javascript" src="static/js/index.js"></script>
+<script type="text/javascript" src="static/js/dotsV2.js"></script>
 {% endblock %} {% endblock %}

@@ -5,11 +5,11 @@ import lib.handler as handler
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+def landingPage():
     return render_template('landing.html')
 
 @app.route('/dotsV2/submit', methods=['GET'])
-def index3():
+def dotsV2Submit():
     if request.method == 'GET':
         print request.args
         dotsPerRow = request.args.get('dotsPerRow')
@@ -43,7 +43,7 @@ def index3():
             uDotOffsetMax = float(dotOffsetMax)
             uStrokeWeight = float(strokeWeight)
         except:
-            return render_template('index.html',img="",errors="Invalid input, please enter a number between 1-1000")
+            return render_template('dotsV2.html',img="",errors="Invalid input, please enter a number between 1-1000")
 
         # Create settings dict
         settings = {"dotsPerRow":uDotsPerRow,
@@ -72,7 +72,12 @@ def index3():
             return json.dumps({"img":imgPath})
 
 @app.route('/dotsV2', methods=['GET'])
-def index2():
-    return render_template('index.html')
+def dotsV2():
+    return render_template('dotsV2.html')
+
+@app.route('/dotsV3')
+def dotsV3():
+    return render_template('dotsV3.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
