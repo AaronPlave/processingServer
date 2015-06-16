@@ -28,13 +28,13 @@ def runSketch(settings, imgPath, sketchName):
 
 	currDir = os.getcwd()
 	if not SERVER:
-		sketchDir = "lib/" + sketchName + "/" 
+		sketchDir = "static/" + sketchName + "/" 
 	else:
-		sketchDir = "lib/" + sketchName + "/application.linux64/"
+		sketchDir = "static/" + sketchName + "/application.linux64/"
 
 	sketchPath = os.path.join(currDir,sketchDir)
 		
-	outputDir = "lib/tmp/"
+	outputDir = "static/tmp/"
 	outputPath = os.path.join(currDir,outputDir)
 
 	settingsFileName = "settings.csv"

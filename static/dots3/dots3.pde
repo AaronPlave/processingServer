@@ -21,8 +21,8 @@
 //  More complex random effects such as using perlin noise to randomly warp the dot plane
 //  Number of draw iterations:  change conditions randomly or in order?
 //  Shape noise, could add some amount of random *wiggliness* to each shape, uniformly or not. 
-
-boolean U_DRAW = U_DRAW;
+// hint(DISABLE_OPENGL_2X_SMOOTH);
+boolean U_DRAW = true;
 boolean U_DOT_SINGLE_COLOR = false;
 boolean U_DOT_THEME = true;
 boolean U_DOT_STROKE = false;
@@ -73,13 +73,15 @@ int U_DOT_SINGLE_STROKE_COLOR_B = 50;
 //// END CUSTOMIZABLE PARAMS
 
 //// PREDEFINED PARAMS
-int IMG_HEIGHT = 200;
+int IMG_HEIGHT = 400;
 int IMG_WIDTH = IMG_HEIGHT;
 int U_DOTS_PER_ROW = 50;
 int U_DOT_DIST = 10;
 int IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
 int MAX_DOTS_PER_ROW = 1000;
 //// END PREDEFINED PARAMS
+
+boolean isLoaded = false;
 
 // DOT CLASS DEF
 class Dot {
@@ -99,31 +101,27 @@ class Dot {
     pos.y = y;
   }
 
-  void setOffset(int x, int y){
+  void setOffset(float x, float y){
     offset.x = x;
     offset.y = y;
   }
 
-  void draw() {
+  void drawDot() {
   // Determine stroke 
-  if (_opts.U_DOT_STROKE) {
-    stroke(U_DOT_SINGLE_STROKE_COLOR_R, U_DOT_SINGLE_STROKE_COLOR_G, U_DOT_SINGLE_STROKE_COLOR_B);
+  if (U_DOT_STROKE) {
+    stroke(strokeColor);
     strokeWeight(U_DOT_STROKE_WEIGHT);
   } else {
     noStroke();
   }
   // Determine dot fill
-  if (_opts.U_DOT_FILL) {
-    if (U_DOT_SINGLE_COLOR) {
-      fill(U_DOT_SINGLE_FILL_COLOR_R, U_DOT_SINGLE_FILL_COLOR_G, U_DOT_SINGLE_FILL_COLOR_B);
-    } else if (U_DOT_THEME) {
-      int[] rgb = U_DOT_THEME_COLORS[int(random(0, U_DOT_THEME_COLORS.length))];
-      fill(rgb[0], rgb[1], rgb[2]);
-    }
+  if (U_DOT_FILL) {
+    fill(fillColor);
   } else {
     noFill();
   }
-  ellipse(pos.x,pos.y,radius*2,radius*2);
+
+  ellipse(pos.x+offset.x,pos.y+offset.y,radius*2,radius*2);
   }
 };
 
@@ -131,12 +129,18 @@ Dot[] dotArray = {};
 
 //// DRAWING CODE
 void setup() {
+  console.log("setup");
+  if (isLoaded) {
+    console.log("LOADED ALREADY");
+    return;
+  }
   size(IMG_HEIGHT, IMG_WIDTH);
   smooth(); 
   background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
-  frameRate(3);
+  frameRate(30);
 
   initDots();
+  isLoaded = true;
 }
 
 void initDots() {
@@ -156,17 +160,12 @@ void initDots() {
         }
 
         // Init stroke
-        newDot.strokeColor = new color(U_DOT_SINGLE_STROKE_COLOR_R, U_DOT_SINGLE_STROKE_COLOR_G, U_DOT_SINGLE_STROKE_COLOR_B);
-        newDot.strokeWeight = U_DOT_STROKE_WEIGHT;
+        newDot.strokeColor = color(U_DOT_SINGLE_STROKE_COLOR_R, U_DOT_SINGLE_STROKE_COLOR_G, U_DOT_SINGLE_STROKE_COLOR_B);
+        newDot.strokeWgt = U_DOT_STROKE_WEIGHT;
         
         // Init fill
-        if (U_DOT_SINGLE_COLOR) {
-          newDot.fillColor = new color(U_DOT_SINGLE_FILL_COLOR_R, U_DOT_SINGLE_FILL_COLOR_G, U_DOT_SINGLE_FILL_COLOR_B);
-        } else if (U_DOT_THEME) {
-
-          int[] rgb = U_DOT_THEME_COLORS[int(random(0, U_DOT_THEME_COLORS.length))];
-          newDot.fillColor = new color(rgb[0], rgb[1], rgb[2]);
-        }
+        int[] rgb = U_DOT_THEME_COLORS[int(random(0, U_DOT_THEME_COLORS.length))];
+        newDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
 
         // Init offset
         float offsetX = 0;
@@ -178,21 +177,20 @@ void initDots() {
         newDot.setOffset(offsetX,offsetY);
 
         // Add dot to array
-
-        append(dotArray, newDot);
+        dotArray = (Dot[]) append(dotArray, newDot);
       }
     }
   // }
 }
 
 void draw() {
-  if (!(_opts.U_DRAW)) {
-    return;
+  if (!(U_DRAW)) {
+    // return;
   }
  background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
  for (int i = 0; i < dotArray.length; i++) {
   Dot cDot = dotArray[i];
-  cDot.draw();
+  cDot.drawDot();
  }
 }
 
@@ -201,4 +199,6 @@ void draw() {
 //    saveFrame("../screenshots/screen-"+str(random(1000000))+".jpg");
 //  }
 //}
-
+void printColor(color c) {
+  println(red(c), blue(c), green(c));
+}

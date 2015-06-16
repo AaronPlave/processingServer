@@ -65,7 +65,7 @@ def dotsV2Submit():
         imgPath = "static/img/"+str(datetime.datetime.now())+".jpg"
 
         # Run the sketch
-        runResult = handler.runSketch(settings,imgPath, "dots1")
+        runResult = handler.runSketch(settings,imgPath, "dots2")
         if not runResult:
             return json.dumps({"img":""})
         else:

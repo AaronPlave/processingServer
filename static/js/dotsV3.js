@@ -15,8 +15,8 @@
 
 var UIOpts = function() {
     this.U_DRAW = true;
-    this.U_DOT_STOKE = true;
-    this.U_DOT_FILL = false;
+    this.U_DOT_STROKE = true;
+    this.U_DOT_FILL = true;
 }
 
 var _opts;
@@ -26,10 +26,15 @@ window.onload = function() {
 }
 
 function initialize() {
+	var canvasHolder = document.getElementById("canvasHolder");
+	var canvasRef = document.createElement('canvas');
+	var p = Processing.loadSketchFromSources(canvasRef, ['static/dots3/dots3.pde']);
+	canvasHolder.appendChild(canvasRef);
+
 	_opts = new UIOpts();
     var gui = new dat.GUI();
     gui.add(_opts, 'U_DRAW');
-    gui.add(_opts, 'U_DOT_STOKE');
+    gui.add(_opts, 'U_DOT_STROKE');
     gui.add(_opts, 'U_DOT_FILL');
 
 }
