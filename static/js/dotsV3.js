@@ -1,32 +1,9 @@
-// var _options = {
-//     "dotsPerRow": eValue,
-//     "dotRadius": eValue,
-//     "dotDist": eValue("dotDist"),
-//     "numIters": eValue("numIters"),
-//     "dotRadiusRandomize": radioCheckBool(g("dotRadiusRandomize")),
-//     "dotRadiusMin": eValue("dotRadiusMin"),
-//     "dotRadiusMax": eValue("dotRadiusMax"),
-//     "dotCenterRandomize": radioCheckBool(g("dotCenterRandomize")),
-//     "dotOffsetMax": eValue("dotOffsetMax"),
-//     "fill": radioCheckBool(g("fill")),
-//     "stroke": radioCheckBool(g("stroke")),
-//     "strokeWeight": eValue("strokeWeight"),
-// }
-
-var UIOpts = function() {
-    this.U_DRAW = true;
-    this.U_DOT_STROKE = false;
-    this.U_DOT_STROKE_WEIGHT = 0.5;
-    this.U_DOT_FILL = true;
-    this.U_DOT_OFFSET_MAX = 5;
-}
-
 window.onload = function() {
     initialize();
 }
 
-// var pHandler;
-// var _opts;
+var pHandler;
+var _opts;
 
 function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
@@ -56,6 +33,15 @@ function initialize() {
 
 function initGui() {
     // Initialize gui
+    var UIOpts = function() {
+        pOpt = pHandler.getUiOpt();
+        this.U_DRAW = pOpt.U_DRAW;
+        this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
+        this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
+        this.U_DOT_FILL = pOpt.U_DOT_FILL;
+        this.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
+        this.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
+    }
     _opts = new UIOpts();
     var gui = new dat.GUI();
 
@@ -65,18 +51,28 @@ function initGui() {
     var fFill = gui.addFolder('Fill');
     var cFill = fFill.add(_opts, 'U_DOT_FILL');
     cFill.onChange(function(value) {
-    	cFill.U_DOT_FILL = value;
-    })
+        pHandler.getUiOpt().U_DOT_FILL = value;
+    });
+    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME');
+    cFillTheme.onChange(function(value) {
+        pHandler.setTheme(value);
+    });
 
     var fStroke = gui.addFolder('Stroke');
     var cStroke = fStroke.add(_opts, 'U_DOT_STROKE');
+    cStroke.onChange(function(value) {
+        pHandler.getUiOpt().U_DOT_STROKE = value;
+    });
     var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0, 30);
     cStrokeWgt.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
-    })
+    });
 
     var fOffset = gui.addFolder('Center Offset');
-    fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 1000);
+    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 1000);
+    cOffset.onChange(function(value) {
+        pHandler.setOffset(value);
+    })
 
     // Default open folders
     fFill.open();

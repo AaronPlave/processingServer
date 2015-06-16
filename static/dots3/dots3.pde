@@ -24,10 +24,9 @@
 // hint(DISABLE_OPENGL_2X_SMOOTH);
 
 class UIOpt {
-  float U_DOT_STROKE_WEIGHT;
   boolean U_DRAW;
-  boolean U_DOT_SINGLE_COLOR;
-  boolean U_DOT_THEME;
+  boolean U_DOT_SINGLE_FILL_COLOR;
+  boolean U_DOT_FILL_THEME;
   boolean U_DOT_STROKE;
   boolean U_DOT_FILL;
   boolean U_DOT_RANDOM_RADIUS;
@@ -57,7 +56,7 @@ class UIOpt {
   int U_DOT_SINGLE_FILL_COLOR_B;
 
   // dot fill theme colors 
-  int[][] U_DOT_THEME_COLORS;
+  int[][] U_DOT_FILL_THEME_COLORS;
 
   // dot stroke
   float U_DOT_STROKE_WEIGHT;
@@ -76,10 +75,9 @@ class UIOpt {
   //// END PREDEFINED PARAMS
   
   UIOpt() {
-    U_DOT_STROKE_WEIGHT = 0.5;
     U_DRAW = true;
-    U_DOT_SINGLE_COLOR = false;
-    U_DOT_THEME = true;
+    U_DOT_SINGLE_FILL_COLOR = false;
+    U_DOT_FILL_THEME = true;
     U_DOT_STROKE = true;
     U_DOT_FILL = true;
     U_DOT_RANDOM_RADIUS = true;
@@ -90,7 +88,7 @@ class UIOpt {
     U_NUM_ITERS_MAX = 20;
 
     // dot center offset
-    U_DOT_OFFSET_MAX = 20;
+    U_DOT_OFFSET_MAX = 0;
 
     // dot radius
     U_DOT_RADIUS = 5;
@@ -108,7 +106,7 @@ class UIOpt {
     U_DOT_SINGLE_FILL_COLOR_B = 100;
 
     // dot fill theme colors 
-    U_DOT_THEME_COLORS = {
+    U_DOT_FILL_THEME_COLORS = {
       {
         255, 229, 110
       }
@@ -130,7 +128,7 @@ class UIOpt {
     //// PREDEFINED PARAMS
     IMG_HEIGHT = 300;
     IMG_WIDTH = IMG_HEIGHT;
-    U_DOTS_PER_ROW = 50;
+    U_DOTS_PER_ROW = 20;
     U_DOT_DIST = 10;
     IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
     MAX_DOTS_PER_ROW = 1000;
@@ -138,7 +136,7 @@ class UIOpt {
   }
 };
 
-UIOpt uiOpt = new UIOpt();
+UIOpt uiOpt;
 
 void getUiOpt() {
   uiOpt.U_DRAW = true;
@@ -190,16 +188,32 @@ class Dot {
 Dot[] dotArray = {};
 
 void setOffset(x) {
+  uiOpt.U_DOT_OFFSET_MAX = x;
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
     cDot.offset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
     cDot.offset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
   }
 }
+void setTheme(x) {
+  if (x) {
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
+      cDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
+    }
+  } else {
+      for (int i = 0; i < dotArray.length; i++) {
+        Dot cDot = dotArray[i];
+        cDot.fillColor = color(uiOpt.U_DOT_SINGLE_STROKE_COLOR_R,uiOpt.U_DOT_SINGLE_STROKE_COLOR_G,uiOpt.U_DOT_SINGLE_STROKE_COLOR_B);
+      }
+    }
+}
 
 
 //// DRAWING CODE
 void setup() {
+  uiOpt = new UIOpt();
   size(uiOpt.IMG_HEIGHT, uiOpt.IMG_WIDTH);
   smooth(); 
   background(uiOpt.U_BG_COLOR_R, uiOpt.U_BG_COLOR_G, uiOpt.U_BG_COLOR_B);
@@ -229,7 +243,7 @@ void initDots() {
         newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
         
         // Init fill
-        int[] rgb = uiOpt.U_DOT_THEME_COLORS[int(random(0, uiOpt.U_DOT_THEME_COLORS.length))];
+        int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
         newDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
 
         // Init offset
