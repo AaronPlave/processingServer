@@ -35,12 +35,13 @@ int U_NUM_ITERS = 1;
 int U_NUM_ITERS_MAX = 20;
 
 // dot center offset
-float U_DOT_OFFSET_MAX = 40;
+float U_DOT_OFFSET_MAX = 20;
+float U_DOT_OFFSET_PREV = U_DOT_OFFSET_MAX;
 
 // dot radius
-int U_DOT_RADIUS = 20;
+int U_DOT_RADIUS = 5;
 int U_DOT_RADIUS_MIN = 1;
-int U_DOT_RADIUS_MAX = 30;
+int U_DOT_RADIUS_MAX = 10;
 
 // background color
 int U_BG_COLOR_R = 255;
@@ -108,17 +109,29 @@ class Dot {
 
   void drawDot() {
   // Determine stroke 
-  if (U_DOT_STROKE) {
+  if (_opts.U_DOT_STROKE) {
     stroke(strokeColor);
     strokeWeight(U_DOT_STROKE_WEIGHT);
   } else {
     noStroke();
   }
-  // Determine dot fill
-  if (U_DOT_FILL) {
+  // Determine fill
+  if (_opts.U_DOT_FILL) {
     fill(fillColor);
   } else {
     noFill();
+  }
+
+  // Determine offset
+  float tmp = _opts.U_DOT_OFFSET_MAX;
+  if (U_DOT_OFFSET_PREV != tmp) {
+    offset.x = random(-1*tmp, tmp);
+    offset.y = random(-1*tmp, tmp);
+  }
+
+  // Determine radius
+  if (_opts.U_DOT_RANDOM_RADIUS) {
+    
   }
 
   ellipse(pos.x+offset.x,pos.y+offset.y,radius*2,radius*2);
@@ -129,18 +142,12 @@ Dot[] dotArray = {};
 
 //// DRAWING CODE
 void setup() {
-  console.log("setup");
-  if (isLoaded) {
-    console.log("LOADED ALREADY");
-    return;
-  }
   size(IMG_HEIGHT, IMG_WIDTH);
   smooth(); 
   background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
   frameRate(30);
 
   initDots();
-  isLoaded = true;
 }
 
 void initDots() {
@@ -187,11 +194,14 @@ void draw() {
   if (!(U_DRAW)) {
     // return;
   }
+
  background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
  for (int i = 0; i < dotArray.length; i++) {
   Dot cDot = dotArray[i];
   cDot.drawDot();
  }
+
+ U_DOT_OFFSET_PREV = _opts.U_DOT_OFFSET_MAX;
 }
 
 //void keyPressed() {

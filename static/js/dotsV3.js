@@ -17,6 +17,7 @@ var UIOpts = function() {
     this.U_DRAW = true;
     this.U_DOT_STROKE = true;
     this.U_DOT_FILL = true;
+    this.U_DOT_OFFSET_MAX = 5;
 }
 
 var _opts;
@@ -31,10 +32,24 @@ function initialize() {
 	var p = Processing.loadSketchFromSources(canvasRef, ['static/dots3/dots3.pde']);
 	canvasHolder.appendChild(canvasRef);
 
+	// Initialize gui
 	_opts = new UIOpts();
     var gui = new dat.GUI();
     gui.add(_opts, 'U_DRAW');
-    gui.add(_opts, 'U_DOT_STROKE');
-    gui.add(_opts, 'U_DOT_FILL');
+
+    // Create folder and options
+    var fFill = gui.addFolder('Fill');
+    fFill.add(_opts, 'U_DOT_FILL');
+    
+    var fStroke = gui.addFolder('Stroke');
+    fStroke.add(_opts, 'U_DOT_STROKE');
+    
+    var fOffset = gui.addFolder('Center Offset');
+    fOffset.add(_opts, 'U_DOT_OFFSET_MAX',0,1000);
+
+    // Default open folders
+    fFill.open();
+    fStroke.open();
+    fOffset.open();
 
 }
