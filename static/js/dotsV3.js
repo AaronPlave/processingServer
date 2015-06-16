@@ -53,6 +53,8 @@ function initGui() {
         this.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
         this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
         this.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
+        this.U_DOT_RADIUS_MIN = pOpt.U_DOT_RADIUS_MIN;
+        this.U_DOT_RADIUS_MAX = pOpt.U_DOT_RADIUS_MAX;
     }
     _opts = new UIOpts();
     var gui = new dat.GUI();
@@ -118,6 +120,14 @@ function initGui() {
     var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE');
     cRadiusRandomize.onChange(function(value) {
         pHandler.setRadiusRandomize(value);
+    })
+    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN',0,100);
+    cRadiusMin.onChange(function(value) {
+        pHandler.setRadiusMin(value);
+    })
+    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX',0,100);
+    cRadiusMax.onChange(function(value) {
+        pHandler.setRadiusMax(value);
     })
 
 

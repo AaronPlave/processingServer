@@ -196,6 +196,26 @@ void setRadius(x) {
   }
 }
 
+void setRadiusMin(x) {
+  uiOpt.U_DOT_RADIUS_MIN = x;
+  if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.radius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
+    }
+  }
+}
+
+void setRadiusMax(x) {
+  uiOpt.U_DOT_RADIUS_MAX = x;
+  if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.radius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
+    }
+  }
+}
+
 void setRadiusRandomize(randomize) {
   uiOpt.U_DOT_RADIUS_RANDOMIZE = randomize;
   if (randomize) {
