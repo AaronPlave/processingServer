@@ -22,67 +22,128 @@
 //  Number of draw iterations:  change conditions randomly or in order?
 //  Shape noise, could add some amount of random *wiggliness* to each shape, uniformly or not. 
 // hint(DISABLE_OPENGL_2X_SMOOTH);
-boolean U_DRAW = true;
-boolean U_DOT_SINGLE_COLOR = false;
-boolean U_DOT_THEME = true;
-boolean U_DOT_STROKE = false;
-boolean U_DOT_FILL = true;
-boolean U_DOT_RANDOM_RADIUS = true;
-boolean U_DOT_OFFSET = true;
 
-// draw iterations
-int U_NUM_ITERS = 1;
-int U_NUM_ITERS_MAX = 20;
+class UIOpt {
+  float U_DOT_STROKE_WEIGHT;
+  boolean U_DRAW;
+  boolean U_DOT_SINGLE_COLOR;
+  boolean U_DOT_THEME;
+  boolean U_DOT_STROKE;
+  boolean U_DOT_FILL;
+  boolean U_DOT_RANDOM_RADIUS;
+  boolean U_DOT_OFFSET;
 
-// dot center offset
-float U_DOT_OFFSET_MAX = 20;
-float U_DOT_OFFSET_PREV = U_DOT_OFFSET_MAX;
+  // draw iterations
+  int U_NUM_ITERS;
+  int U_NUM_ITERS_MAX;
 
-// dot radius
-int U_DOT_RADIUS = 5;
-int U_DOT_RADIUS_MIN = 1;
-int U_DOT_RADIUS_MAX = 10;
+  // dot center offset
+  float U_DOT_OFFSET_MAX;
+  float U_DOT_OFFSET_PRE;
 
-// background color
-int U_BG_COLOR_R = 255;
-int U_BG_COLOR_G = 253;
-int U_BG_COLOR_B = 247;
+  // dot radius
+  int U_DOT_RADIUS;
+  int U_DOT_RADIUS_MIN;
+  int U_DOT_RADIUS_MAX;
 
-// dot fill single color 
-int U_DOT_SINGLE_FILL_COLOR_R = 200;
-int U_DOT_SINGLE_FILL_COLOR_G = 0;
-int U_DOT_SINGLE_FILL_COLOR_B = 100;
+  // background color
+  int U_BG_COLOR_R;
+  int U_BG_COLOR_G;
+  int U_BG_COLOR_B;
 
-// dot fill theme colors 
-int[][] U_DOT_THEME_COLORS = {
-  {
-    255, 229, 110
-  }
-  , {
-    215, 25, 32
-  }
-  , {
-    0, 0, 0
+  // dot fill single color 
+  int U_DOT_SINGLE_FILL_COLOR_R;
+  int U_DOT_SINGLE_FILL_COLOR_G;
+  int U_DOT_SINGLE_FILL_COLOR_B;
+
+  // dot fill theme colors 
+  int[][] U_DOT_THEME_COLORS;
+
+  // dot stroke
+  float U_DOT_STROKE_WEIGHT;
+  int U_DOT_SINGLE_STROKE_COLOR_R;
+  int U_DOT_SINGLE_STROKE_COLOR_G;
+  int U_DOT_SINGLE_STROKE_COLOR_B;
+  //// END CUSTOMIZABLE PARAMS
+
+  //// PREDEFINED PARAMS
+  int IMG_HEIGHT;
+  int IMG_WIDTH;
+  int U_DOTS_PER_ROW;
+  int U_DOT_DIST;
+  int IMG_PADDING;
+  int MAX_DOTS_PER_ROW;
+  //// END PREDEFINED PARAMS
+  
+  UIOpt() {
+    U_DOT_STROKE_WEIGHT = 0.5;
+    U_DRAW = true;
+    U_DOT_SINGLE_COLOR = false;
+    U_DOT_THEME = true;
+    U_DOT_STROKE = true;
+    U_DOT_FILL = true;
+    U_DOT_RANDOM_RADIUS = true;
+    U_DOT_OFFSET = true;
+
+    // draw iterations
+    U_NUM_ITERS = 1;
+    U_NUM_ITERS_MAX = 20;
+
+    // dot center offset
+    U_DOT_OFFSET_MAX = 20;
+
+    // dot radius
+    U_DOT_RADIUS = 5;
+    U_DOT_RADIUS_MIN = 1;
+    U_DOT_RADIUS_MAX = 10;
+
+    // background color
+    U_BG_COLOR_R = 255;
+    U_BG_COLOR_G = 253;
+    U_BG_COLOR_B = 247;
+
+    // dot fill single color 
+    U_DOT_SINGLE_FILL_COLOR_R = 200;
+    U_DOT_SINGLE_FILL_COLOR_G = 0;
+    U_DOT_SINGLE_FILL_COLOR_B = 100;
+
+    // dot fill theme colors 
+    U_DOT_THEME_COLORS = {
+      {
+        255, 229, 110
+      }
+      , {
+        215, 25, 32
+      }
+      , {
+        0, 0, 0
+      }
+    };
+
+    // dot stroke
+    U_DOT_STROKE_WEIGHT = 0.5;
+    U_DOT_SINGLE_STROKE_COLOR_R = 50;
+    U_DOT_SINGLE_STROKE_COLOR_G = 50;
+    U_DOT_SINGLE_STROKE_COLOR_B = 50;
+    //// END CUSTOMIZABLE PARAMS
+
+    //// PREDEFINED PARAMS
+    IMG_HEIGHT = 300;
+    IMG_WIDTH = IMG_HEIGHT;
+    U_DOTS_PER_ROW = 50;
+    U_DOT_DIST = 10;
+    IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
+    MAX_DOTS_PER_ROW = 1000;
+    //// END PREDEFINED PARAMS
   }
 };
 
-// dot stroke
-float U_DOT_STROKE_WEIGHT = 0.5;
-int U_DOT_SINGLE_STROKE_COLOR_R = 50;
-int U_DOT_SINGLE_STROKE_COLOR_G = 50;
-int U_DOT_SINGLE_STROKE_COLOR_B = 50;
-//// END CUSTOMIZABLE PARAMS
+UIOpt uiOpt = new UIOpt();
 
-//// PREDEFINED PARAMS
-int IMG_HEIGHT = 400;
-int IMG_WIDTH = IMG_HEIGHT;
-int U_DOTS_PER_ROW = 50;
-int U_DOT_DIST = 10;
-int IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
-int MAX_DOTS_PER_ROW = 1000;
-//// END PREDEFINED PARAMS
-
-boolean isLoaded = false;
+void getUiOpt() {
+  uiOpt.U_DRAW = true;
+  return uiOpt;
+}
 
 // DOT CLASS DEF
 class Dot {
@@ -109,29 +170,17 @@ class Dot {
 
   void drawDot() {
   // Determine stroke 
-  if (_opts.U_DOT_STROKE) {
+  if (uiOpt.U_DOT_STROKE) {
     stroke(strokeColor);
-    strokeWeight(U_DOT_STROKE_WEIGHT);
+    strokeWeight(uiOpt.U_DOT_STROKE_WEIGHT);
   } else {
     noStroke();
   }
   // Determine fill
-  if (_opts.U_DOT_FILL) {
+  if (uiOpt.U_DOT_FILL) {
     fill(fillColor);
   } else {
     noFill();
-  }
-
-  // Determine offset
-  float tmp = _opts.U_DOT_OFFSET_MAX;
-  if (U_DOT_OFFSET_PREV != tmp) {
-    offset.x = random(-1*tmp, tmp);
-    offset.y = random(-1*tmp, tmp);
-  }
-
-  // Determine radius
-  if (_opts.U_DOT_RANDOM_RADIUS) {
-    
   }
 
   ellipse(pos.x+offset.x,pos.y+offset.y,radius*2,radius*2);
@@ -140,46 +189,55 @@ class Dot {
 
 Dot[] dotArray = {};
 
+void setOffset(x) {
+  for (int i = 0; i < dotArray.length; i++) {
+    Dot cDot = dotArray[i];
+    cDot.offset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+    cDot.offset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+  }
+}
+
+
 //// DRAWING CODE
 void setup() {
-  size(IMG_HEIGHT, IMG_WIDTH);
+  size(uiOpt.IMG_HEIGHT, uiOpt.IMG_WIDTH);
   smooth(); 
-  background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
-  frameRate(30);
+  background(uiOpt.U_BG_COLOR_R, uiOpt.U_BG_COLOR_G, uiOpt.U_BG_COLOR_B);
+  frameRate(24);
 
   initDots();
 }
 
 void initDots() {
   // for (int ite = 0; ite < U_NUM_ITERS; ite++) {
-    for (int i = 0; i < U_DOTS_PER_ROW; i++) {
-      for (int j = 0; j < U_DOTS_PER_ROW; j++) {
+    for (int i = 0; i < uiOpt.U_DOTS_PER_ROW; i++) {
+      for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
         Dot newDot = new Dot();
 
         // Init position
-        int x1 = IMG_PADDING + U_DOT_DIST * j;
-        int y1 = IMG_PADDING + i * U_DOT_DIST;
+        int x1 = uiOpt.IMG_PADDING + uiOpt.U_DOT_DIST * j;
+        int y1 = uiOpt.IMG_PADDING + i * uiOpt.U_DOT_DIST;
         newDot.setPos(x1,y1);
 
         // Init radius
-        if (U_DOT_RANDOM_RADIUS) {
-          newDot.radius = random(U_DOT_RADIUS_MIN, U_DOT_RADIUS_MAX);
+        if (uiOpt.U_DOT_RANDOM_RADIUS) {
+          newDot.radius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
         }
 
         // Init stroke
-        newDot.strokeColor = color(U_DOT_SINGLE_STROKE_COLOR_R, U_DOT_SINGLE_STROKE_COLOR_G, U_DOT_SINGLE_STROKE_COLOR_B);
-        newDot.strokeWgt = U_DOT_STROKE_WEIGHT;
+        newDot.strokeColor = color(uiOpt.U_DOT_SINGLE_STROKE_COLOR_R, uiOpt.U_DOT_SINGLE_STROKE_COLOR_G, uiOpt.U_DOT_SINGLE_STROKE_COLOR_B);
+        newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
         
         // Init fill
-        int[] rgb = U_DOT_THEME_COLORS[int(random(0, U_DOT_THEME_COLORS.length))];
+        int[] rgb = uiOpt.U_DOT_THEME_COLORS[int(random(0, uiOpt.U_DOT_THEME_COLORS.length))];
         newDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
 
         // Init offset
         float offsetX = 0;
         float offsetY = 0;
-        if (U_DOT_OFFSET) {
-          offsetX = random(-1*U_DOT_OFFSET_MAX, U_DOT_OFFSET_MAX);
-          offsetY = random(-1*U_DOT_OFFSET_MAX, U_DOT_OFFSET_MAX);
+        if (uiOpt.U_DOT_OFFSET) {
+          offsetX = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+          offsetY = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
         }
         newDot.setOffset(offsetX,offsetY);
 
@@ -191,17 +249,18 @@ void initDots() {
 }
 
 void draw() {
-  if (!(U_DRAW)) {
+  if (!(uiOpt.U_DRAW)) {
     // return;
   }
 
- background(U_BG_COLOR_R, U_BG_COLOR_G, U_BG_COLOR_B);
+ background(uiOpt.U_BG_COLOR_R, uiOpt.U_BG_COLOR_G, uiOpt.U_BG_COLOR_B);
  for (int i = 0; i < dotArray.length; i++) {
   Dot cDot = dotArray[i];
   cDot.drawDot();
  }
 
- U_DOT_OFFSET_PREV = _opts.U_DOT_OFFSET_MAX;
+ uiOpt.U_DRAW = false;
+
 }
 
 //void keyPressed() {
