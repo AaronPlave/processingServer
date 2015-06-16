@@ -32,23 +32,45 @@ function initialize() {
 }
 
 function initGui() {
+    // Initialize save button
+    var saveEl = document.getElementById("saveImg");
+    saveEl.addEventListener("click", function(evt) {
+    	var image = document.getElementsByTagName("canvas")[0].toDataURL();
+        window.open(image, '_blank');
+    })
+    var image = document.getElementsByTagName("canvas")[0].toDataURL();
+
     // Initialize gui
     var UIOpts = function() {
         pOpt = pHandler.getUiOpt();
-        this.U_DRAW = pOpt.U_DRAW;
+        // this.U_DRAW = pOpt.U_DRAW;
+        this.U_BG_COLOR = pOpt.U_BG_COLOR;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
         this.U_DOT_FILL = pOpt.U_DOT_FILL;
         this.U_DOT_SINGLE_FILL_COLOR = pOpt.U_DOT_SINGLE_FILL_COLOR;
         this.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
         this.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
+        this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
+        this.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
     }
     _opts = new UIOpts();
     var gui = new dat.GUI();
 
-    gui.add(_opts, 'U_DRAW');
+    // gui.add(_opts, 'U_DRAW');
 
     // Create folder and options
+
+    // BACKGROUND
+    var fBG = gui.addFolder('Background');
+    var cBG = fBG.addColor(_opts, 'U_BG_COLOR');
+    cBG.onChange(function(value) {
+        if (typeof(value) === "string") {
+            pHandler.setBG(hexToRgb(value));
+        } else {
+            pHandler.setBG(value);
+        }
+    });
 
     // FILL
     var fFill = gui.addFolder('Fill');
@@ -82,15 +104,29 @@ function initGui() {
 
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
-    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 1000);
+    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 750);
     cOffset.onChange(function(value) {
         pHandler.setOffset(value);
     })
 
+    // RADIUS
+    var fRadius = gui.addFolder('Radius');
+    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100);
+    cRadius.onChange(function(value) {
+        pHandler.setRadius(value);
+    })
+    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE');
+    cRadiusRandomize.onChange(function(value) {
+        pHandler.setRadiusRandomize(value);
+    })
+
+
     // Default open folders
+    fBG.open();
     fFill.open();
     fStroke.open();
     fOffset.open();
+    fRadius.open();
 
 }
 
