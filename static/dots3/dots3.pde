@@ -25,7 +25,6 @@
 
 class UIOpt {
   boolean U_DRAW;
-  boolean U_DOT_SINGLE_FILL_COLOR;
   boolean U_DOT_FILL_THEME;
   boolean U_DOT_STROKE;
   boolean U_DOT_FILL;
@@ -51,9 +50,7 @@ class UIOpt {
   int U_BG_COLOR_B;
 
   // dot fill single color 
-  int U_DOT_SINGLE_FILL_COLOR_R;
-  int U_DOT_SINGLE_FILL_COLOR_G;
-  int U_DOT_SINGLE_FILL_COLOR_B;
+  color U_DOT_SINGLE_FILL_COLOR;
 
   // dot fill theme colors 
   int[][] U_DOT_FILL_THEME_COLORS;
@@ -76,7 +73,6 @@ class UIOpt {
   
   UIOpt() {
     U_DRAW = true;
-    U_DOT_SINGLE_FILL_COLOR = false;
     U_DOT_FILL_THEME = true;
     U_DOT_STROKE = true;
     U_DOT_FILL = true;
@@ -101,9 +97,7 @@ class UIOpt {
     U_BG_COLOR_B = 247;
 
     // dot fill single color 
-    U_DOT_SINGLE_FILL_COLOR_R = 200;
-    U_DOT_SINGLE_FILL_COLOR_G = 0;
-    U_DOT_SINGLE_FILL_COLOR_B = 100;
+    U_DOT_SINGLE_FILL_COLOR = "#c80064";
 
     // dot fill theme colors 
     U_DOT_FILL_THEME_COLORS = {
@@ -141,6 +135,10 @@ UIOpt uiOpt;
 void getUiOpt() {
   uiOpt.U_DRAW = true;
   return uiOpt;
+}
+
+void redraw() {
+  uiOpt.U_DRAW = true;
 }
 
 // DOT CLASS DEF
@@ -195,17 +193,34 @@ void setOffset(x) {
     cDot.offset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
   }
 }
-void setTheme(x) {
-  if (x) {
+void setSingleFillColor(x) {
+  uiOpt.U_DOT_SINGLE_FILL_COLOR = color(x[0],x[1],x[2]);
+  refreshColors();
+  redraw();
+}
+
+void refreshColors() {
+  if (!uiOpt.U_DOT_FILL_THEME) {
+    for (int i = 0; i < dotArray.length; i++) {
+        Dot cDot = dotArray[i];
+        cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
+      }
+  }
+}
+
+void setTheme(themeOn) {
+  if (themeOn) {
+    uiOpt.U_DOT_FILL_THEME = true;
     for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[i];
       int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
       cDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
     }
   } else {
+      uiOpt.U_DOT_FILL_THEME = false;
       for (int i = 0; i < dotArray.length; i++) {
         Dot cDot = dotArray[i];
-        cDot.fillColor = color(uiOpt.U_DOT_SINGLE_STROKE_COLOR_R,uiOpt.U_DOT_SINGLE_STROKE_COLOR_G,uiOpt.U_DOT_SINGLE_STROKE_COLOR_B);
+        cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
       }
     }
 }
