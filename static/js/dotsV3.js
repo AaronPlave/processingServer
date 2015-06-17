@@ -46,6 +46,7 @@ function initGui() {
         // this.U_DRAW = pOpt.U_DRAW;
         this.U_BG_COLOR = pOpt.U_BG_COLOR;
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
+        this.U_DOT_DIST = pOpt.U_DOT_DIST;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
         this.U_DOT_SINGLE_STROKE_COLOR = pOpt.U_DOT_SINGLE_STROKE_COLOR;
@@ -81,6 +82,10 @@ function initGui() {
     var cDotsPerRow = fLayout.add(_opts,'U_DOTS_PER_ROW',0,40).step(1);
     cDotsPerRow.onChange(function(value) {
         pHandler.setDotsPerRow(value);
+    });
+    var cDotDist = fLayout.add(_opts,'U_DOT_DIST',0,100).step(1);
+    cDotDist.onChange(function(value) {
+        pHandler.setDotDist(value);
     });
 
     // FILL

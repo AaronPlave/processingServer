@@ -21,7 +21,6 @@
 //  More complex random effects such as using perlin noise to randomly warp the dot plane
 //  Number of draw iterations:  change conditions randomly or in order?
 //  Shape noise, could add some amount of random *wiggliness* to each shape, uniformly or not. 
-// hint(DISABLE_OPENGL_2X_SMOOTH);
 
 class UIOpt {
   boolean U_DRAW;
@@ -70,7 +69,7 @@ class UIOpt {
   UIOpt() {
     U_DRAW = true;
     U_DOT_FILL_THEME = true;
-    U_DOT_STROKE = true;
+    U_DOT_STROKE = false;
     U_DOT_FILL = true;
     U_DOT_RADIUS_RANDOMIZE = true;
     U_DOT_OFFSET = true;
@@ -273,6 +272,21 @@ void setDotsPerRow(x) {
   initDots();
 }
 
+void setDotDist(distance) {
+  uiOpt.U_DOT_DIST = distance;
+  uiOpt.IMG_PADDING = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+  int c = 0;
+  for (int i = 0; i < uiOpt.U_DOTS_PER_ROW; i++) {
+    for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
+      Dot cDot = dotArray[c];
+
+      // Init position
+      cDot.setPos(uiOpt.IMG_PADDING + uiOpt.U_DOT_DIST * j,uiOpt.IMG_PADDING + i * uiOpt.U_DOT_DIST);
+      c += 1;
+    }
+  }
+}
+
 //// DRAWING CODE
 void setup() {
   uiOpt = new UIOpt();
@@ -307,7 +321,7 @@ void initDots() {
         newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
         
         // Init fill
-        if (uiOpt.U_DOT_FILL) {
+        if (uiOpt.U_DOT_FILL_THEME) {
           int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
           newDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
         } else {
