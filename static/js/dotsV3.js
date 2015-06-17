@@ -45,8 +45,10 @@ function initGui() {
         pOpt = pHandler.getUiOpt();
         // this.U_DRAW = pOpt.U_DRAW;
         this.U_BG_COLOR = pOpt.U_BG_COLOR;
+        this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
+        this.U_DOT_SINGLE_STROKE_COLOR = pOpt.U_DOT_SINGLE_STROKE_COLOR;
         this.U_DOT_FILL = pOpt.U_DOT_FILL;
         this.U_DOT_SINGLE_FILL_COLOR = pOpt.U_DOT_SINGLE_FILL_COLOR;
         this.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
@@ -72,6 +74,13 @@ function initGui() {
         } else {
             pHandler.setBG(value);
         }
+    });
+
+    // LAYOUT
+    var fLayout = gui.addFolder('Layout');
+    var cDotsPerRow = fLayout.add(_opts,'U_DOTS_PER_ROW',0,40).step(1);
+    cDotsPerRow.onChange(function(value) {
+        pHandler.setDotsPerRow(value);
     });
 
     // FILL
@@ -103,6 +112,14 @@ function initGui() {
     cStrokeWgt.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
     });
+    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR');
+    cStrokeColor.onChange(function(value) {
+        if (typeof(value) === "string") {
+            pHandler.setStrokeColor(hexToRgb(value));
+        } else {
+            pHandler.setStrokeColor(value);
+        }
+    });
 
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
@@ -132,6 +149,7 @@ function initGui() {
 
 
     // Default open folders
+    fLayout.open();
     fBG.open();
     fFill.open();
     fStroke.open();

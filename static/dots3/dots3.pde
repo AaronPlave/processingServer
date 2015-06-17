@@ -55,9 +55,7 @@ class UIOpt {
 
   // dot stroke
   float U_DOT_STROKE_WEIGHT;
-  int U_DOT_SINGLE_STROKE_COLOR_R;
-  int U_DOT_SINGLE_STROKE_COLOR_G;
-  int U_DOT_SINGLE_STROKE_COLOR_B;
+  int U_DOT_SINGLE_STROKE_COLOR;
   //// END CUSTOMIZABLE PARAMS
 
   //// PREDEFINED PARAMS
@@ -85,9 +83,9 @@ class UIOpt {
     U_DOT_OFFSET_MAX = 0;
 
     // dot radius
-    U_DOT_RADIUS = 5;
-    U_DOT_RADIUS_MIN = 1;
-    U_DOT_RADIUS_MAX = 10;
+    U_DOT_RADIUS = 10;
+    U_DOT_RADIUS_MIN = 3;
+    U_DOT_RADIUS_MAX = 15;
 
     // background color
     U_BG_COLOR = "#FFFDF7";
@@ -110,16 +108,14 @@ class UIOpt {
 
     // dot stroke
     U_DOT_STROKE_WEIGHT = 0.5;
-    U_DOT_SINGLE_STROKE_COLOR_R = 50;
-    U_DOT_SINGLE_STROKE_COLOR_G = 50;
-    U_DOT_SINGLE_STROKE_COLOR_B = 50;
+    U_DOT_SINGLE_STROKE_COLOR = "#323232";
     //// END CUSTOMIZABLE PARAMS
 
     //// PREDEFINED PARAMS
-    IMG_HEIGHT = 300;
+    IMG_HEIGHT = 500;
     IMG_WIDTH = IMG_HEIGHT;
-    U_DOTS_PER_ROW = 20;
-    U_DOT_DIST = 10;
+    U_DOTS_PER_ROW = 9;
+    U_DOT_DIST = 20;
     IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
     MAX_DOTS_PER_ROW = 1000;
     //// END PREDEFINED PARAMS
@@ -234,6 +230,16 @@ void setBG(x) {
   uiOpt.U_BG_COLOR = color(x[0],x[1],x[2]);
 }
 
+void setStrokeColor(x){
+  uiOpt.U_DOT_SINGLE_STROKE_COLOR = color(x[0],x[1],x[2]);
+  if (uiOpt.U_DOT_STROKE){
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.strokeColor = uiOpt.U_DOT_SINGLE_STROKE_COLOR;
+    }
+  }
+}
+
 void setSingleFillColor(x) {
   uiOpt.U_DOT_SINGLE_FILL_COLOR = color(x[0],x[1],x[2]);
   if (!uiOpt.U_DOT_FILL_THEME){
@@ -260,6 +266,12 @@ void setTheme(themeOn) {
     }
 }
 
+void setDotsPerRow(x) {
+  dotArray = {};
+  uiOpt.U_DOTS_PER_ROW = x;
+  uiOpt.IMG_PADDING = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+  initDots();
+}
 
 //// DRAWING CODE
 void setup() {
@@ -286,15 +298,21 @@ void initDots() {
         // Init radius
         if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
           newDot.radius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
+        } else {
+          newDot.radius = uiOpt.U_DOT_RADIUS;
         }
 
         // Init stroke
-        newDot.strokeColor = color(uiOpt.U_DOT_SINGLE_STROKE_COLOR_R, uiOpt.U_DOT_SINGLE_STROKE_COLOR_G, uiOpt.U_DOT_SINGLE_STROKE_COLOR_B);
+        newDot.strokeColor = uiOpt.U_DOT_SINGLE_STROKE_COLOR;
         newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
         
         // Init fill
-        int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
-        newDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
+        if (uiOpt.U_DOT_FILL) {
+          int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
+          newDot.fillColor = color(rgb[0], rgb[1], rgb[2]);
+        } else {
+          newDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
+        }
 
         // Init offset
         float offsetX = 0;
