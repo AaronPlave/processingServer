@@ -24,6 +24,7 @@
 
 class UIOpt {
   boolean U_DRAW;
+  boolean U_DRAW;
   boolean U_DOT_FILL_THEME;
   boolean U_DOT_STROKE;
   boolean U_DOT_FILL;
@@ -68,10 +69,11 @@ class UIOpt {
   
   UIOpt() {
     U_DRAW = true;
+    U_DRAW = false;
     U_DOT_FILL_THEME = true;
     U_DOT_STROKE = false;
     U_DOT_FILL = true;
-    U_DOT_RADIUS_RANDOMIZE = true;
+    U_DOT_RADIUS_RANDOMIZE = false;
     U_DOT_OFFSET = true;
 
     // draw iterations
@@ -135,6 +137,9 @@ class Dot {
   float radius; 
   float strokeWgt;
   color strokeColor, fillColor; 
+  float targetRadius;
+  float radiusRate;
+  int radiusDir;
 
   Dot() {
     pos = new PVector();
@@ -166,11 +171,44 @@ class Dot {
     noFill();
   }
 
-  ellipse(pos.x+offset.x,pos.y+offset.y,radius*2,radius*2);
+  if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
+    if (radiusDir == 1) {
+      if (radius < targetRadius) {
+        radius += radiusRate; 
+      }
+    } else {
+      if (radius > targetRadius) {
+        radius += radiusRate;
+      }
+    }
+  }
+
+  ellipse(pos.x+offset.x,pos.y+offset.y,radius,radius);
   }
 };
 
+  
+
 Dot[] dotArray = {};
+
+void checkDotConditions() {
+  if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[int(random(dotArray.length))];
+      console.log(cDot.radius,cDot.targetRadius);
+      if (cDot.radiusDir == 1) {
+        if (!(cDot.radius >= cDot.targetRadius)) {
+          return;
+        }
+      } else {
+          if (!(cDot.radius <= cDot.targetRadius)) {
+            return;
+          }
+      }
+    }
+    setRadiusRandomize(true);
+  }
+}
 
 void setOffset(x) {
   uiOpt.U_DOT_OFFSET_MAX = x;
@@ -194,20 +232,14 @@ void setRadius(x) {
 void setRadiusMin(x) {
   uiOpt.U_DOT_RADIUS_MIN = x;
   if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[i];
-      cDot.radius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
-    }
+    setRadiusRandomize(true);
   }
 }
 
 void setRadiusMax(x) {
   uiOpt.U_DOT_RADIUS_MAX = x;
   if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[i];
-      cDot.radius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
-    }
+    setRadiusRandomize(true);
   }
 }
 
@@ -216,7 +248,13 @@ void setRadiusRandomize(randomize) {
   if (randomize) {
     for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[i];
-      cDot.radius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
+      cDot.targetRadius = random(uiOpt.U_DOT_RADIUS_MIN, uiOpt.U_DOT_RADIUS_MAX);
+      if (cDot.targetRadius > cDot.radius) {
+        cDot.radiusDir = 1;
+      } else {
+        cDot.radiusDir = -1;
+      }
+      cDot.radiusRate = (cDot.targetRadius - cDot.radius) / 50;
     }
   } else {
       for (int i = 0; i < dotArray.length; i++) {
@@ -345,18 +383,20 @@ void initDots() {
 }
 
 void draw() {
-  if (!(uiOpt.U_DRAW)) {
-    // return;
+  if (!uiOpt.U_DRAW) {
+    return;
+  } 
+
+  background(uiOpt.U_BG_COLOR);
+  for (int i = 0; i < dotArray.length; i++) {
+    Dot cDot = dotArray[i];
+    cDot.drawDot();
   }
+  checkDotConditions();
 
- background(uiOpt.U_BG_COLOR);
- for (int i = 0; i < dotArray.length; i++) {
-  Dot cDot = dotArray[i];
-  cDot.drawDot();
- }
-
- uiOpt.U_DRAW = false;
-
+  if (!uiOpt.U_DRAW) {
+    // uiOpt.U_DRAW = false;
+  }
 }
 
 //void keyPressed() {

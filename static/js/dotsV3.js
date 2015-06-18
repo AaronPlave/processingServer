@@ -43,7 +43,7 @@ function initGui() {
     // Initialize gui
     var UIOpts = function() {
         pOpt = pHandler.getUiOpt();
-        // this.U_DRAW = pOpt.U_DRAW;
+        this.U_DRAW = pOpt.U_DRAW;
         this.U_BG_COLOR = pOpt.U_BG_COLOR;
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOT_DIST = pOpt.U_DOT_DIST;
@@ -62,7 +62,10 @@ function initGui() {
     _opts = new UIOpts();
     var gui = new dat.GUI();
 
-    // gui.add(_opts, 'U_DRAW');
+    var vDraw = gui.add(_opts, 'U_DRAW');
+    vDraw.onChange(function(value) {
+        pHandler.getUiOpt().U_DRAW = value;
+    });
 
     // Create folder and options
 
