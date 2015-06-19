@@ -131,7 +131,7 @@ function initGui() {
 
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
-    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 750);
+    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100);
     cOffset.onChange(function(value) {
         pHandler.setOffset(value);
     })
