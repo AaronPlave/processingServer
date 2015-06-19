@@ -115,7 +115,7 @@ class UIOpt {
     //// PREDEFINED PARAMS
     IMG_HEIGHT = 500;
     IMG_WIDTH = IMG_HEIGHT;
-    U_DOTS_PER_ROW = 9;
+    U_DOTS_PER_ROW = 1;
     U_DOT_DIST = 20;
     IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
     MAX_DOTS_PER_ROW = 1000;
@@ -132,19 +132,31 @@ void getUiOpt() {
 
 // DOT CLASS DEF
 class Dot {
+  // PVector origin;
   PVector pos;
   PVector offset;
-  float radius; 
+  PVector targetOffset;
+  PVector offsetRate;
+
   float strokeWgt;
   color strokeColor, fillColor; 
+
+  float radius; 
   float targetRadius;
   float radiusRate;
   int radiusDir;
 
   Dot() {
+    origin = new PVector();
     pos = new PVector();
     offset = new PVector();
+    targetOffset = new PVector();
   }
+
+  // void setOrigin(int x, int y) {
+  //   origin.x = x;
+  //   origin.y = y;
+  // }
 
   void setPos(int x, int y) {
     pos.x = x;
@@ -157,33 +169,37 @@ class Dot {
   }
 
   void drawDot() {
-  // Determine stroke 
-  if (uiOpt.U_DOT_STROKE) {
-    stroke(strokeColor);
-    strokeWeight(uiOpt.U_DOT_STROKE_WEIGHT);
-  } else {
-    noStroke();
-  }
-  // Determine fill
-  if (uiOpt.U_DOT_FILL) {
-    fill(fillColor);
-  } else {
-    noFill();
-  }
-
-  if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
-    if (radiusDir == 1) {
-      if (radius < targetRadius) {
-        radius += radiusRate; 
-      }
+    // Determine stroke 
+    if (uiOpt.U_DOT_STROKE) {
+      stroke(strokeColor);
+      strokeWeight(uiOpt.U_DOT_STROKE_WEIGHT);
     } else {
-      if (radius > targetRadius) {
-        radius += radiusRate;
+      noStroke();
+    }
+    // Determine fill
+    if (uiOpt.U_DOT_FILL) {
+      fill(fillColor);
+    } else {
+      noFill();
+    }
+
+    if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
+      if (radiusDir == 1) {
+        if (radius < targetRadius) {
+          radius += radiusRate; 
+        }
+      } else {
+        if (radius > targetRadius) {
+          radius += radiusRate;
+        }
       }
     }
-  }
 
-  ellipse(pos.x+offset.x,pos.y+offset.y,radius,radius);
+    PVector dirOfTravel = PVector.sub(targetOffset,offset);
+    dirOfTravel.normalize();
+    offset.add(PVector.mult(dirOfTravel,offsetRate));
+
+    ellipse(pos.x+offset.x,pos.y+offset.y,radius,radius);
   }
 };
 
@@ -192,31 +208,48 @@ class Dot {
 Dot[] dotArray = {};
 
 void checkDotConditions() {
-  if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[int(random(dotArray.length))];
+  // Check radius travel
+  boolean allRadiiReached = true;
+  boolean allOffsetsReached = true;
+  for (int i = 0; i < dotArray.length; i++) {
+    // Dot cDot = dotArray[int(random(dotArray.length))];
+    Dot cDot = dotArray[i];
+    if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
       if (cDot.radiusDir == 1) {
         if (!(cDot.radius >= cDot.targetRadius)) {
-          return;
+          allRadiiReached = false;
         }
       } else {
           if (!(cDot.radius <= cDot.targetRadius)) {
-            return;
+            allRadiiReached = false;
           }
       }
     }
-    setRadiusRandomize(true);
+    // Check offset travel
+    if (!(dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) < 1)) {
+      allOffsetsReached = false;
+    }
   }
+  // If all dots have reached their destinations, setRadiusRandomize.
+  if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
+    if (allRadiiReached) {
+      setRadiusRandomize(true);
+    }
+  }
+  if (allOffsetsReached) {
+    setOffset(uiOpt.U_DOT_OFFSET_MAX);
+  }
+  // }
+  // Dot cDot = dotArray[0];
+  // if (!(dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) < 1)) {
+
+  // } else {
+  //   setOffset(uiOpt.U_DOT_OFFSET_MAX);
+  // }
+
 }
 
-void setOffset(x) {
-  uiOpt.U_DOT_OFFSET_MAX = x;
-  for (int i = 0; i < dotArray.length; i++) {
-    Dot cDot = dotArray[i];
-    cDot.offset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
-    cDot.offset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
-  }
-}
+
 
 void setRadius(x) {
   uiOpt.U_DOT_RADIUS = x;
@@ -262,6 +295,22 @@ void setRadiusRandomize(randomize) {
       }
   }
 }
+
+void setOffset(x) {
+  uiOpt.U_DOT_OFFSET_MAX = x;
+  // for (int i = 0; i < dotArray.length; i++) {
+  //   Dot cDot = dotArray[i];
+  //   cDot.offset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+  //   cDot.offset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+  // }
+  for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+      cDot.targetOffset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+      cDot.offsetRate = dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) / 50;
+    }
+}
+
 void setBG(x) {
   uiOpt.U_BG_COLOR = color(x[0],x[1],x[2]);
 }
@@ -379,6 +428,7 @@ void initDots() {
       }
     }
     setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
+    setOffset(uiOpt.U_DOT_OFFSET_MAX);
   // }
 }
 
