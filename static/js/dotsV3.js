@@ -82,7 +82,7 @@ function initGui() {
 
     // LAYOUT
     var fLayout = gui.addFolder('Layout');
-    var cDotsPerRow = fLayout.add(_opts,'U_DOTS_PER_ROW',0,40).step(1);
+    var cDotsPerRow = fLayout.add(_opts,'U_DOTS_PER_ROW',0,80).step(1);
     cDotsPerRow.onChange(function(value) {
         pHandler.setDotsPerRow(value);
     });
@@ -146,11 +146,11 @@ function initGui() {
     cRadiusRandomize.onChange(function(value) {
         pHandler.setRadiusRandomize(value);
     })
-    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN',0,100);
+    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN',0,200);
     cRadiusMin.onChange(function(value) {
         pHandler.setRadiusMin(value);
     })
-    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX',0,100);
+    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX',0,200);
     cRadiusMax.onChange(function(value) {
         pHandler.setRadiusMax(value);
     })

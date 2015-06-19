@@ -81,12 +81,12 @@ class UIOpt {
     U_NUM_ITERS_MAX = 20;
 
     // dot center offset
-    U_DOT_OFFSET_MAX = 0;
+    U_DOT_OFFSET_MAX = 3;
 
     // dot radius
     U_DOT_RADIUS = 10;
     U_DOT_RADIUS_MIN = 3;
-    U_DOT_RADIUS_MAX = 15;
+    U_DOT_RADIUS_MAX = 25;
 
     // background color
     U_BG_COLOR = "#FFFDF7";
@@ -115,8 +115,8 @@ class UIOpt {
     //// PREDEFINED PARAMS
     IMG_HEIGHT = 500;
     IMG_WIDTH = IMG_HEIGHT;
-    U_DOTS_PER_ROW = 1;
-    U_DOT_DIST = 20;
+    U_DOTS_PER_ROW = 10;
+    U_DOT_DIST = 25;
     IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
     MAX_DOTS_PER_ROW = 1000;
     //// END PREDEFINED PARAMS
@@ -298,11 +298,6 @@ void setRadiusRandomize(randomize) {
 
 void setOffset(x) {
   uiOpt.U_DOT_OFFSET_MAX = x;
-  // for (int i = 0; i < dotArray.length; i++) {
-  //   Dot cDot = dotArray[i];
-  //   cDot.offset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
-  //   cDot.offset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
-  // }
   for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[i];
       cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
