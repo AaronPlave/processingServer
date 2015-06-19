@@ -73,7 +73,7 @@ class UIOpt {
     U_DOT_FILL_THEME = true;
     U_DOT_STROKE = false;
     U_DOT_FILL = true;
-    U_DOT_RADIUS_RANDOMIZE = false;
+    U_DOT_RADIUS_RANDOMIZE = true;
     U_DOT_OFFSET = true;
 
     // draw iterations
@@ -195,7 +195,6 @@ void checkDotConditions() {
   if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
     for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[int(random(dotArray.length))];
-      console.log(cDot.radius,cDot.targetRadius);
       if (cDot.radiusDir == 1) {
         if (!(cDot.radius >= cDot.targetRadius)) {
           return;
@@ -379,6 +378,7 @@ void initDots() {
         dotArray = (Dot[]) append(dotArray, newDot);
       }
     }
+    setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
   // }
 }
 
