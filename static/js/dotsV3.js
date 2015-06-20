@@ -49,6 +49,9 @@ function initGui() {
         this.U_DOT_DIST = pOpt.U_DOT_DIST;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
+        this.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
+        this.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
+        this.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
         this.U_DOT_SINGLE_STROKE_COLOR = pOpt.U_DOT_SINGLE_STROKE_COLOR;
         this.U_DOT_FILL = pOpt.U_DOT_FILL;
         this.U_DOT_SINGLE_FILL_COLOR = pOpt.U_DOT_SINGLE_FILL_COLOR;
@@ -116,9 +119,17 @@ function initGui() {
     cStroke.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE = value;
     });
-    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0, 30);
+    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30);
     cStrokeWgt.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
+    });
+    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30);
+    cStrokeWgtMin.onChange(function(value) {
+        pHandler.setStrokeWgtMin(value);
+    });
+    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30);
+    cStrokeWgtMax.onChange(function(value) {
+        pHandler.setStrokeWgtMax(value);
     });
     var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR');
     cStrokeColor.onChange(function(value) {
@@ -127,6 +138,10 @@ function initGui() {
         } else {
             pHandler.setStrokeColor(value);
         }
+    });
+    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30);
+    cStrokeRandomize.onChange(function(value) {
+        pHandler.setStrokeRandomize(value);
     });
 
     // OFFSET

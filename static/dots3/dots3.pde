@@ -27,6 +27,7 @@ class UIOpt {
   boolean U_DRAW;
   boolean U_DOT_FILL_THEME;
   boolean U_DOT_STROKE;
+  boolean U_DOT_STROKE_RANDOMIZE;
   boolean U_DOT_FILL;
   boolean U_DOT_RADIUS_RANDOMIZE;
   boolean U_DOT_OFFSET;
@@ -55,6 +56,8 @@ class UIOpt {
 
   // dot stroke
   float U_DOT_STROKE_WEIGHT;
+  float U_DOT_STROKE_WEIGHT_MIN;
+  float U_DOT_STROKE_WEIGHT_MAX;
   int U_DOT_SINGLE_STROKE_COLOR;
   //// END CUSTOMIZABLE PARAMS
 
@@ -72,6 +75,7 @@ class UIOpt {
     U_DRAW = false;
     U_DOT_FILL_THEME = true;
     U_DOT_STROKE = false;
+    U_DOT_STROKE_RANDOMIZE = false;
     U_DOT_FILL = true;
     U_DOT_RADIUS_RANDOMIZE = true;
     U_DOT_OFFSET = true;
@@ -109,6 +113,8 @@ class UIOpt {
 
     // dot stroke
     U_DOT_STROKE_WEIGHT = 0.5;
+    U_DOT_STROKE_WEIGHT_MIN  = 0.5;
+    U_DOT_STROKE_WEIGHT_MAX = 5;
     U_DOT_SINGLE_STROKE_COLOR = "#323232";
     //// END CUSTOMIZABLE PARAMS
 
@@ -140,6 +146,9 @@ class Dot {
 
   float strokeWgt;
   color strokeColor, fillColor; 
+  float strokeRate;
+  float targetStroke;
+  int strokeDir;
 
   float radius; 
   float targetRadius;
@@ -169,20 +178,14 @@ class Dot {
   }
 
   void drawDot() {
-    // Determine stroke 
-    if (uiOpt.U_DOT_STROKE) {
-      stroke(strokeColor);
-      strokeWeight(uiOpt.U_DOT_STROKE_WEIGHT);
-    } else {
-      noStroke();
-    }
+    
     // Determine fill
     if (uiOpt.U_DOT_FILL) {
       fill(fillColor);
     } else {
       noFill();
     }
-
+    // Determine Next
     if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
       if (radiusDir == 1) {
         if (radius < targetRadius) {
@@ -193,6 +196,27 @@ class Dot {
           radius += radiusRate;
         }
       }
+    }
+
+    if (uiOpt.U_DOT_STROKE) {
+        // Determine stroke 
+      stroke(strokeColor);
+      if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
+        if (strokeDir == 1) {
+          if (strokeWgt < targetStroke) {
+            strokeWgt += strokeRate; 
+          }
+        } else {
+          if (strokeWgt > targetStroke) {
+            strokeWgt += strokeRate;
+          }
+        }
+        strokeWeight(strokeWgt);
+      } else {
+        strokeWeight(uiOpt.U_DOT_STROKE_WEIGHT); 
+      }
+    } else {
+      noStroke();
     }
 
     PVector dirOfTravel = PVector.sub(targetOffset,offset);
@@ -210,9 +234,9 @@ Dot[] dotArray = {};
 void checkDotConditions() {
   // Check radius travel
   boolean allRadiiReached = true;
+  boolean allStrokesReached = true;
   boolean allOffsetsReached = true;
   for (int i = 0; i < dotArray.length; i++) {
-    // Dot cDot = dotArray[int(random(dotArray.length))];
     Dot cDot = dotArray[i];
     if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
       if (cDot.radiusDir == 1) {
@@ -222,6 +246,17 @@ void checkDotConditions() {
       } else {
           if (!(cDot.radius <= cDot.targetRadius)) {
             allRadiiReached = false;
+          }
+      }
+    }
+    if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
+      if (cDot.strokeDir == 1) {
+        if (!(cDot.strokeWgt >= cDot.targetStroke)) {
+          allStrokesReached = false;
+        }
+      } else {
+          if (!(cDot.strokeWgt <= cDot.targetStroke)) {
+            allStrokesReached = false;
           }
       }
     }
@@ -236,6 +271,14 @@ void checkDotConditions() {
       setRadiusRandomize(true);
     }
   }
+  
+  // If all dots have reached their strokes, setRadiusRandomize.
+  if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
+    if (allStrokesReached) {
+      setStrokeRandomize(true);
+    }
+  }
+
   if (allOffsetsReached) {
     setOffset(uiOpt.U_DOT_OFFSET_MAX);
   }
@@ -296,6 +339,51 @@ void setRadiusRandomize(randomize) {
   }
 }
 
+void setStrokeWgtMin(x) {
+  uiOpt.U_DOT_STROKE_WEIGHT_MIN = x;
+  if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
+    setStrokeRandomize(true);
+  }
+}
+
+void setStrokeWgtMax(x) {
+  uiOpt.U_DOT_STROKE_WEIGHT_MAX = x;
+  if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
+    setStrokeRandomize(true);
+  }
+}
+
+void setStrokeRandomize(randomize) {
+  uiOpt.U_DOT_STROKE_RANDOMIZE = randomize;
+  if (randomize) {
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.targetStroke = random(uiOpt.U_DOT_STROKE_WEIGHT_MIN,uiOpt.U_DOT_STROKE_WEIGHT_MAX);
+      if (cDot.targetStroke > cDot.strokeWgt) {
+        cDot.strokeDir = 1;
+      } else {
+        cDot.strokeDir = -1;
+      }
+      cDot.strokeRate = (cDot.targetStroke - cDot.strokeWgt) / 50;
+    }
+  } else {
+      for (int i = 0; i < dotArray.length; i++) {
+        Dot cDot = dotArray[i];
+        cDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
+      }
+  }
+}
+
+void setStrokeColor(x){
+  uiOpt.U_DOT_SINGLE_STROKE_COLOR = color(x[0],x[1],x[2]);
+  if (uiOpt.U_DOT_STROKE){
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.strokeColor = uiOpt.U_DOT_SINGLE_STROKE_COLOR;
+    }
+  }
+}
+
 void setOffset(x) {
   uiOpt.U_DOT_OFFSET_MAX = x;
   for (int i = 0; i < dotArray.length; i++) {
@@ -310,15 +398,6 @@ void setBG(x) {
   uiOpt.U_BG_COLOR = color(x[0],x[1],x[2]);
 }
 
-void setStrokeColor(x){
-  uiOpt.U_DOT_SINGLE_STROKE_COLOR = color(x[0],x[1],x[2]);
-  if (uiOpt.U_DOT_STROKE){
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[i];
-      cDot.strokeColor = uiOpt.U_DOT_SINGLE_STROKE_COLOR;
-    }
-  }
-}
 
 void setSingleFillColor(x) {
   uiOpt.U_DOT_SINGLE_FILL_COLOR = color(x[0],x[1],x[2]);
@@ -399,7 +478,11 @@ void initDots() {
 
         // Init stroke
         newDot.strokeColor = uiOpt.U_DOT_SINGLE_STROKE_COLOR;
-        newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
+        if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
+          newDot.strokeWgt = random(uiOpt.U_DOT_STROKE_WEIGHT);
+        } else {
+          newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
+        }
         
         // Init fill
         if (uiOpt.U_DOT_FILL_THEME) {
@@ -423,6 +506,7 @@ void initDots() {
       }
     }
     setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
+    setStrokeRandomize(uiOpt.U_DOT_STROKE_RANDOMIZE);
     setOffset(uiOpt.U_DOT_OFFSET_MAX);
   // }
 }
