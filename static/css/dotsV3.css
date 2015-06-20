@@ -5,3 +5,16 @@
 .dg .c div {
   box-sizing: content-box;                                                             
 }
+#inputHolder {
+	padding-top: 10px;
+}
+#exportJSON, #loadJSON {
+	border: 1px black solid;
+	cursor: pointer;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+#inputArea {
+	display: block;
+	margin-top: 10px;
+}

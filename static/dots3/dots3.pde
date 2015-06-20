@@ -67,12 +67,10 @@ class UIOpt {
   int U_DOTS_PER_ROW;
   int U_DOT_DIST;
   int IMG_PADDING;
-  int MAX_DOTS_PER_ROW;
   //// END PREDEFINED PARAMS
   
   UIOpt() {
     U_DRAW = true;
-    U_DRAW = false;
     U_DOT_FILL_THEME = true;
     U_DOT_STROKE = false;
     U_DOT_STROKE_RANDOMIZE = false;
@@ -134,6 +132,19 @@ UIOpt uiOpt;
 void getUiOpt() {
   uiOpt.U_DRAW = true;
   return uiOpt;
+}
+
+void setUiOpt(x) {
+  UIOpt newOpt = new UIOpt();
+  String[] keys = Object.keys(x);
+  for (int i = 0; i < keys.length; i++) {
+    newOpt[keys[i]] = x[keys[i]];
+  }
+  uiOpt = newOpt;
+  uiOpt.IMG_PADDING = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+  dotArray = {};
+  initDots();
+  console.log(uiOpt);
 }
 
 // DOT CLASS DEF

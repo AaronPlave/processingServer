@@ -35,14 +35,14 @@ function initGui() {
     // Initialize save button
     var saveEl = document.getElementById("saveImg");
     saveEl.addEventListener("click", function(evt) {
-    	var image = document.getElementsByTagName("canvas")[0].toDataURL();
+        var image = document.getElementsByTagName("canvas")[0].toDataURL();
         window.open(image, '_blank');
     })
     var image = document.getElementsByTagName("canvas")[0].toDataURL();
 
     // Initialize gui
     var UIOpts = function() {
-        pOpt = pHandler.getUiOpt();
+        var pOpt = pHandler.getUiOpt();
         this.U_DRAW = pOpt.U_DRAW;
         this.U_BG_COLOR = pOpt.U_BG_COLOR;
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
@@ -85,22 +85,22 @@ function initGui() {
 
     // LAYOUT
     var fLayout = gui.addFolder('Layout');
-    var cDotsPerRow = fLayout.add(_opts,'U_DOTS_PER_ROW',0,80).step(1);
+    var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 80).step(1).listen();
     cDotsPerRow.onChange(function(value) {
         pHandler.setDotsPerRow(value);
     });
-    var cDotDist = fLayout.add(_opts,'U_DOT_DIST',0,100).step(1);
+    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1).listen();;
     cDotDist.onChange(function(value) {
         pHandler.setDotDist(value);
     });
 
     // FILL
     var fFill = gui.addFolder('Fill');
-    var cFill = fFill.add(_opts, 'U_DOT_FILL');
+    var cFill = fFill.add(_opts, 'U_DOT_FILL').listen();;
     cFill.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_FILL = value;
     });
-    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR');
+    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR').listen();;
     cFillSingleColor.onChange(function(value) {
         if (typeof(value) === "string") {
             pHandler.setSingleFillColor(hexToRgb(value));
@@ -108,30 +108,30 @@ function initGui() {
             pHandler.setSingleFillColor(value);
         }
     });
-    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME');
+    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').listen();;
     cFillTheme.onChange(function(value) {
         pHandler.setTheme(value);
     });
 
     // STROKE
     var fStroke = gui.addFolder('Stroke');
-    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE');
+    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE').listen();;
     cStroke.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE = value;
     });
-    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30);
+    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30).listen();;
     cStrokeWgt.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
     });
-    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30);
+    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30).listen();;
     cStrokeWgtMin.onChange(function(value) {
         pHandler.setStrokeWgtMin(value);
     });
-    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30);
+    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30).listen();;
     cStrokeWgtMax.onChange(function(value) {
         pHandler.setStrokeWgtMax(value);
     });
-    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR');
+    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').listen();;
     cStrokeColor.onChange(function(value) {
         if (typeof(value) === "string") {
             pHandler.setStrokeColor(hexToRgb(value));
@@ -139,37 +139,36 @@ function initGui() {
             pHandler.setStrokeColor(value);
         }
     });
-    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30);
+    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).listen();;
     cStrokeRandomize.onChange(function(value) {
         pHandler.setStrokeRandomize(value);
     });
 
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
-    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100);
+    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100).listen();;
     cOffset.onChange(function(value) {
         pHandler.setOffset(value);
     })
 
     // RADIUS
     var fRadius = gui.addFolder('Radius');
-    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100);
+    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100).listen();;
     cRadius.onChange(function(value) {
         pHandler.setRadius(value);
     })
-    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE');
+    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE').listen();;
     cRadiusRandomize.onChange(function(value) {
         pHandler.setRadiusRandomize(value);
     })
-    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN',0,200);
+    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200).listen();;
     cRadiusMin.onChange(function(value) {
         pHandler.setRadiusMin(value);
     })
-    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX',0,200);
+    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200).listen();;
     cRadiusMax.onChange(function(value) {
         pHandler.setRadiusMax(value);
     })
-
 
     // Default open folders
     fLayout.open();
@@ -179,6 +178,64 @@ function initGui() {
     fOffset.open();
     fRadius.open();
 
+    // Init export and load buttons
+    var loadButton = document.getElementById("loadJSON");
+    loadButton.addEventListener("click", function(evt) {
+        var textArea = document.getElementById("inputArea");
+        loadOptsFromJSON(textArea.value);
+
+        // set the controls 
+        var pOpt = pHandler.getUiOpt();
+        _opts.U_DRAW = pOpt.U_DRAW;
+        _opts.U_BG_COLOR = pOpt.U_BG_COLOR;
+        _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
+        _opts.U_DOT_DIST = pOpt.U_DOT_DIST;
+        _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
+        _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
+        _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
+        _opts.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
+        _opts.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
+        _opts.U_DOT_SINGLE_STROKE_COLOR = pOpt.U_DOT_SINGLE_STROKE_COLOR;
+        _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
+        _opts.U_DOT_SINGLE_FILL_COLOR = pOpt.U_DOT_SINGLE_FILL_COLOR;
+        _opts.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
+        _opts.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
+        _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
+        _opts.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
+        _opts.U_DOT_RADIUS_MIN = pOpt.U_DOT_RADIUS_MIN;
+        _opts.U_DOT_RADIUS_MAX = pOpt.U_DOT_RADIUS_MAX;
+
+    })
+
+    var exportButton = document.getElementById("exportJSON");
+    exportButton.addEventListener("click", function(evt) {
+        console.log("?Asdasd?");
+        var currOpts = optsToJSON();
+        var textArea = document.getElementById("inputArea");
+        textArea.value = currOpts;
+    })
+}
+
+function optsToJSON() {
+    var pOpts = pHandler.getUiOpt();
+    var keys = Object.keys(pOpts);
+    var newObj = {};
+    for (var i = 0; i < keys.length; i++) {
+        if (keys[i] === "$self") {
+            continue;
+        } else {
+            newObj[keys[i]] = pOpts[keys[i]];
+        }
+    }
+    return JSON.stringify(newObj);
+}
+
+function loadOptsFromJSON(json) {
+    if (json === "") {
+        console.log("BAD JSON");
+    }
+    var newOpt = JSON.parse(json);
+    pHandler.setUiOpt(newOpt);
 }
 
 function hexToRgb(hex) {
