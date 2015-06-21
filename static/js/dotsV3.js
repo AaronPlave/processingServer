@@ -44,7 +44,7 @@ function initGui() {
     var UIOpts = function() {
         var pOpt = pHandler.getUiOpt();
         this.U_DRAW = pOpt.U_DRAW;
-        this.U_BG_COLOR = pOpt.U_BG_COLOR;
+        this.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOT_DIST = pOpt.U_DOT_DIST;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
@@ -52,9 +52,9 @@ function initGui() {
         this.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
         this.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
         this.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
-        this.U_DOT_SINGLE_STROKE_COLOR = pOpt.U_DOT_SINGLE_STROKE_COLOR;
+        this.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
         this.U_DOT_FILL = pOpt.U_DOT_FILL;
-        this.U_DOT_SINGLE_FILL_COLOR = pOpt.U_DOT_SINGLE_FILL_COLOR;
+        this.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
         this.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
         this.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
         this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
@@ -74,11 +74,13 @@ function initGui() {
 
     // BACKGROUND
     var fBG = gui.addFolder('Background');
-    var cBG = fBG.addColor(_opts, 'U_BG_COLOR');
+    var cBG = fBG.addColor(_opts, 'U_BG_COLOR').listen();
     cBG.onChange(function(value) {
+        console.log(value);
         if (typeof(value) === "string") {
             pHandler.setBG(hexToRgb(value));
         } else {
+            console.log(value);
             pHandler.setBG(value);
         }
     });
@@ -89,18 +91,18 @@ function initGui() {
     cDotsPerRow.onChange(function(value) {
         pHandler.setDotsPerRow(value);
     });
-    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1).listen();;
+    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1).listen();
     cDotDist.onChange(function(value) {
         pHandler.setDotDist(value);
     });
 
     // FILL
     var fFill = gui.addFolder('Fill');
-    var cFill = fFill.add(_opts, 'U_DOT_FILL').listen();;
+    var cFill = fFill.add(_opts, 'U_DOT_FILL').listen();
     cFill.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_FILL = value;
     });
-    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR').listen();;
+    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR').listen();
     cFillSingleColor.onChange(function(value) {
         if (typeof(value) === "string") {
             pHandler.setSingleFillColor(hexToRgb(value));
@@ -108,64 +110,65 @@ function initGui() {
             pHandler.setSingleFillColor(value);
         }
     });
-    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').listen();;
+    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').listen();
     cFillTheme.onChange(function(value) {
         pHandler.setTheme(value);
     });
 
     // STROKE
     var fStroke = gui.addFolder('Stroke');
-    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE').listen();;
+    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE').listen();
     cStroke.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE = value;
     });
-    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30).listen();;
+    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30).listen();
     cStrokeWgt.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
     });
-    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30).listen();;
+    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30).listen();
     cStrokeWgtMin.onChange(function(value) {
         pHandler.setStrokeWgtMin(value);
     });
-    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30).listen();;
+    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30).listen();
     cStrokeWgtMax.onChange(function(value) {
         pHandler.setStrokeWgtMax(value);
     });
-    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').listen();;
+    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').listen();
     cStrokeColor.onChange(function(value) {
+        console.log(value,"strkClr");
         if (typeof(value) === "string") {
             pHandler.setStrokeColor(hexToRgb(value));
         } else {
             pHandler.setStrokeColor(value);
         }
     });
-    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).listen();;
+    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).listen();
     cStrokeRandomize.onChange(function(value) {
         pHandler.setStrokeRandomize(value);
     });
 
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
-    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100).listen();;
+    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100).listen();
     cOffset.onChange(function(value) {
         pHandler.setOffset(value);
     })
 
     // RADIUS
     var fRadius = gui.addFolder('Radius');
-    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100).listen();;
+    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100).listen();
     cRadius.onChange(function(value) {
         pHandler.setRadius(value);
     })
-    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE').listen();;
+    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE').listen();
     cRadiusRandomize.onChange(function(value) {
         pHandler.setRadiusRandomize(value);
     })
-    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200).listen();;
+    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200).listen();
     cRadiusMin.onChange(function(value) {
         pHandler.setRadiusMin(value);
     })
-    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200).listen();;
+    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200).listen();
     cRadiusMax.onChange(function(value) {
         pHandler.setRadiusMax(value);
     })
@@ -187,7 +190,7 @@ function initGui() {
         // set the controls 
         var pOpt = pHandler.getUiOpt();
         _opts.U_DRAW = pOpt.U_DRAW;
-        _opts.U_BG_COLOR = pOpt.U_BG_COLOR;
+        _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
         _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         _opts.U_DOT_DIST = pOpt.U_DOT_DIST;
         _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
@@ -195,9 +198,9 @@ function initGui() {
         _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
         _opts.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
         _opts.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
-        _opts.U_DOT_SINGLE_STROKE_COLOR = pOpt.U_DOT_SINGLE_STROKE_COLOR;
+        _opts.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
         _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
-        _opts.U_DOT_SINGLE_FILL_COLOR = pOpt.U_DOT_SINGLE_FILL_COLOR;
+        _opts.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
         _opts.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
         _opts.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
         _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
@@ -209,22 +212,28 @@ function initGui() {
 
     var exportButton = document.getElementById("exportJSON");
     exportButton.addEventListener("click", function(evt) {
-        console.log("?Asdasd?");
         var currOpts = optsToJSON();
         var textArea = document.getElementById("inputArea");
         textArea.value = currOpts;
     })
 }
 
+var colorVars = ["U_BG_COLOR","U_DOT_SINGLE_STROKE_COLOR","U_DOT_SINGLE_FILL_COLOR"];
+
 function optsToJSON() {
     var pOpts = pHandler.getUiOpt();
+    // console.log(pHandler.printColor(pOpts.U_BG_COLOR));
     var keys = Object.keys(pOpts);
     var newObj = {};
     for (var i = 0; i < keys.length; i++) {
         if (keys[i] === "$self") {
             continue;
         } else {
-            newObj[keys[i]] = pOpts[keys[i]];
+            var newVal = pOpts[keys[i]];
+            if (colorVars.indexOf(keys[i]) != -1) {
+                newVal = pHandler.colorToRGB(newVal);
+            }
+            newObj[keys[i]] = newVal;
         }
     }
     return JSON.stringify(newObj);
@@ -233,6 +242,7 @@ function optsToJSON() {
 function loadOptsFromJSON(json) {
     if (json === "") {
         console.log("BAD JSON");
+        return;
     }
     var newOpt = JSON.parse(json);
     pHandler.setUiOpt(newOpt);

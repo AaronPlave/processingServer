@@ -58,7 +58,7 @@ class UIOpt {
   float U_DOT_STROKE_WEIGHT;
   float U_DOT_STROKE_WEIGHT_MIN;
   float U_DOT_STROKE_WEIGHT_MAX;
-  int U_DOT_SINGLE_STROKE_COLOR;
+  color U_DOT_SINGLE_STROKE_COLOR;
   //// END CUSTOMIZABLE PARAMS
 
   //// PREDEFINED PARAMS
@@ -91,10 +91,10 @@ class UIOpt {
     U_DOT_RADIUS_MAX = 25;
 
     // background color
-    U_BG_COLOR = "#FFFDF7";
+    U_BG_COLOR = color(255,253,247);
 
     // dot fill single color 
-    U_DOT_SINGLE_FILL_COLOR = "#c80064";
+    U_DOT_SINGLE_FILL_COLOR = color(20,253,247);
 
     // dot fill theme colors 
     U_DOT_FILL_THEME_COLORS = {
@@ -113,7 +113,7 @@ class UIOpt {
     U_DOT_STROKE_WEIGHT = 0.5;
     U_DOT_STROKE_WEIGHT_MIN  = 0.5;
     U_DOT_STROKE_WEIGHT_MAX = 5;
-    U_DOT_SINGLE_STROKE_COLOR = "#323232";
+    U_DOT_SINGLE_STROKE_COLOR = color(255,0,247);
     //// END CUSTOMIZABLE PARAMS
 
     //// PREDEFINED PARAMS
@@ -138,7 +138,13 @@ void setUiOpt(x) {
   UIOpt newOpt = new UIOpt();
   String[] keys = Object.keys(x);
   for (int i = 0; i < keys.length; i++) {
-    newOpt[keys[i]] = x[keys[i]];
+    if (keys[i] == "U_BG_COLOR" || keys[i] == "U_DOT_SINGLE_STROKE_COLOR" || keys[i] == "U_DOT_SINGLE_FILL_COLOR") {
+      int[] c = x[keys[i]];
+      console.log(c);
+      newOpt[keys[i]] = color(c[0],c[1],c[2]);
+    } else {
+        newOpt[keys[i]] = x[keys[i]];
+      }
   }
   uiOpt = newOpt;
   uiOpt.IMG_PADDING = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
@@ -385,7 +391,7 @@ void setStrokeRandomize(randomize) {
   }
 }
 
-void setStrokeColor(x){
+void setStrokeColor(x) {
   uiOpt.U_DOT_SINGLE_STROKE_COLOR = color(x[0],x[1],x[2]);
   if (uiOpt.U_DOT_STROKE){
     for (int i = 0; i < dotArray.length; i++) {
@@ -533,10 +539,6 @@ void draw() {
     cDot.drawDot();
   }
   checkDotConditions();
-
-  if (!uiOpt.U_DRAW) {
-    // uiOpt.U_DRAW = false;
-  }
 }
 
 //void keyPressed() {
@@ -545,5 +547,8 @@ void draw() {
 //  }
 //}
 void printColor(color c) {
-  println(red(c), blue(c), green(c));
+  println(red(c) +", " + blue(c) + ", " + green(c));
+}
+String colorToRGB(color c) {
+  return [red(c),green(c),blue(c)];
 }
