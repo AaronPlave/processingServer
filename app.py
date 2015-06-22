@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, url_for
 import lib.handler as handler
 from werkzeug.contrib.cache import SimpleCache
 
-dotCache = SimpleCache()
+dotCache = {}
 
 app = Flask(__name__)
 
@@ -92,13 +92,13 @@ def dotsV3PostShare():
     # Submit, return OK if all good.
     if request.method == 'POST':
         rId = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(7))
-        dotCache.set(rId,request.json, timeout=11861140)
+        dotCache[rId] = request.json
         return str(rId)
 
 @app.route('/dotsV3/<idx>')
 def dotsV3GetShare(idx):
     rv = dotCache.get(idx)
-    print rv,"RV"
+    # print rv,"RV"
     if rv is None:
         return render_template('dotsV3.html',error="Unable to fetch requested sketch.",sharedOpts="")
     return render_template('dotsV3.html',error="",sharedOpts=json.dumps({"data":rv}))
