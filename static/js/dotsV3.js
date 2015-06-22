@@ -7,8 +7,8 @@ function post(url, data, callback) {
         callback(request);
     }
 
-    request.open("POST",url,async);
-    request.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+    request.open("POST", url, async);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(data);
     // http.onreadystatechange = function() {
     //     if (!(http.readyState == 4 && http.status == 200)) {
@@ -19,7 +19,7 @@ function post(url, data, callback) {
 }
 
 function postCallback(request) {
-    console.log(request.status,request.responseText);
+    console.log(request.status, request.responseText);
     var shareUrl = window.location.host + "/dotsV3/" + request.responseText;
     document.getElementById("shareUrl").value = shareUrl;
 }
@@ -212,27 +212,7 @@ function initGui() {
     loadButton.addEventListener("click", function(evt) {
         var textArea = document.getElementById("inputArea");
         loadOptsFromJSON(JSON.parse(textArea.value));
-
-        // set the controls 
-        var pOpt = pHandler.getUiOpt();
-        _opts.U_DRAW = pOpt.U_DRAW;
-        _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
-        _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
-        _opts.U_DOT_DIST = pOpt.U_DOT_DIST;
-        _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
-        _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
-        _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
-        _opts.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
-        _opts.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
-        _opts.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
-        _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
-        _opts.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
-        _opts.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
-        _opts.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
-        _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
-        _opts.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
-        _opts.U_DOT_RADIUS_MIN = pOpt.U_DOT_RADIUS_MIN;
-        _opts.U_DOT_RADIUS_MAX = pOpt.U_DOT_RADIUS_MAX;
+        resetControls();
 
     })
 
@@ -246,14 +226,38 @@ function initGui() {
     // Initialize share button
     var shareEl = document.getElementById("shareButton");
     shareEl.addEventListener("click", function(evt) {
-        post("/dotsV3/share",optsToJSON(),postCallback);
+        post("/dotsV3/share", optsToJSON(), postCallback);
     })
 
     // Check for shared opts
     if (sharedOpts) {
         var jsonString = sharedOpts.replace(new RegExp('&#34;', 'g'), '"');
         loadOptsFromJSON(JSON.parse(jsonString).data);
+        resetControls();
     }
+}
+
+function resetControls() {
+    // set the controls 
+    var pOpt = pHandler.getUiOpt();
+    _opts.U_DRAW = pOpt.U_DRAW;
+    _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
+    _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
+    _opts.U_DOT_DIST = pOpt.U_DOT_DIST;
+    _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
+    _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
+    _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
+    _opts.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
+    _opts.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
+    _opts.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
+    _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
+    _opts.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
+    _opts.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
+    _opts.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
+    _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
+    _opts.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
+    _opts.U_DOT_RADIUS_MIN = pOpt.U_DOT_RADIUS_MIN;
+    _opts.U_DOT_RADIUS_MAX = pOpt.U_DOT_RADIUS_MAX;
 }
 
 var colorVars = ["U_BG_COLOR", "U_DOT_SINGLE_STROKE_COLOR", "U_DOT_SINGLE_FILL_COLOR"];

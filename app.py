@@ -8,10 +8,6 @@ dotCache = MemcachedCache(['127.0.0.1:11211'])
 
 app = Flask(__name__)
 
-# url_for('static')
-
-# url_for('static', filename='style.css')
-
 
 @app.route('/')
 def landingPage():
