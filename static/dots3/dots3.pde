@@ -65,7 +65,8 @@ class UIOpt {
   int IMG_WIDTH;
   int U_DOTS_PER_ROW;
   int U_DOT_DIST;
-  int IMG_PADDING;
+  int IMG_PADDING_X;
+  int IMG_PADDING_Y;
   //// END PREDEFINED PARAMS
   
   UIOpt() {
@@ -116,11 +117,12 @@ class UIOpt {
     //// END CUSTOMIZABLE PARAMS
 
     //// PREDEFINED PARAMS
-    IMG_HEIGHT = 500;
-    IMG_WIDTH = IMG_HEIGHT;
+    IMG_HEIGHT = window.innerHeight;
+    IMG_WIDTH = window.innerWidth;
     U_DOTS_PER_ROW = 10;
     U_DOT_DIST = 25;
-    IMG_PADDING = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
+    IMG_PADDING_X = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
+    IMG_PADDING_Y = (IMG_HEIGHT - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
     MAX_DOTS_PER_ROW = 1000;
     //// END PREDEFINED PARAMS
   }
@@ -146,10 +148,9 @@ void setUiOpt(x) {
       }
   }
   uiOpt = newOpt;
-  uiOpt.IMG_PADDING = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+  recalculatePadding();
   dotArray = {};
   initDots();
-  console.log(uiOpt);
 }
 
 // DOT CLASS DEF
@@ -441,35 +442,62 @@ void setTheme(themeOn) {
     }
 }
 
+void recalculatePadding() {
+    uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+    uiOpt.IMG_PADDING_Y = (uiOpt.IMG_HEIGHT - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+}
 void setDotsPerRow(x) {
   dotArray = {};
   uiOpt.U_DOTS_PER_ROW = x;
-  uiOpt.IMG_PADDING = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
   initDots();
+  recalculatePadding();
 }
 
 void setDotDist(distance) {
   uiOpt.U_DOT_DIST = distance;
-  uiOpt.IMG_PADDING = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+  recalculatePadding();
   int c = 0;
   for (int i = 0; i < uiOpt.U_DOTS_PER_ROW; i++) {
     for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
       Dot cDot = dotArray[c];
 
       // Init position
-      cDot.setPos(uiOpt.IMG_PADDING + uiOpt.U_DOT_DIST * j,uiOpt.IMG_PADDING + i * uiOpt.U_DOT_DIST);
+      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST * j,uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST);
       c += 1;
     }
   }
 }
 
+void resizeImg() {
+  // Determine new height and width
+  uiOpt.IMG_HEIGHT = window.innerHeight;
+  uiOpt.IMG_WIDTH = window.innerWidth;
+
+  recalculatePadding();
+
+  // Determine new dot positions
+  int c = 0;
+  for (int i = 0; i < uiOpt.U_DOTS_PER_ROW; i++) {
+    for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
+      Dot cDot = dotArray[c];
+
+      // Init position
+      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST * j,uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST);
+      c += 1;
+    }
+  }
+
+  size(uiOpt.IMG_WIDTH, uiOpt.IMG_HEIGHT);
+
+}
+
 //// DRAWING CODE
 void setup() {
   uiOpt = new UIOpt();
-  size(uiOpt.IMG_HEIGHT, uiOpt.IMG_WIDTH);
+  size(uiOpt.IMG_WIDTH, uiOpt.IMG_HEIGHT);
   smooth(); 
   background(uiOpt.U_BG_COLOR);
-  frameRate(24);
+  frameRate(30);
 
   initDots();
 }
@@ -481,8 +509,8 @@ void initDots() {
         Dot newDot = new Dot();
 
         // Init position
-        int x1 = uiOpt.IMG_PADDING + uiOpt.U_DOT_DIST * j;
-        int y1 = uiOpt.IMG_PADDING + i * uiOpt.U_DOT_DIST;
+        int x1 = uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST * j;
+        int y1 = uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST;
         newDot.setPos(x1,y1);
 
         // Init radius

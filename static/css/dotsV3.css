@@ -5,16 +5,40 @@
 .dg .c div {
   box-sizing: content-box;                                                             
 }
+.title2{
+  text-transform:uppercase;
+  font-weight:600;
+  letter-spacing:0.05em;
+
+}
+.container {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
 #inputHolder {
 	padding-top: 10px;
 }
-#exportJSON, #loadJSON, #saveImg, #shareButton, #shareUrl {
+#dotsSketch {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+}
+#exportJSON, #loadJSON, #saveImg, #shareButton, #shareUrl, #inputArea {
+	font-size: 0.8em;
+	text-transform: uppercase;
 	border: 1px black solid;
 	cursor: pointer;
 	padding: 5px;
-	margin-bottom: 10px;
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-right: -5px;
+	background-color: white;
 }
-#inputArea {
-	display: block;
-	margin-top: 10px;
+#exportJSON, #loadJSON, #inputArea {
+	margin-top: 15px
+}
+#inputArea, #shareUrl {
+	text-transform: none;
 }

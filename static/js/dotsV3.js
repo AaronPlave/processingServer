@@ -24,12 +24,18 @@ function postCallback(request) {
     document.getElementById("shareUrl").value = shareUrl;
 }
 
+window.onresize = function() {
+    pHandler.resizeImg();
+}
+
 window.onload = function() {
     initialize();
 }
 
 var pHandler;
 var _opts;
+var gui;
+var folders = [];
 
 function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
@@ -89,7 +95,7 @@ function initGui() {
         this.U_DOT_RADIUS_MAX = pOpt.U_DOT_RADIUS_MAX;
     }
     _opts = new UIOpts();
-    var gui = new dat.GUI();
+    gui = new dat.GUI();
 
     var vDraw = gui.add(_opts, 'U_DRAW');
     vDraw.onChange(function(value) {
@@ -100,35 +106,36 @@ function initGui() {
 
     // BACKGROUND
     var fBG = gui.addFolder('Background');
-    var cBG = fBG.addColor(_opts, 'U_BG_COLOR').listen();
+    folders.push(fBG);
+    var cBG = fBG.addColor(_opts, 'U_BG_COLOR');
     cBG.onChange(function(value) {
-        console.log(value);
         if (typeof(value) === "string") {
             pHandler.setBG(hexToRgb(value));
         } else {
-            console.log(value);
             pHandler.setBG(value);
         }
     });
 
     // LAYOUT
     var fLayout = gui.addFolder('Layout');
-    var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 80).step(1).listen();
+    folders.push(fLayout);
+    var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 80).step(1);
     cDotsPerRow.onChange(function(value) {
         pHandler.setDotsPerRow(value);
     });
-    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1).listen();
+    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1);
     cDotDist.onChange(function(value) {
         pHandler.setDotDist(value);
     });
 
     // FILL
     var fFill = gui.addFolder('Fill');
-    var cFill = fFill.add(_opts, 'U_DOT_FILL').listen();
+    folders.push(fFill);
+    var cFill = fFill.add(_opts, 'U_DOT_FILL');
     cFill.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_FILL = value;
     });
-    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR').listen();
+    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR');
     cFillSingleColor.onChange(function(value) {
         if (typeof(value) === "string") {
             pHandler.setSingleFillColor(hexToRgb(value));
@@ -136,30 +143,31 @@ function initGui() {
             pHandler.setSingleFillColor(value);
         }
     });
-    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').listen();
+    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME');
     cFillTheme.onChange(function(value) {
         pHandler.setTheme(value);
     });
 
     // STROKE
     var fStroke = gui.addFolder('Stroke');
-    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE').listen();
+    folders.push(fStroke);
+    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE');
     cStroke.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE = value;
     });
-    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30).listen();
+    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30);
     cStrokeWgt.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
     });
-    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30).listen();
+    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30);
     cStrokeWgtMin.onChange(function(value) {
         pHandler.setStrokeWgtMin(value);
     });
-    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30).listen();
+    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30);
     cStrokeWgtMax.onChange(function(value) {
         pHandler.setStrokeWgtMax(value);
     });
-    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').listen();
+    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR');
     cStrokeColor.onChange(function(value) {
         console.log(value, "strkClr");
         if (typeof(value) === "string") {
@@ -168,33 +176,35 @@ function initGui() {
             pHandler.setStrokeColor(value);
         }
     });
-    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).listen();
+    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30);
     cStrokeRandomize.onChange(function(value) {
         pHandler.setStrokeRandomize(value);
     });
 
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
-    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100).listen();
+    folders.push(fOffset);
+    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100);
     cOffset.onChange(function(value) {
         pHandler.setOffset(value);
     })
 
     // RADIUS
     var fRadius = gui.addFolder('Radius');
-    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100).listen();
+    folders.push(fRadius);
+    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100);
     cRadius.onChange(function(value) {
         pHandler.setRadius(value);
     })
-    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE').listen();
+    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE');
     cRadiusRandomize.onChange(function(value) {
         pHandler.setRadiusRandomize(value);
     })
-    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200).listen();
+    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200);
     cRadiusMin.onChange(function(value) {
         pHandler.setRadiusMin(value);
     })
-    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200).listen();
+    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200);
     cRadiusMax.onChange(function(value) {
         pHandler.setRadiusMax(value);
     })
@@ -234,11 +244,14 @@ function initGui() {
         var jsonString = sharedOpts.replace(new RegExp('&#34;', 'g'), '"');
         loadOptsFromJSON(JSON.parse(jsonString).data);
         resetControls();
+        // Call resize to fit whatever shared sketch is to current window
+        pHandler.resizeImg();
     }
+
 }
 
 function resetControls() {
-    // set the controls 
+    // update the controls local vars 
     var pOpt = pHandler.getUiOpt();
     _opts.U_DRAW = pOpt.U_DRAW;
     _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
@@ -258,6 +271,14 @@ function resetControls() {
     _opts.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
     _opts.U_DOT_RADIUS_MIN = pOpt.U_DOT_RADIUS_MIN;
     _opts.U_DOT_RADIUS_MAX = pOpt.U_DOT_RADIUS_MAX;
+
+    // update the gui
+    for (var i = 0; i < folders.length; i++) {
+        var fc = folders[i].__controllers;
+        for (var j = 0; j < fc.length; j++) {
+            fc[j].updateDisplay();
+        }
+    }
 }
 
 var colorVars = ["U_BG_COLOR", "U_DOT_SINGLE_STROKE_COLOR", "U_DOT_SINGLE_FILL_COLOR"];

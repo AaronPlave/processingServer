@@ -14,9 +14,6 @@ body {
 }
 
 .home {
-    position: absolute;
-    top: 0;
-    left: 0;
     margin: 15px;
     border: 1px solid black;
     padding: 3px 5px 4px 5px;
