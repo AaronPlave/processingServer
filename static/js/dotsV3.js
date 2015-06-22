@@ -1,3 +1,29 @@
+function post(url, data, callback) {
+    // assumes data is a json
+    var async = true;
+    var request = new XMLHttpRequest();
+
+    request.onload = function() {
+        callback(request);
+    }
+
+    request.open("POST",url,async);
+    request.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+    request.send(data);
+    // http.onreadystatechange = function() {
+    //     if (!(http.readyState == 4 && http.status == 200)) {
+    //         var imgPath = JSON.parse(http.responseText).img;
+    //         document.getElementById("gen-image").src = imgPath;
+    //     }
+    // }
+}
+
+function postCallback(request) {
+    console.log(request.status,request.responseText);
+    var shareUrl = window.location.host + "/dotsV3/" + request.responseText;
+    document.getElementById("shareUrl").value = shareUrl;
+}
+
 window.onload = function() {
     initialize();
 }
@@ -9,7 +35,7 @@ function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
     var canvasRef = document.createElement('canvas');
     canvasRef.id = "dotsSketch"
-    var p = Processing.loadSketchFromSources(canvasRef, ['static/dots3/dots3.pde']);
+    var p = Processing.loadSketchFromSources(canvasRef, ['../static/dots3/dots3.pde']);
     canvasHolder.appendChild(canvasRef);
 
     // wait for sketch to load to assign handler
@@ -135,7 +161,7 @@ function initGui() {
     });
     var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').listen();
     cStrokeColor.onChange(function(value) {
-        console.log(value,"strkClr");
+        console.log(value, "strkClr");
         if (typeof(value) === "string") {
             pHandler.setStrokeColor(hexToRgb(value));
         } else {
@@ -185,7 +211,7 @@ function initGui() {
     var loadButton = document.getElementById("loadJSON");
     loadButton.addEventListener("click", function(evt) {
         var textArea = document.getElementById("inputArea");
-        loadOptsFromJSON(textArea.value);
+        loadOptsFromJSON(JSON.parse(textArea.value));
 
         // set the controls 
         var pOpt = pHandler.getUiOpt();
@@ -216,13 +242,24 @@ function initGui() {
         var textArea = document.getElementById("inputArea");
         textArea.value = currOpts;
     })
+
+    // Initialize share button
+    var shareEl = document.getElementById("shareButton");
+    shareEl.addEventListener("click", function(evt) {
+        post("/dotsV3/share",optsToJSON(),postCallback);
+    })
+
+    // Check for shared opts
+    if (sharedOpts) {
+        var jsonString = sharedOpts.replace(new RegExp('&#34;', 'g'), '"');
+        loadOptsFromJSON(JSON.parse(jsonString).data);
+    }
 }
 
-var colorVars = ["U_BG_COLOR","U_DOT_SINGLE_STROKE_COLOR","U_DOT_SINGLE_FILL_COLOR"];
+var colorVars = ["U_BG_COLOR", "U_DOT_SINGLE_STROKE_COLOR", "U_DOT_SINGLE_FILL_COLOR"];
 
 function optsToJSON() {
     var pOpts = pHandler.getUiOpt();
-    // console.log(pHandler.printColor(pOpts.U_BG_COLOR));
     var keys = Object.keys(pOpts);
     var newObj = {};
     for (var i = 0; i < keys.length; i++) {
@@ -244,8 +281,8 @@ function loadOptsFromJSON(json) {
         console.log("BAD JSON");
         return;
     }
-    var newOpt = JSON.parse(json);
-    pHandler.setUiOpt(newOpt);
+    // var newOpt = JSON.parse(json);
+    pHandler.setUiOpt(json);
 }
 
 function hexToRgb(hex) {

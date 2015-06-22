@@ -38,7 +38,6 @@ class UIOpt {
 
   // dot center offset
   float U_DOT_OFFSET_MAX;
-  float U_DOT_OFFSET_PRE;
 
   // dot radius
   int U_DOT_RADIUS;

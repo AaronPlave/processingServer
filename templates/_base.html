@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>Generator</title>
     <!-- meta -->
@@ -8,21 +9,22 @@
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <!-- styles -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/css/base.css" rel="stylesheet">
-    <link href="static/css/landing.css" rel="stylesheet">
-    {% block css %}{% endblock %}
-  </head>
-  <body>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/landing.css') }}" rel="stylesheet"> {% block css %}{% endblock %}
+</head>
+
+<body>
     <div class="container">
-      <br>
-      <!-- child template -->
-      {% block content %}{% endblock %}
+        <br>
+        <!-- child template -->
+        {% block content %}{% endblock %}
     </div>
     <!-- scripts -->
     <script src="//code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
-    <script src="static/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="static/js/main.js" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" type="text/javascript"></script>
     {% block js %}{% endblock %}
-  </body>
+</body>
+
 </html>

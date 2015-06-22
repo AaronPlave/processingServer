@@ -1,8 +1,16 @@
-import os, datetime, json
-from flask import Flask, request, render_template
+import os, datetime, json, random, string
+from flask import Flask, request, render_template, url_for
 import lib.handler as handler
+from werkzeug.contrib.cache import SimpleCache
+
+dotCache = SimpleCache()
 
 app = Flask(__name__)
+
+# url_for('static')
+
+# url_for('static', filename='style.css')
+
 
 @app.route('/')
 def landingPage():
@@ -75,9 +83,25 @@ def dotsV2Submit():
 def dotsV2():
     return render_template('dotsV2.html')
 
-@app.route('/dotsV3')
+@app.route('/dotsV3/')
 def dotsV3():
     return render_template('dotsV3.html')
+
+@app.route('/dotsV3/share', methods=['POST'])
+def dotsV3PostShare():
+    # Submit, return OK if all good.
+    if request.method == 'POST':
+        rId = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(7))
+        dotCache.set(rId,request.json, timeout=11861140)
+        return str(rId)
+
+@app.route('/dotsV3/<idx>')
+def dotsV3GetShare(idx):
+    rv = dotCache.get(idx)
+    print rv,"RV"
+    if rv is None:
+        return render_template('dotsV3.html',error="Unable to fetch requested sketch.",sharedOpts="")
+    return render_template('dotsV3.html',error="",sharedOpts=json.dumps({"data":rv}))
 
 if __name__ == "__main__":
     app.run(debug=True)

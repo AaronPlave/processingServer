@@ -1,10 +1,12 @@
 {% extends "_base.html" %} {% block css %}
-<link href="static/css/dotsV3.css" rel="stylesheet">{% endblock %}{% block content %}
+<link href="{{ url_for('static', filename='css/dotsV3.css') }}" rel="stylesheet">{% endblock %}{% block content %}
 <span class="home"><a href="/">Home</a></span>
 <div class="text-center">
     <h1 class="mtitle">Generator v2–Dots</h1>
 </div>
 <span id="saveImg">Save</span>
+<span id="shareButton">Share</span>
+<input id="shareUrl"></input>
 <!-- <div id="control-play">Play</div> -->
 <br>
 <br>
@@ -16,7 +18,10 @@
     <textarea id="inputArea" row="80" cols="80"></textarea>
 </div>
 {% block js %}
-<script src="static/js/processing.min.js"></script>
-<script type="text/javascript" src="static/js/dat.gui.min.js"></script>
-<script type="text/javascript" src="static/js/dotsV3.js"></script>
+<script src="{{ url_for('static', filename='js/processing.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/dat.gui.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/dotsV3.js') }}"></script>
+<script>
+var sharedOpts = '{{ sharedOpts }}';
+</script>
 {% endblock %} {% endblock %}

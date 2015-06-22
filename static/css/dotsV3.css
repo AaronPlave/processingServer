@@ -8,7 +8,7 @@
 #inputHolder {
 	padding-top: 10px;
 }
-#exportJSON, #loadJSON {
+#exportJSON, #loadJSON, #saveImg, #shareButton, #shareUrl {
 	border: 1px black solid;
 	cursor: pointer;
 	padding: 5px;
