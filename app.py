@@ -3,7 +3,8 @@ from flask import Flask, request, render_template, url_for
 import lib.handler as handler
 from werkzeug.contrib.cache import SimpleCache
 
-dotCache = {}
+from werkzeug.contrib.cache import MemcachedCache
+dotCache = MemcachedCache(['127.0.0.1:11211'])
 
 app = Flask(__name__)
 
@@ -92,7 +93,7 @@ def dotsV3PostShare():
     # Submit, return OK if all good.
     if request.method == 'POST':
         rId = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(7))
-        dotCache[rId] = request.json
+        dotCache.set(rId,request.json,9999999)
         return str(rId)
 
 @app.route('/dotsV3/<idx>')
