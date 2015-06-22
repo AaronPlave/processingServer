@@ -1,16 +1,18 @@
 {% extends "_base.html" %} {% block css %}
 <link href="{{ url_for('static', filename='css/dotsV3.css') }}" rel="stylesheet">{% endblock %}{% block content %}
-<span class="home"><a href="/">Home</a></span>
-<span class="title2">Generator v2–Dots</span>
-<br>
-<span id="saveImg">Save</span>
-<span id="shareButton">Share</span>
-<input id="shareUrl"></input>
-<!-- <div id="control-play">Play</div> -->
+<div id="generatorContainer">
+    <span class="home"><a href="/">Home</a></span>
+    <span class="title2">Generator v2–Dots</span>
+    <br>
+    <span id="saveImg">Save</span>
+    <span id="shareButton">Share</span>
+    <input id="shareUrl"></input>
+    <br>
+    <span id="exportJSON">Export</span>
+    <span id="loadJSON">Load</span>
+    <input id="inputArea"></input>
+</div>
 <div id="canvasHolder"></div>
-<span id="exportJSON">Export</span>
-<span id="loadJSON">Load</span>
-<input id="inputArea"></input>
 {% block js %}
 <script src="{{ url_for('static', filename='js/processing.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/dat.gui.min.js') }}"></script>

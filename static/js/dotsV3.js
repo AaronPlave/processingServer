@@ -36,6 +36,7 @@ var pHandler;
 var _opts;
 var gui;
 var folders = [];
+var mouseTimer;
 
 function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
@@ -319,3 +320,17 @@ function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
 }
+
+function enableFullscreen() {
+    document.body.className = "fullscreen";
+    document.getElementById("generatorContainer").style.display = "none";
+    document.getElementsByClassName("dg main a")[0].style.display = "none";    
+}
+
+window.addEventListener("mousemove",function(){
+    document.body.className = "inherit";
+    document.getElementById("generatorContainer").style.display = "inherit";
+    document.getElementsByClassName("dg main a")[0].style.display = "inherit";
+    clearTimeout(mouseTimer);
+    mouseTimer=setTimeout(enableFullscreen,3000);
+});
