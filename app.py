@@ -104,4 +104,4 @@ def dotsV3GetShare(idx):
     return render_template('dotsV3.html',error="",sharedOpts=json.dumps({"data":rv}))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,threaded=True)
