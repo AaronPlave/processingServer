@@ -97,7 +97,7 @@ function initGui() {
     _opts = new UIOpts();
     gui = new dat.GUI();
 
-    var vDraw = gui.add(_opts, 'U_DRAW');
+    var vDraw = gui.add(_opts, 'U_DRAW').name("Animate");
     vDraw.onChange(function(value) {
         pHandler.getUiOpt().U_DRAW = value;
     });
@@ -107,7 +107,7 @@ function initGui() {
     // BACKGROUND
     var fBG = gui.addFolder('Background');
     folders.push(fBG);
-    var cBG = fBG.addColor(_opts, 'U_BG_COLOR');
+    var cBG = fBG.addColor(_opts, 'U_BG_COLOR').name("Color");
     cBG.onChange(function(value) {
         if (typeof(value) === "string") {
             pHandler.setBG(hexToRgb(value));
@@ -119,11 +119,11 @@ function initGui() {
     // LAYOUT
     var fLayout = gui.addFolder('Layout');
     folders.push(fLayout);
-    var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 80).step(1);
+    var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 80).step(1).name("Dots Per Row");
     cDotsPerRow.onChange(function(value) {
         pHandler.setDotsPerRow(value);
     });
-    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1);
+    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1).name("Dot Spacing");
     cDotDist.onChange(function(value) {
         pHandler.setDotDist(value);
     });
@@ -131,11 +131,11 @@ function initGui() {
     // FILL
     var fFill = gui.addFolder('Fill');
     folders.push(fFill);
-    var cFill = fFill.add(_opts, 'U_DOT_FILL');
+    var cFill = fFill.add(_opts, 'U_DOT_FILL').name("Enabled");
     cFill.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_FILL = value;
     });
-    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR');
+    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR').name("Single Color");
     cFillSingleColor.onChange(function(value) {
         if (typeof(value) === "string") {
             pHandler.setSingleFillColor(hexToRgb(value));
@@ -143,7 +143,7 @@ function initGui() {
             pHandler.setSingleFillColor(value);
         }
     });
-    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME');
+    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').name("Enable Theme");
     cFillTheme.onChange(function(value) {
         pHandler.setTheme(value);
     });
@@ -151,40 +151,39 @@ function initGui() {
     // STROKE
     var fStroke = gui.addFolder('Stroke');
     folders.push(fStroke);
-    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE');
+    var cStroke = fStroke.add(_opts, 'U_DOT_STROKE').name("Enable");
     cStroke.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE = value;
     });
-    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30);
+    var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30).name("Weight");
     cStrokeWgt.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
     });
-    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30);
-    cStrokeWgtMin.onChange(function(value) {
-        pHandler.setStrokeWgtMin(value);
-    });
-    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30);
-    cStrokeWgtMax.onChange(function(value) {
-        pHandler.setStrokeWgtMax(value);
-    });
-    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR');
+    var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').name("Color");;
     cStrokeColor.onChange(function(value) {
-        console.log(value, "strkClr");
         if (typeof(value) === "string") {
             pHandler.setStrokeColor(hexToRgb(value));
         } else {
             pHandler.setStrokeColor(value);
         }
     });
-    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30);
+    var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).name("Random Stroke");
     cStrokeRandomize.onChange(function(value) {
         pHandler.setStrokeRandomize(value);
+    });
+    var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30).name("Random Min");
+    cStrokeWgtMin.onChange(function(value) {
+        pHandler.setStrokeWgtMin(value);
+    });
+    var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30).name("Random Max");
+    cStrokeWgtMax.onChange(function(value) {
+        pHandler.setStrokeWgtMax(value);
     });
 
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
     folders.push(fOffset);
-    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100);
+    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100).name("Max Offset");
     cOffset.onChange(function(value) {
         pHandler.setOffset(value);
     })
@@ -192,19 +191,19 @@ function initGui() {
     // RADIUS
     var fRadius = gui.addFolder('Radius');
     folders.push(fRadius);
-    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100);
+    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100).name("Radius Size");
     cRadius.onChange(function(value) {
         pHandler.setRadius(value);
     })
-    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE');
+    var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE').name("Random Radius");
     cRadiusRandomize.onChange(function(value) {
         pHandler.setRadiusRandomize(value);
     })
-    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200);
+    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200).name("Random Min");
     cRadiusMin.onChange(function(value) {
         pHandler.setRadiusMin(value);
     })
-    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200);
+    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200).name("Random Max");;
     cRadiusMax.onChange(function(value) {
         pHandler.setRadiusMax(value);
     })
