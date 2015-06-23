@@ -495,7 +495,7 @@ void resizeImg() {
 void setup() {
   uiOpt = new UIOpt();
   size(uiOpt.IMG_WIDTH, uiOpt.IMG_HEIGHT);
-  smooth(); 
+  smooth(8); 
   background(uiOpt.U_BG_COLOR);
   frameRate(30);
 
