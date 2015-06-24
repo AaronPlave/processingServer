@@ -25,7 +25,10 @@ function postCallback(request) {
 }
 
 window.onresize = function() {
+    // Set Canvas height and width
     pHandler.resizeImg();
+    canvasRef.style.height=String(window.innerHeight)+"px";
+    canvasRef.style.width=String(window.innerWidth)+"px";
 }
 
 window.onload = function() {
@@ -37,10 +40,11 @@ var _opts;
 var gui;
 var folders = [];
 var mouseTimer;
+var canvasRef;
 
 function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
-    var canvasRef = document.createElement('canvas');
+    canvasRef = document.createElement('canvas');
     canvasRef.id = "dotsSketch"
     var p = Processing.loadSketchFromSources(canvasRef, ['../static/dots3/dots3.pde']);
     canvasHolder.appendChild(canvasRef);
@@ -78,6 +82,7 @@ function initGui() {
         var pOpt = pHandler.getUiOpt();
         this.U_DRAW = pOpt.U_DRAW;
         this.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
+        this.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOT_DIST = pOpt.U_DOT_DIST;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
@@ -86,8 +91,10 @@ function initGui() {
         this.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
         this.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
         this.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
+        this.U_DOT_SINGLE_STROKE_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR)[3];
         this.U_DOT_FILL = pOpt.U_DOT_FILL;
         this.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
+        this.U_DOT_SINGLE_FILL_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR)[3];
         this.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
         this.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
         this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
@@ -115,6 +122,10 @@ function initGui() {
         } else {
             pHandler.setBG(value);
         }
+    });
+    var cBGOpacity = fBG.add(_opts, 'U_BG_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
+    cBGOpacity.onChange(function(value) {
+        pHandler.setBGOpacity(value);
     });
 
     // LAYOUT
@@ -144,6 +155,10 @@ function initGui() {
             pHandler.setSingleFillColor(value);
         }
     });
+    var cFillSingleColorOpacity = fFill.add(_opts, 'U_DOT_SINGLE_FILL_COLOR_OPACITY',0,255).step(1).name("Color Opacity");
+    cFillSingleColorOpacity.onChange(function(value) {
+        pHandler.setSingleFillColorOpacity(value);
+    });
     var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').name("Enable Theme");
     cFillTheme.onChange(function(value) {
         pHandler.setTheme(value);
@@ -168,6 +183,11 @@ function initGui() {
             pHandler.setStrokeColor(value);
         }
     });
+    var cStrokeColorOpacity = fStroke.add(_opts, 'U_DOT_SINGLE_STROKE_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
+    cStrokeColorOpacity.onChange(function(value) {
+        pHandler.setStrokeColorOpacity(value);
+    });
+
     var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).name("Random Stroke");
     cStrokeRandomize.onChange(function(value) {
         pHandler.setStrokeRandomize(value);
@@ -248,6 +268,10 @@ function initGui() {
         pHandler.resizeImg();
     }
 
+
+    // Set Canvas height and width
+    canvasRef.style.height=String(window.innerHeight)+"px";
+    canvasRef.style.width=String(window.innerWidth)+"px";
 }
 
 function resetControls() {
@@ -255,6 +279,7 @@ function resetControls() {
     var pOpt = pHandler.getUiOpt();
     _opts.U_DRAW = pOpt.U_DRAW;
     _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
+    _opts.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
     _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
     _opts.U_DOT_DIST = pOpt.U_DOT_DIST;
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
@@ -263,6 +288,7 @@ function resetControls() {
     _opts.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
     _opts.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
     _opts.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
+    _opts.U_DOT_SINGLE_STROKE_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR)[3];
     _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
     _opts.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
     _opts.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
@@ -279,6 +305,7 @@ function resetControls() {
             fc[j].updateDisplay();
         }
     }
+
 }
 
 var colorVars = ["U_BG_COLOR", "U_DOT_SINGLE_STROKE_COLOR", "U_DOT_SINGLE_FILL_COLOR"];
@@ -318,7 +345,7 @@ function hexToRgb(hex) {
     });
 
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16),100] : null;
 }
 
 function enableFullscreen() {
@@ -334,3 +361,14 @@ window.addEventListener("mousemove",function(){
     clearTimeout(mouseTimer);
     mouseTimer=setTimeout(enableFullscreen,3000);
 });
+
+function isRetinaDisplay() {
+        if (window.matchMedia) {
+            var mq = window.matchMedia("only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen  and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 1.3dppx)");
+            if (mq && mq.matches || (window.devicePixelRatio > 1)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
