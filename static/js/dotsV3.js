@@ -96,7 +96,8 @@ function initGui() {
         this.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
         this.U_DOT_SINGLE_FILL_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR)[3];
         this.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
-        this.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
+        this.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
+        this.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
         this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
         this.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
         this.U_DOT_RADIUS_MIN = pOpt.U_DOT_RADIUS_MIN;
@@ -204,9 +205,13 @@ function initGui() {
     // OFFSET
     var fOffset = gui.addFolder('Center Offset');
     folders.push(fOffset);
-    var cOffset = fOffset.add(_opts, 'U_DOT_OFFSET_MAX', 0, 100).name("Max Offset");
-    cOffset.onChange(function(value) {
-        pHandler.setOffset(value);
+    var cOffsetX = fOffset.add(_opts, 'U_DOT_OFFSET_X_MAX', 0, 100).name("Max Offset X");
+    cOffsetX.onChange(function(value) {
+        pHandler.setOffsetX(value);
+    })
+    var cOffsetY = fOffset.add(_opts, 'U_DOT_OFFSET_Y_MAX', 0, 100).name("Max Offset Y");
+    cOffsetY.onChange(function(value) {
+        pHandler.setOffsetY(value);
     })
 
     // RADIUS
@@ -312,7 +317,8 @@ function resetControls() {
     _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
     _opts.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
     _opts.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
-    _opts.U_DOT_OFFSET_MAX = pOpt.U_DOT_OFFSET_MAX;
+    _opts.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
+    _opts.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
     _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
     _opts.U_DOT_RADIUS_RANDOMIZE = pOpt.U_DOT_RADIUS_RANDOMIZE;
     _opts.U_DOT_RADIUS_MIN = pOpt.U_DOT_RADIUS_MIN;

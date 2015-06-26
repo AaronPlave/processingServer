@@ -37,7 +37,8 @@ class UIOpt {
   int U_NUM_ITERS_MAX;
 
   // dot center offset
-  float U_DOT_OFFSET_MAX;
+  float U_DOT_OFFSET_X_MAX;
+  float U_DOT_OFFSET_Y_MAX;
 
   // dot radius
   int U_DOT_RADIUS;
@@ -83,7 +84,8 @@ class UIOpt {
     U_NUM_ITERS_MAX = 20;
 
     // dot center offset
-    U_DOT_OFFSET_MAX = 30;
+    U_DOT_OFFSET_X_MAX = 30;
+    U_DOT_OFFSET_Y_MAX = 30;
 
     // dot radius
     U_DOT_RADIUS = 10;
@@ -234,16 +236,12 @@ class Dot {
     } else {
       noStroke();
     }
-
     PVector dirOfTravel = PVector.sub(targetOffset,offset);
     dirOfTravel.normalize();
     offset.add(PVector.mult(dirOfTravel,offsetRate));
-
     ellipse(pos.x+offset.x,pos.y+offset.y,radius,radius);
   }
 };
-
-  
 
 Dot[] dotArray = {};
 
@@ -296,16 +294,8 @@ void checkDotConditions() {
   }
 
   if (allOffsetsReached) {
-    setOffset(uiOpt.U_DOT_OFFSET_MAX);
+    setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX,uiOpt.U_DOT_OFFSET_Y_MAX);
   }
-  // }
-  // Dot cDot = dotArray[0];
-  // if (!(dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) < 1)) {
-
-  // } else {
-  //   setOffset(uiOpt.U_DOT_OFFSET_MAX);
-  // }
-
 }
 
 
@@ -410,15 +400,35 @@ void setStrokeColorOpacity(x) {
   }
 }
 
-void setOffset(x) {
-  uiOpt.U_DOT_OFFSET_MAX = x;
+void setOffsetX(x) {
+  uiOpt.U_DOT_OFFSET_X_MAX = x;
   for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[i];
-      cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
-      cDot.targetOffset.y = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+      cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
       cDot.offsetRate = dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) / 50;
     }
 }
+void setOffsetY(y) {
+  uiOpt.U_DOT_OFFSET_Y_MAX = y;
+  for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.targetOffset.y = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
+      cDot.offsetRate = dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) / 50;
+    }
+}
+
+void setOffsetXY(x,y) {
+  uiOpt.U_DOT_OFFSET_X_MAX = x;
+  uiOpt.U_DOT_OFFSET_Y_MAX = y;
+  for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      console.log(uiOpt.U_DOT_OFFSET_X_MAX,uiOpt.U_DOT_OFFSET_Y_MAX);
+      cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
+      cDot.targetOffset.y = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
+      cDot.offsetRate = dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) / 50;
+    }
+}
+
 
 void setBG(x) {
   uiOpt.U_BG_COLOR = color(x[0],x[1],x[2],alpha(uiOpt.U_BG_COLOR));
@@ -561,8 +571,8 @@ void initDots() {
         float offsetX = 0;
         float offsetY = 0;
         if (uiOpt.U_DOT_OFFSET) {
-          offsetX = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
-          offsetY = random(-1*uiOpt.U_DOT_OFFSET_MAX, uiOpt.U_DOT_OFFSET_MAX);
+          offsetX = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
+          offsetY = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
         }
         newDot.setOffset(offsetX,offsetY);
 
@@ -572,7 +582,7 @@ void initDots() {
     }
     setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
     setStrokeRandomize(uiOpt.U_DOT_STROKE_RANDOMIZE);
-    setOffset(uiOpt.U_DOT_OFFSET_MAX);
+    setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX,uiOpt.U_DOT_OFFSET_Y_MAX);
   // }
 }
 
