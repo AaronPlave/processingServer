@@ -581,7 +581,6 @@ void draw() {
     return;
   } 
 
-  // pushMatrix();
   translate(-width/2, -height/2);
   scale(2);
   // translate(+width/2, +height/2);
@@ -593,7 +592,7 @@ void draw() {
     cDot.drawDot();
   }
   checkDotConditions();
-  popMatrix();
+
 }
 
 //void keyPressed() {

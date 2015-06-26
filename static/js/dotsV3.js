@@ -27,8 +27,8 @@ function postCallback(request) {
 window.onresize = function() {
     // Set Canvas height and width
     pHandler.resizeImg();
-    canvasRef.style.height=String(window.innerHeight)+"px";
-    canvasRef.style.width=String(window.innerWidth)+"px";
+    canvasRef.style.height = String(window.innerHeight) + "px";
+    canvasRef.style.width = String(window.innerWidth) + "px";
 }
 
 window.onload = function() {
@@ -39,7 +39,7 @@ var pHandler;
 var _opts;
 var gui;
 var folders = [];
-var mouseTimer;
+var viewMode = "create";
 var canvasRef;
 
 function initialize() {
@@ -155,7 +155,7 @@ function initGui() {
             pHandler.setSingleFillColor(value);
         }
     });
-    var cFillSingleColorOpacity = fFill.add(_opts, 'U_DOT_SINGLE_FILL_COLOR_OPACITY',0,255).step(1).name("Color Opacity");
+    var cFillSingleColorOpacity = fFill.add(_opts, 'U_DOT_SINGLE_FILL_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
     cFillSingleColorOpacity.onChange(function(value) {
         pHandler.setSingleFillColorOpacity(value);
     });
@@ -270,8 +270,28 @@ function initGui() {
 
 
     // Set Canvas height and width
-    canvasRef.style.height=String(window.innerHeight)+"px";
-    canvasRef.style.width=String(window.innerWidth)+"px";
+    canvasRef.style.height = String(window.innerHeight) + "px";
+    canvasRef.style.width = String(window.innerWidth) + "px";
+
+
+    // Set up viewing modes
+    window.addEventListener("mousemove", function() {
+        if (viewMode === "view") {
+            disableFullscreen();
+            viewMode = "create";
+        }
+    });
+
+    canvasRef.addEventListener("click", function() {
+        console.log("click")
+        if (viewMode === "create") {
+            enableFullscreen();
+            viewMode = "view";
+        } else if (viewMode === "view") {
+            disableFullscreen();
+            viewMode = "create";
+        }
+    });
 }
 
 function resetControls() {
@@ -345,30 +365,28 @@ function hexToRgb(hex) {
     });
 
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16),100] : null;
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16), 100] : null;
+}
+
+function disableFullscreen() {
+    document.body.className = "inherit";
+    document.getElementById("generatorContainer").style.display = "inherit";
+    document.getElementsByClassName("dg main a")[0].style.display = "inherit";
 }
 
 function enableFullscreen() {
     document.body.className = "fullscreen";
     document.getElementById("generatorContainer").style.display = "none";
-    document.getElementsByClassName("dg main a")[0].style.display = "none";    
+    document.getElementsByClassName("dg main a")[0].style.display = "none";
 }
 
-window.addEventListener("mousemove",function(){
-    document.body.className = "inherit";
-    document.getElementById("generatorContainer").style.display = "inherit";
-    document.getElementsByClassName("dg main a")[0].style.display = "inherit";
-    clearTimeout(mouseTimer);
-    mouseTimer=setTimeout(enableFullscreen,3000);
-});
-
 function isRetinaDisplay() {
-        if (window.matchMedia) {
-            var mq = window.matchMedia("only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen  and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 1.3dppx)");
-            if (mq && mq.matches || (window.devicePixelRatio > 1)) {
-                return true;
-            } else {
-                return false;
-            }
+    if (window.matchMedia) {
+        var mq = window.matchMedia("only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 2.6/2), only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen  and (min-device-pixel-ratio: 1.3), only screen and (min-resolution: 1.3dppx)");
+        if (mq && mq.matches || (window.devicePixelRatio > 1)) {
+            return true;
+        } else {
+            return false;
         }
     }
+}
