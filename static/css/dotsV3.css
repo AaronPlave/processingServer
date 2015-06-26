@@ -29,6 +29,24 @@
     z-index: -1;
 }
 
+#frameRate,
+#frameRateLbl {
+    top: 0px;
+    left: 0px;
+    z-index: -1;
+    padding: 5px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: -5px;
+    text-transform: uppercase;
+    display: inline-block !important;
+    font-size: 0.8em;
+}
+
+#frameRate {
+    margin-left: 0px;
+}
+
 #exportJSON,
 #loadJSON,
 #saveImg,

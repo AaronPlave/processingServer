@@ -422,7 +422,6 @@ void setOffsetXY(x,y) {
   uiOpt.U_DOT_OFFSET_Y_MAX = y;
   for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[i];
-      console.log(uiOpt.U_DOT_OFFSET_X_MAX,uiOpt.U_DOT_OFFSET_Y_MAX);
       cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
       cDot.targetOffset.y = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
       cDot.offsetRate = dist(cDot.offset.x,cDot.offset.y,cDot.targetOffset.x,cDot.targetOffset.y) / 50;
@@ -523,6 +522,7 @@ void resizeImg() {
 }
 
 //// DRAWING CODE
+
 void setup() {
   uiOpt = new UIOpt();
   size(uiOpt.IMG_WIDTH, uiOpt.IMG_HEIGHT);
@@ -587,6 +587,9 @@ void initDots() {
 }
 
 void draw() {
+  // update frame rate display
+  frameRateEl.innerHTML = round(frameRate,3);
+
   if (!uiOpt.U_DRAW) {
     return;
   } 
@@ -597,6 +600,7 @@ void draw() {
   
 
   background(uiOpt.U_BG_COLOR);
+
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
     cDot.drawDot();

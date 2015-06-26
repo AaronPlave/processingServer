@@ -41,6 +41,7 @@ var gui;
 var folders = [];
 var viewMode = "create";
 var canvasRef;
+var frameRateEl;
 
 function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
@@ -278,6 +279,8 @@ function initGui() {
     canvasRef.style.height = String(window.innerHeight) + "px";
     canvasRef.style.width = String(window.innerWidth) + "px";
 
+    // Initialize frame rate element
+    frameRateEl = document.getElementById("frameRate");
 
     // Set up viewing modes
     window.addEventListener("mousemove", function() {
@@ -297,6 +300,7 @@ function initGui() {
             viewMode = "create";
         }
     });
+
 }
 
 function resetControls() {
@@ -378,12 +382,14 @@ function disableFullscreen() {
     document.body.className = "inherit";
     document.getElementById("generatorContainer").style.display = "inherit";
     document.getElementsByClassName("dg main a")[0].style.display = "inherit";
+    frameRateEl.style.display = "inherit";
 }
 
 function enableFullscreen() {
     document.body.className = "fullscreen";
     document.getElementById("generatorContainer").style.display = "none";
     document.getElementsByClassName("dg main a")[0].style.display = "none";
+    frameRateEl.style.display = "none";
 }
 
 function isRetinaDisplay() {
