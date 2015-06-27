@@ -389,9 +389,9 @@ function optsToJSON() {
 function loadOptsFromJSON(json) {
     if (json === "") {
         console.log("BAD JSON");
+        alert("Unable to load requested sketch.");
         return;
     }
-    // var newOpt = JSON.parse(json);
     pHandler.setUiOpt(json);
 }
 
