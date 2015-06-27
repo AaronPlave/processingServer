@@ -25,7 +25,6 @@
 class UIOpt {
   boolean U_DRAW;
   boolean U_DRAW;
-  boolean U_DOT_FILL_THEME;
   boolean U_DOT_STROKE;
   boolean U_DOT_STROKE_RANDOMIZE;
   boolean U_DOT_FILL;
@@ -48,11 +47,16 @@ class UIOpt {
   // background color
   color U_BG_COLOR;
 
+  // dot num colors
+  int U_DOT_FILL_NUM_COLORS;
+
   // dot fill single color 
-  color U_DOT_SINGLE_FILL_COLOR;
+  color U_DOT_FILL_COLOR_1;
+  color U_DOT_FILL_COLOR_2;
+  color U_DOT_FILL_COLOR_3;
 
   // dot fill theme colors 
-  int[][] U_DOT_FILL_THEME_COLORS;
+  // int[][] U_DOT_FILL_THEME_COLORS;
 
   // dot stroke
   float U_DOT_STROKE_WEIGHT;
@@ -74,10 +78,10 @@ class UIOpt {
   
   UIOpt() {
     U_DRAW = true;
-    U_DOT_FILL_THEME = true;
+    U_DOT_FILL = true;
+    U_DOT_FILL_NUM_COLORS = 1;
     U_DOT_STROKE = false;
     U_DOT_STROKE_RANDOMIZE = false;
-    U_DOT_FILL = true;
     U_DOT_RADIUS_RANDOMIZE = true;
     U_DOT_OFFSET = true;
 
@@ -97,21 +101,23 @@ class UIOpt {
     // background color
     U_BG_COLOR = color(255,249,233,255);
 
-    // dot fill single color 
-    U_DOT_SINGLE_FILL_COLOR = color(20,253,247,100);
+    // dot fill colors 
+    U_DOT_FILL_COLOR_1 = color(20,253,247,100);
+    U_DOT_FILL_COLOR_2 = color(200,53,247,100);
+    U_DOT_FILL_COLOR_3 = color(2,2,247,100);
 
     // dot fill theme colors 
-    U_DOT_FILL_THEME_COLORS = {
-      {
-        255, 229, 110,255
-      }
-      , {
-        215, 25, 32,255
-      }
-      , {
-        0, 0, 0,255
-      }
-    };
+    // U_DOT_FILL_THEME_COLORS = {
+    //   {
+    //     255, 229, 110,255
+    //   }
+    //   , {
+    //     215, 25, 32,255
+    //   }
+    //   , {
+    //     0, 0, 0,255
+    //   }
+    // };
 
     // dot stroke
     U_DOT_STROKE_WEIGHT = 0.5;
@@ -167,6 +173,7 @@ class Dot {
 
   float strokeWgt;
   color strokeColor, fillColor; 
+  int fillColorId;
   float strokeRate;
   float targetStroke;
   int strokeDir;
@@ -458,13 +465,40 @@ void setBG(x) {
 //     uiOpt.U_BG_COLOR = (uiOpt.U_BG_COLOR & 0xffffff) | (x << 24); 
 // }
 
-void setSingleFillColor(x) {
-  uiOpt.U_DOT_SINGLE_FILL_COLOR = color(x[0],x[1],x[2],x[3]*255);
-  if (!uiOpt.U_DOT_FILL_THEME){
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[i];
-      cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
+void setFillColor(x,num) {
+  color[] colors = [uiOpt.U_DOT_FILL_COLOR_1,uiOpt.U_DOT_FILL_COLOR_2,uiOpt.U_DOT_FILL_COLOR_3];
+  if (num < 0 || num > 3) {
+    console.log("NUM COLORS OUT OF RANGE",num);
+    return;
+  }
+  color currColor = colors[num];
+  color newColor = color(x[0],x[1],x[2],x[3]*255);
+  for (int i = 0; i < dotArray.length; i++) {
+    Dot cDot = dotArray[i];
+    if (cDot.fillColorId == num) {
+      // replace the prev color with new color
+      cDot.fillColor = newColor;
     }
+  }
+  if (num == 0) {
+    uiOpt.U_DOT_FILL_COLOR_1 = newColor;
+  } else if (num == 1) {
+      uiOpt.U_DOT_FILL_COLOR_2 = newColor;
+  } else {
+      uiOpt.U_DOT_FILL_COLOR_3 = newColor;
+  }
+}
+
+void setFillNumColors(x) {
+  color[] colors = [uiOpt.U_DOT_FILL_COLOR_1,uiOpt.U_DOT_FILL_COLOR_2,uiOpt.U_DOT_FILL_COLOR_3];
+  uiOpt.U_DOT_FILL_NUM_COLORS = x;
+  int nextColor = 0;
+  for (int i = 0; i < dotArray.length; i++) {
+    Dot cDot = dotArray[i];
+    int nextId = nextColor % x;
+    cDot.fillColor = colors[nextId];
+    cDot.fillColorId = nextId;
+    nextColor += 1;
   }
 }
 
@@ -478,21 +512,21 @@ void setSingleFillColor(x) {
 //   }
 // }
 
-void setTheme(themeOn) {
-  uiOpt.U_DOT_FILL_THEME = themeOn
-  if (themeOn) {
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[i];
-      int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
-      cDot.fillColor = color(rgb[0], rgb[1], rgb[2],rgb[3]);
-    }
-  } else {
-      for (int i = 0; i < dotArray.length; i++) {
-        Dot cDot = dotArray[i];
-        cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
-      }
-    }
-}
+// void setTheme(themeOn) {
+//   uiOpt.U_DOT_FILL_THEME = themeOn
+//   if (themeOn) {
+//     for (int i = 0; i < dotArray.length; i++) {
+//       Dot cDot = dotArray[i];
+//       int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
+//       cDot.fillColor = color(rgb[0], rgb[1], rgb[2],rgb[3]);
+//     }
+//   } else {
+//       for (int i = 0; i < dotArray.length; i++) {
+//         Dot cDot = dotArray[i];
+//         cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
+//       }
+//     }
+// }
 
 void recalculatePadding() {
     uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST_X)) / 2;
@@ -538,8 +572,6 @@ void setDotDistY(y) {
 }
 
 
-
-
 void resizeImg() {
   // Determine new height and width
   uiOpt.IMG_HEIGHT = window.innerHeight*window.devicePixelRatio;
@@ -576,7 +608,8 @@ void setup() {
 }
 
 void initDots() {
-  // for (int ite = 0; ite < U_NUM_ITERS; ite++) {
+  color[] colors = [uiOpt.U_DOT_FILL_COLOR_1,uiOpt.U_DOT_FILL_COLOR_2,uiOpt.U_DOT_FILL_COLOR_3];
+  int nextColor = 0;
     for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
       for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
         Dot newDot = new Dot();
@@ -601,13 +634,10 @@ void initDots() {
           newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
         }
         
-        // Init fill
-        if (uiOpt.U_DOT_FILL_THEME) {
-          int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
-          newDot.fillColor = color(rgb[0], rgb[1], rgb[2], rgb[3]);
-        } else {
-          newDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
-        }
+        int nextId = nextColor % uiOpt.U_DOT_FILL_NUM_COLORS;
+        newDot.fillColor = colors[nextId];
+        newDot.fillColorId = nextId;
+        nextColor += 1;
 
         // Init offset
         float offsetX = 0;
@@ -621,11 +651,10 @@ void initDots() {
         // Add dot to array
         dotArray = (Dot[]) append(dotArray, newDot);
       }
-    }
-    setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
-    setStrokeRandomize(uiOpt.U_DOT_STROKE_RANDOMIZE);
-    setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX,uiOpt.U_DOT_OFFSET_Y_MAX);
-  // }
+  }
+  setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
+  setStrokeRandomize(uiOpt.U_DOT_STROKE_RANDOMIZE);
+  setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX,uiOpt.U_DOT_OFFSET_Y_MAX);
 }
 
 void draw() {
@@ -637,9 +666,7 @@ void draw() {
   } 
 
   translate(-width/2, -height/2);
-  scale(2);
-  // translate(+width/2, +height/2);
-  
+  scale(2);  
 
   background(uiOpt.U_BG_COLOR);
 

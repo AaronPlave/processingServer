@@ -52,7 +52,7 @@ function initialize() {
 
     // wait for sketch to load to assign handler
     var _timer = 0,
-        _timeout = 3000,
+        _timeout = 5000,
         _mem = setInterval(function() {
             pHandler = Processing.getInstanceById("dotsSketch");
             if (pHandler) {
@@ -96,9 +96,11 @@ function initGui() {
         this.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
         this.U_DOT_SINGLE_STROKE_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR)[3];
         this.U_DOT_FILL = pOpt.U_DOT_FILL;
-        this.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
-        this.U_DOT_SINGLE_FILL_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR)[3];
-        this.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
+        this.U_DOT_FILL_NUM_COLORS = pHandler.colorToRGB(pOpt.U_DOT_FILL_NUM_COLORS);
+        this.U_DOT_FILL_COLOR_1 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_1);
+        this.U_DOT_FILL_COLOR_2 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_2);
+        this.U_DOT_FILL_COLOR_3 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_3);
+        // this.U_DOT_SINGLE_FILL_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR)[3];
         this.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
         this.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
         this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
@@ -167,29 +169,64 @@ function initGui() {
     cFill.onChange(function(value) {
         pHandler.getUiOpt().U_DOT_FILL = value;
     });
-    var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR').name("Single Color");
-    cFillSingleColor.onChange(function(value) {
+    var cFillNumColors = fFill.add(_opts, 'U_DOT_FILL_NUM_COLORS',[1,2,3]).name("# Fill Colors");
+    cFillNumColors.onChange(function(value) {
+        pHandler.setFillNumColors(value);
+    });
+
+    var cFillColor1 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_1').name("Color 1");
+    cFillColor1.onChange(function(value) {
         if (typeof(value) === "string") {
             if (value.indexOf("#") === 0) {
                 // Case where alpha is set to 1, the color
                 // selector reverts to hex... Of course.
-                pHandler.setSingleFillColor(hexToRgb(value));
+                pHandler.setFillColor(hexToRgb(value),0);
             } else {
-                pHandler.setSingleFillColor(rgbaStringToList(value));
+                pHandler.setFillColor(rgbaStringToList(value),0);
             }
         } else {
             // Case where it returns a list (object type).
-            pHandler.setSingleFillColor(value);
+            pHandler.setFillColor(value,0);
+        }
+    });
+    var cFillColor2 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_2').name("Color 2");
+    cFillColor2.onChange(function(value) {
+        if (typeof(value) === "string") {
+            if (value.indexOf("#") === 0) {
+                // Case where alpha is set to 1, the color
+                // selector reverts to hex... Of course.
+                pHandler.setFillColor(hexToRgb(value),1);
+            } else {
+                pHandler.setFillColor(rgbaStringToList(value),1);
+            }
+        } else {
+            // Case where it returns a list (object type).
+            pHandler.setFillColor(value,1);
+        }
+    });
+    var cFillColor3 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_3').name("Color 3");
+    cFillColor3.onChange(function(value) {
+        if (typeof(value) === "string") {
+            if (value.indexOf("#") === 0) {
+                // Case where alpha is set to 1, the color
+                // selector reverts to hex... Of course.
+                pHandler.setFillColor(hexToRgb(value),2);
+            } else {
+                pHandler.setFillColor(rgbaStringToList(value),2);
+            }
+        } else {
+            // Case where it returns a list (object type).
+            pHandler.setFillColor(value,2);
         }
     });
     // var cFillSingleColorOpacity = fFill.add(_opts, 'U_DOT_SINGLE_FILL_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
     // cFillSingleColorOpacity.onChange(function(value) {
     //     pHandler.setSingleFillColorOpacity(value);
     // });
-    var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').name("Enable Theme");
-    cFillTheme.onChange(function(value) {
-        pHandler.setTheme(value);
-    });
+    // var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').name("Enable Theme");
+    // cFillTheme.onChange(function(value) {
+    //     pHandler.setTheme(value);
+    // });
 
     // STROKE
     var fStroke = gui.addFolder('Stroke');
@@ -351,10 +388,12 @@ function resetControls() {
     _opts.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
     _opts.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
     _opts.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
-    _opts.U_DOT_SINGLE_STROKE_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR)[3];
+    // _opts.U_DOT_SINGLE_STROKE_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR)[3];
     _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
-    _opts.U_DOT_SINGLE_FILL_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR);
-    _opts.U_DOT_FILL_THEME = pOpt.U_DOT_FILL_THEME;
+    _opts.U_DOT_FILL_NUM_COLORS = pHandler.colorToRGB(pOpt.U_DOT_FILL_NUM_COLORS);
+    _opts.U_DOT_FILL_COLOR_1 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_1);
+    _opts.U_DOT_FILL_COLOR_2 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_2);
+    _opts.U_DOT_FILL_COLOR_3 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_3);
     _opts.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
     _opts.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
     _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
