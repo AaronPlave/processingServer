@@ -116,7 +116,7 @@ class UIOpt {
     U_DOT_STROKE_WEIGHT = 0.5;
     U_DOT_STROKE_WEIGHT_MIN  = 0.5;
     U_DOT_STROKE_WEIGHT_MAX = 5;
-    U_DOT_SINGLE_STROKE_COLOR = color(255,0,247,100);
+    U_DOT_SINGLE_STROKE_COLOR = color(255,0,247,255);
     //// END CUSTOMIZABLE PARAMS
 
     //// PREDEFINED PARAMS
@@ -196,6 +196,19 @@ class Dot {
     offset.y = y;
   }
 
+  boolean isInView() {
+    int pX = pos.x + offset.x + radius;
+    int pY = pos.y + offset.y + radius;
+    if (pX < 0 || pX > window.innerWidth*window.devicePixelRatio) {
+      console.log(pX);
+      return false;
+    } 
+    if (pY < 0 || pY > window.innerHeight*window.devicePixelRatio) {
+      return false;
+    }
+    return true;
+  }
+
   void drawDot() {
     
     // Determine fill
@@ -240,7 +253,11 @@ class Dot {
     PVector dirOfTravel = PVector.sub(targetOffset,offset);
     dirOfTravel.normalize();
     offset.add(PVector.mult(dirOfTravel,offsetRate));
-    ellipse(pos.x+offset.x,pos.y+offset.y,radius,radius);
+
+    // Determine if dot is onscreen, if so, draw.
+    if (isInView()) {
+      ellipse(pos.x+offset.x,pos.y+offset.y,radius,radius);
+    }
   }
 };
 
@@ -382,7 +399,7 @@ void setStrokeRandomize(randomize) {
 }
 
 void setStrokeColor(x) {
-  uiOpt.U_DOT_SINGLE_STROKE_COLOR = color(x[0],x[1],x[2],alpha(uiOpt.U_DOT_SINGLE_STROKE_COLOR));
+  uiOpt.U_DOT_SINGLE_STROKE_COLOR = color(x[0],x[1],x[2],x[3]*255);
   if (uiOpt.U_DOT_STROKE){
     for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[i];
@@ -391,15 +408,15 @@ void setStrokeColor(x) {
   }
 }
 
-void setStrokeColorOpacity(x) {
-  uiOpt.U_DOT_SINGLE_STROKE_COLOR = (uiOpt.U_DOT_SINGLE_STROKE_COLOR & 0xffffff) | (x << 24); 
-  if (uiOpt.U_DOT_STROKE){
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[i];
-      cDot.strokeColor = uiOpt.U_DOT_SINGLE_STROKE_COLOR;
-    }
-  }
-}
+// void setStrokeColorOpacity(x) {
+//   uiOpt.U_DOT_SINGLE_STROKE_COLOR = (uiOpt.U_DOT_SINGLE_STROKE_COLOR & 0xffffff) | (x << 24); 
+//   if (uiOpt.U_DOT_STROKE){
+//     for (int i = 0; i < dotArray.length; i++) {
+//       Dot cDot = dotArray[i];
+//       cDot.strokeColor = uiOpt.U_DOT_SINGLE_STROKE_COLOR;
+//     }
+//   }
+// }
 
 void setOffsetX(x) {
   uiOpt.U_DOT_OFFSET_X_MAX = x;
@@ -435,9 +452,9 @@ void setBG(x) {
   uiOpt.U_BG_COLOR = color(x[0],x[1],x[2],x[3]*255);
 }
 
-void setBGOpacity(x) {
-    uiOpt.U_BG_COLOR = (uiOpt.U_BG_COLOR & 0xffffff) | (x << 24); 
-}
+// void setBGOpacity(x) {
+//     uiOpt.U_BG_COLOR = (uiOpt.U_BG_COLOR & 0xffffff) | (x << 24); 
+// }
 
 void setSingleFillColor(x) {
   uiOpt.U_DOT_SINGLE_FILL_COLOR = color(x[0],x[1],x[2],alpha(uiOpt.U_DOT_SINGLE_FILL_COLOR));
@@ -537,7 +554,7 @@ void resizeImg() {
 void setup() {
   uiOpt = new UIOpt();
   size(uiOpt.IMG_WIDTH, uiOpt.IMG_HEIGHT);
-  smooth(2); 
+  smooth(3); 
   background(uiOpt.U_BG_COLOR);
   frameRate(30);
 

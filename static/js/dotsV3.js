@@ -126,19 +126,18 @@ function initGui() {
                 // selector reverts to hex... Of course.
                 pHandler.setBG(hexToRgb(value));
             } else {
-                pHandler.setBG(rgbaStringToList(value));
+                var tmpColor = rgbaStringToList(value);
+                // Hardcode bg opacity to 1.
+                tmpColor[3] = 1;
+                pHandler.setBG(tmpColor);
             }
         } else {
             // Case where it returns a list (object type).
             // Have to 
-            console.log("Case object type");
+            value[3] = 1;
             pHandler.setBG(value);
         }
     });
-    // var cBGOpacity = fBG.add(_opts, 'U_BG_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
-    // cBGOpacity.onChange(function(value) {
-    //     pHandler.setBGOpacity(value);
-    // });
 
     // LAYOUT
     var fLayout = gui.addFolder('Layout');
@@ -171,10 +170,10 @@ function initGui() {
             pHandler.setSingleFillColor(value);
         }
     });
-    var cFillSingleColorOpacity = fFill.add(_opts, 'U_DOT_SINGLE_FILL_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
-    cFillSingleColorOpacity.onChange(function(value) {
-        pHandler.setSingleFillColorOpacity(value);
-    });
+    // var cFillSingleColorOpacity = fFill.add(_opts, 'U_DOT_SINGLE_FILL_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
+    // cFillSingleColorOpacity.onChange(function(value) {
+    //     pHandler.setSingleFillColorOpacity(value);
+    // });
     var cFillTheme = fFill.add(_opts, 'U_DOT_FILL_THEME').name("Enable Theme");
     cFillTheme.onChange(function(value) {
         pHandler.setTheme(value);
@@ -194,15 +193,22 @@ function initGui() {
     var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').name("Color");;
     cStrokeColor.onChange(function(value) {
         if (typeof(value) === "string") {
-            pHandler.setStrokeColor(hexToRgb(value));
+            if (value.indexOf("#") === 0) {
+                // Case where alpha is set to 1, the color
+                // selector reverts to hex... Of course.
+                pHandler.setStrokeColor(hexToRgb(value));
+            } else {
+                pHandler.setStrokeColor(rgbaStringToList(value));
+            }
         } else {
+            // Case where it returns a list (object type).
             pHandler.setStrokeColor(value);
         }
     });
-    var cStrokeColorOpacity = fStroke.add(_opts, 'U_DOT_SINGLE_STROKE_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
-    cStrokeColorOpacity.onChange(function(value) {
-        pHandler.setStrokeColorOpacity(value);
-    });
+    // var cStrokeColorOpacity = fStroke.add(_opts, 'U_DOT_SINGLE_STROKE_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
+    // cStrokeColorOpacity.onChange(function(value) {
+    //     pHandler.setStrokeColorOpacity(value);
+    // });
 
     var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).name("Random Stroke");
     cStrokeRandomize.onChange(function(value) {
