@@ -83,8 +83,9 @@ function initGui() {
         var pOpt = pHandler.getUiOpt();
         this.U_DRAW = pOpt.U_DRAW;
         this.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
-        this.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
+        // this.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
+        this.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
         this.U_DOT_DIST = pOpt.U_DOT_DIST;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
@@ -120,22 +121,35 @@ function initGui() {
     var cBG = fBG.addColor(_opts, 'U_BG_COLOR').name("Color");
     cBG.onChange(function(value) {
         if (typeof(value) === "string") {
-            pHandler.setBG(hexToRgb(value));
+            if (value.indexOf("#") === 0) {
+                // Case where alpha is set to 1, the color
+                // selector reverts to hex... Of course.
+                pHandler.setBG(hexToRgb(value));
+            } else {
+                pHandler.setBG(rgbaStringToList(value));
+            }
         } else {
+            // Case where it returns a list (object type).
+            // Have to 
+            console.log("Case object type");
             pHandler.setBG(value);
         }
     });
-    var cBGOpacity = fBG.add(_opts, 'U_BG_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
-    cBGOpacity.onChange(function(value) {
-        pHandler.setBGOpacity(value);
-    });
+    // var cBGOpacity = fBG.add(_opts, 'U_BG_COLOR_OPACITY', 0, 255).step(1).name("Color Opacity");
+    // cBGOpacity.onChange(function(value) {
+    //     pHandler.setBGOpacity(value);
+    // });
 
     // LAYOUT
     var fLayout = gui.addFolder('Layout');
     folders.push(fLayout);
-    var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 80).step(1).name("Dots Per Row");
+    var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 50).step(1).name("Dots Per Row");
     cDotsPerRow.onChange(function(value) {
         pHandler.setDotsPerRow(value);
+    });
+    var cDotsPerCol = fLayout.add(_opts, 'U_DOTS_PER_COL', 0, 50).step(1).name("Dots Per Col");
+    cDotsPerCol.onChange(function(value) {
+        pHandler.setDotsPerCol(value);
     });
     var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1).name("Dot Spacing");
     cDotDist.onChange(function(value) {
@@ -308,8 +322,9 @@ function resetControls() {
     var pOpt = pHandler.getUiOpt();
     _opts.U_DRAW = pOpt.U_DRAW;
     _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
-    _opts.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
+    // _opts.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
     _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
+    _opts.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
     _opts.U_DOT_DIST = pOpt.U_DOT_DIST;
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
     _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
@@ -367,15 +382,24 @@ function loadOptsFromJSON(json) {
     pHandler.setUiOpt(json);
 }
 
+function rgbaStringToList(l) {
+    // Super hard coded, can fix later if it's an issue.
+    // Assumes the 'a' value is out of 255.
+    var s1 = l.split("rgba(")[1];
+    var s2 = s1.split(")")[0];
+    var sVals = s2.split(",")
+    var vals = [parseInt(sVals[0]), parseInt(sVals[1]), parseInt(sVals[2]), parseFloat(sVals[3])];
+    return vals;
+}
+
 function hexToRgb(hex) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hex = hex.replace(shorthandRegex, function(m, r, g, b) {
         return r + r + g + g + b + b;
     });
-
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16), 100] : null;
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16), 1] : null;
 }
 
 function disableFullscreen() {

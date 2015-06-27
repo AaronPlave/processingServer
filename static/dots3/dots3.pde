@@ -65,6 +65,7 @@ class UIOpt {
   int IMG_HEIGHT;
   int IMG_WIDTH;
   int U_DOTS_PER_ROW;
+  int U_DOTS_PER_COL;
   int U_DOT_DIST;
   int IMG_PADDING_X;
   int IMG_PADDING_Y;
@@ -93,7 +94,7 @@ class UIOpt {
     U_DOT_RADIUS_MAX = 25;
 
     // background color
-    U_BG_COLOR = color(255,253,247,100);
+    U_BG_COLOR = color(255,249,233,255);
 
     // dot fill single color 
     U_DOT_SINGLE_FILL_COLOR = color(20,253,247,100);
@@ -122,10 +123,10 @@ class UIOpt {
     IMG_HEIGHT = window.innerHeight*window.devicePixelRatio;;
     IMG_WIDTH = window.innerWidth*window.devicePixelRatio;;
     U_DOTS_PER_ROW = 10;
+    U_DOTS_PER_COL = 10;
     U_DOT_DIST = 25;
     IMG_PADDING_X = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
-    IMG_PADDING_Y = (IMG_HEIGHT - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
-    MAX_DOTS_PER_ROW = 1000;
+    IMG_PADDING_Y = (IMG_HEIGHT - ((U_DOTS_PER_COL-1) * U_DOT_DIST)) / 2;
     //// END PREDEFINED PARAMS
   }
 };
@@ -430,8 +431,10 @@ void setOffsetXY(x,y) {
 
 
 void setBG(x) {
-  uiOpt.U_BG_COLOR = color(x[0],x[1],x[2],alpha(uiOpt.U_BG_COLOR));
+  // Assume alpha is out of 1. Change to 255.
+  uiOpt.U_BG_COLOR = color(x[0],x[1],x[2],x[3]*255);
 }
+
 void setBGOpacity(x) {
     uiOpt.U_BG_COLOR = (uiOpt.U_BG_COLOR & 0xffffff) | (x << 24); 
 }
@@ -474,11 +477,19 @@ void setTheme(themeOn) {
 
 void recalculatePadding() {
     uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
-    uiOpt.IMG_PADDING_Y = (uiOpt.IMG_HEIGHT - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
+    uiOpt.IMG_PADDING_Y = (uiOpt.IMG_HEIGHT - ((uiOpt.U_DOTS_PER_COL-1) * uiOpt.U_DOT_DIST)) / 2;
 }
+
 void setDotsPerRow(x) {
   dotArray = {};
   uiOpt.U_DOTS_PER_ROW = x;
+  initDots();
+  recalculatePadding();
+}
+
+void setDotsPerCol(x) {
+  dotArray = {};
+  uiOpt.U_DOTS_PER_COL = x;
   initDots();
   recalculatePadding();
 }
@@ -487,7 +498,7 @@ void setDotDist(distance) {
   uiOpt.U_DOT_DIST = distance;
   recalculatePadding();
   int c = 0;
-  for (int i = 0; i < uiOpt.U_DOTS_PER_ROW; i++) {
+  for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
     for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
       Dot cDot = dotArray[c];
 
@@ -507,7 +518,7 @@ void resizeImg() {
 
   // Determine new dot positions
   int c = 0;
-  for (int i = 0; i < uiOpt.U_DOTS_PER_ROW; i++) {
+  for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
     for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
       Dot cDot = dotArray[c];
 
@@ -535,7 +546,7 @@ void setup() {
 
 void initDots() {
   // for (int ite = 0; ite < U_NUM_ITERS; ite++) {
-    for (int i = 0; i < uiOpt.U_DOTS_PER_ROW; i++) {
+    for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
       for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
         Dot newDot = new Dot();
 
@@ -609,14 +620,9 @@ void draw() {
 
 }
 
-//void keyPressed() {
-//  if (keyCode == ENTER) {
-//    saveFrame("../screenshots/screen-"+str(random(1000000))+".jpg");
-//  }
-//}
 void printColor(color c) {
   println(red(c) +", " + blue(c) + ", " + green(c));
 }
 String colorToRGB(color c) {
-  return [red(c),green(c),blue(c), alpha(c)];
+  return [red(c),green(c),blue(c), round((alpha(c)/255.0)*100)*0.01];
 }
