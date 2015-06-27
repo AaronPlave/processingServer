@@ -86,7 +86,8 @@ function initGui() {
         // this.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
-        this.U_DOT_DIST = pOpt.U_DOT_DIST;
+        this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
+        this.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
         this.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
@@ -150,9 +151,13 @@ function initGui() {
     cDotsPerCol.onChange(function(value) {
         pHandler.setDotsPerCol(value);
     });
-    var cDotDist = fLayout.add(_opts, 'U_DOT_DIST', 0, 100).step(1).name("Dot Spacing");
-    cDotDist.onChange(function(value) {
-        pHandler.setDotDist(value);
+    var cDotDistX = fLayout.add(_opts, 'U_DOT_DIST_X', 0, 100).step(1).name("Dot Spacing X");
+    cDotDistX.onChange(function(value) {
+        pHandler.setDotDistX(value);
+    });
+    var cDotDistY = fLayout.add(_opts, 'U_DOT_DIST_Y', 0, 100).step(1).name("Dot Spacing Y");
+    cDotDistY.onChange(function(value) {
+        pHandler.setDotDistY(value);
     });
 
     // FILL
@@ -338,7 +343,8 @@ function resetControls() {
     // _opts.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
     _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
     _opts.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
-    _opts.U_DOT_DIST = pOpt.U_DOT_DIST;
+    _opts.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
+    _opts.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
     _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
     _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;

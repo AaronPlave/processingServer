@@ -66,7 +66,8 @@ class UIOpt {
   int IMG_WIDTH;
   int U_DOTS_PER_ROW;
   int U_DOTS_PER_COL;
-  int U_DOT_DIST;
+  int U_DOT_DIST_X;
+  int U_DOT_DIST_Y;
   int IMG_PADDING_X;
   int IMG_PADDING_Y;
   //// END PREDEFINED PARAMS
@@ -124,9 +125,10 @@ class UIOpt {
     IMG_WIDTH = window.innerWidth*window.devicePixelRatio;;
     U_DOTS_PER_ROW = 10;
     U_DOTS_PER_COL = 10;
-    U_DOT_DIST = 25;
-    IMG_PADDING_X = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST)) / 2;
-    IMG_PADDING_Y = (IMG_HEIGHT - ((U_DOTS_PER_COL-1) * U_DOT_DIST)) / 2;
+    U_DOT_DIST_X = 25;
+    U_DOT_DIST_Y = 25;
+    IMG_PADDING_X = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST_X)) / 2;
+    IMG_PADDING_Y = (IMG_HEIGHT - ((U_DOTS_PER_COL-1) * U_DOT_DIST_Y)) / 2;
     //// END PREDEFINED PARAMS
   }
 };
@@ -493,8 +495,8 @@ void setTheme(themeOn) {
 }
 
 void recalculatePadding() {
-    uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST)) / 2;
-    uiOpt.IMG_PADDING_Y = (uiOpt.IMG_HEIGHT - ((uiOpt.U_DOTS_PER_COL-1) * uiOpt.U_DOT_DIST)) / 2;
+    uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST_X)) / 2;
+    uiOpt.IMG_PADDING_Y = (uiOpt.IMG_HEIGHT - ((uiOpt.U_DOTS_PER_COL-1) * uiOpt.U_DOT_DIST_Y)) / 2;
 }
 
 void setDotsPerRow(x) {
@@ -511,8 +513,9 @@ void setDotsPerCol(x) {
   recalculatePadding();
 }
 
-void setDotDist(distance) {
-  uiOpt.U_DOT_DIST = distance;
+void setDotDistXY(x,y) {
+  uiOpt.U_DOT_DIST_X = x;
+  uiOpt.U_DOT_DIST_Y = y;
   recalculatePadding();
   int c = 0;
   for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
@@ -520,11 +523,22 @@ void setDotDist(distance) {
       Dot cDot = dotArray[c];
 
       // Init position
-      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST * j,uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST);
+      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j,uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y);
       c += 1;
     }
   }
 }
+
+void setDotDistX(x) {
+  setDotDistXY(x,uiOpt.U_DOT_DIST_Y);
+}
+
+void setDotDistY(y) {
+  setDotDistXY(uiOpt.U_DOT_DIST_X,y);
+}
+
+
+
 
 void resizeImg() {
   // Determine new height and width
@@ -540,7 +554,7 @@ void resizeImg() {
       Dot cDot = dotArray[c];
 
       // Init position
-      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST * j,uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST);
+      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j,uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y);
       c += 1;
     }
   }
@@ -568,8 +582,8 @@ void initDots() {
         Dot newDot = new Dot();
 
         // Init position
-        int x1 = uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST * j;
-        int y1 = uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST;
+        int x1 = uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j;
+        int y1 = uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y;
         newDot.setPos(x1,y1);
 
         // Init radius
