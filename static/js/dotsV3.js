@@ -165,8 +165,15 @@ function initGui() {
     var cFillSingleColor = fFill.addColor(_opts, 'U_DOT_SINGLE_FILL_COLOR').name("Single Color");
     cFillSingleColor.onChange(function(value) {
         if (typeof(value) === "string") {
-            pHandler.setSingleFillColor(hexToRgb(value));
+            if (value.indexOf("#") === 0) {
+                // Case where alpha is set to 1, the color
+                // selector reverts to hex... Of course.
+                pHandler.setSingleFillColor(hexToRgb(value));
+            } else {
+                pHandler.setSingleFillColor(rgbaStringToList(value));
+            }
         } else {
+            // Case where it returns a list (object type).
             pHandler.setSingleFillColor(value);
         }
     });

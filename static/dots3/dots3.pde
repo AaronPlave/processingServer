@@ -144,7 +144,7 @@ void setUiOpt(x) {
   for (int i = 0; i < keys.length; i++) {
     if (keys[i] == "U_BG_COLOR" || keys[i] == "U_DOT_SINGLE_STROKE_COLOR" || keys[i] == "U_DOT_SINGLE_FILL_COLOR") {
       int[] c = x[keys[i]];
-      newOpt[keys[i]] = color(c[0],c[1],c[2],c[3]);
+      newOpt[keys[i]] = color(c[0],c[1],c[2],c[3]*255);
     } else {
         newOpt[keys[i]] = x[keys[i]];
       }
@@ -457,7 +457,7 @@ void setBG(x) {
 // }
 
 void setSingleFillColor(x) {
-  uiOpt.U_DOT_SINGLE_FILL_COLOR = color(x[0],x[1],x[2],alpha(uiOpt.U_DOT_SINGLE_FILL_COLOR));
+  uiOpt.U_DOT_SINGLE_FILL_COLOR = color(x[0],x[1],x[2],x[3]*255);
   if (!uiOpt.U_DOT_FILL_THEME){
     for (int i = 0; i < dotArray.length; i++) {
       Dot cDot = dotArray[i];
@@ -466,15 +466,15 @@ void setSingleFillColor(x) {
   }
 }
 
-void setSingleFillColorOpacity(x) {
-  uiOpt.U_DOT_SINGLE_FILL_COLOR = (uiOpt.U_DOT_SINGLE_FILL_COLOR & 0xffffff) | (x << 24); 
-  if (!uiOpt.U_DOT_FILL_THEME){
-    for (int i = 0; i < dotArray.length; i++) {
-      Dot cDot = dotArray[i];
-      cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
-    }
-  }
-}
+// void setSingleFillColorOpacity(x) {
+//   uiOpt.U_DOT_SINGLE_FILL_COLOR = (uiOpt.U_DOT_SINGLE_FILL_COLOR & 0xffffff) | (x << 24); 
+//   if (!uiOpt.U_DOT_FILL_THEME){
+//     for (int i = 0; i < dotArray.length; i++) {
+//       Dot cDot = dotArray[i];
+//       cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
+//     }
+//   }
+// }
 
 void setTheme(themeOn) {
   uiOpt.U_DOT_FILL_THEME = themeOn
