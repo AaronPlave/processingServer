@@ -31,10 +31,6 @@ class UIOpt {
   boolean U_DOT_RADIUS_RANDOMIZE;
   boolean U_DOT_OFFSET;
 
-  // draw iterations
-  int U_NUM_ITERS;
-  int U_NUM_ITERS_MAX;
-
   // dot center offset
   float U_DOT_OFFSET_X_MAX;
   float U_DOT_OFFSET_Y_MAX;
@@ -55,8 +51,8 @@ class UIOpt {
   color U_DOT_FILL_COLOR_2;
   color U_DOT_FILL_COLOR_3;
 
-  // dot fill theme colors 
-  // int[][] U_DOT_FILL_THEME_COLORS;
+  // dot fill color dist
+  String U_DOT_FILL_COLOR_DIST;
 
   // dot stroke
   float U_DOT_STROKE_WEIGHT;
@@ -79,15 +75,11 @@ class UIOpt {
   UIOpt() {
     U_DRAW = true;
     U_DOT_FILL = true;
-    U_DOT_FILL_NUM_COLORS = 1;
+    U_DOT_FILL_NUM_COLORS = 3;
     U_DOT_STROKE = false;
     U_DOT_STROKE_RANDOMIZE = false;
     U_DOT_RADIUS_RANDOMIZE = true;
     U_DOT_OFFSET = true;
-
-    // draw iterations
-    U_NUM_ITERS = 1;
-    U_NUM_ITERS_MAX = 20;
 
     // dot center offset
     U_DOT_OFFSET_X_MAX = 30;
@@ -102,22 +94,12 @@ class UIOpt {
     U_BG_COLOR = color(255,249,233,255);
 
     // dot fill colors 
-    U_DOT_FILL_COLOR_1 = color(20,253,247,100);
-    U_DOT_FILL_COLOR_2 = color(200,53,247,100);
-    U_DOT_FILL_COLOR_3 = color(2,2,247,100);
+    U_DOT_FILL_COLOR_1 = color(255, 229, 110, 255);
+    U_DOT_FILL_COLOR_2 = color(215, 25, 32,255);
+    U_DOT_FILL_COLOR_3 = color(0, 0, 0,255);
 
-    // dot fill theme colors 
-    // U_DOT_FILL_THEME_COLORS = {
-    //   {
-    //     255, 229, 110,255
-    //   }
-    //   , {
-    //     215, 25, 32,255
-    //   }
-    //   , {
-    //     0, 0, 0,255
-    //   }
-    // };
+    // dot fill color distribution
+    U_DOT_FILL_COLOR_DIST = "Random";
 
     // dot stroke
     U_DOT_STROKE_WEIGHT = 0.5;
@@ -325,8 +307,6 @@ void checkDotConditions() {
   }
 }
 
-
-
 void setRadius(x) {
   uiOpt.U_DOT_RADIUS = x;
   if (!uiOpt.U_DOT_RADIUS_RANDOMIZE) {
@@ -502,31 +482,48 @@ void setFillNumColors(x) {
   }
 }
 
-// void setSingleFillColorOpacity(x) {
-//   uiOpt.U_DOT_SINGLE_FILL_COLOR = (uiOpt.U_DOT_SINGLE_FILL_COLOR & 0xffffff) | (x << 24); 
-//   if (!uiOpt.U_DOT_FILL_THEME){
-//     for (int i = 0; i < dotArray.length; i++) {
-//       Dot cDot = dotArray[i];
-//       cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
-//     }
-//   }
-// }
+void setFillColorDist(d) {
+  if (d == uiOpt.U_DOT_FILL_COLOR_DIST) {
+    return;
+  }
+  uiOpt.U_DOT_FILL_COLOR_DIST = d;
+  color[] colors = [uiOpt.U_DOT_FILL_COLOR_1,uiOpt.U_DOT_FILL_COLOR_2,uiOpt.U_DOT_FILL_COLOR_3];
 
-// void setTheme(themeOn) {
-//   uiOpt.U_DOT_FILL_THEME = themeOn
-//   if (themeOn) {
-//     for (int i = 0; i < dotArray.length; i++) {
-//       Dot cDot = dotArray[i];
-//       int[] rgb = uiOpt.U_DOT_FILL_THEME_COLORS[int(random(0, uiOpt.U_DOT_FILL_THEME_COLORS.length))];
-//       cDot.fillColor = color(rgb[0], rgb[1], rgb[2],rgb[3]);
-//     }
-//   } else {
-//       for (int i = 0; i < dotArray.length; i++) {
-//         Dot cDot = dotArray[i];
-//         cDot.fillColor = uiOpt.U_DOT_SINGLE_FILL_COLOR;
-//       }
-//     }
-// }
+  for (int i = 0; i < dotArray.length; i++) {
+    Dot cDot = dotArray[i];
+    int nextId;
+    if (d == "Random") {
+      console.log("rand",int(random(uiOpt.U_DOT_FILL_NUM_COLORS)));
+      nextId = int(random(uiOpt.U_DOT_FILL_NUM_COLORS));
+    }
+    else if (d == "Alternating") {
+      nextId = i % uiOpt.U_DOT_FILL_NUM_COLORS;
+    } else if (d == "Sorted") {
+        if (uiOpt.U_DOT_FILL_NUM_COLORS == 3) {
+          float tmp = i / dotArray.length;
+          if (tmp < 0.33) {
+            nextId = 0;
+          } else if (tmp < 0.66) {
+              nextId = 1;
+          } else {
+              nextId = 2;
+          }
+        if (uiOpt.U_DOT_FILL_NUM_COLORS == 2) {
+          if (i / dotArray.length < 0.5) {
+            nextId = 0;
+          } else {
+            nextId = 1;
+          }
+        }
+      }
+    } else {
+      console.log("Dist",d,"is not a recognized dist.");
+      nextId = 0;
+    }
+    cDot.fillColor = colors[nextId];
+    cDot.fillColorId = nextId;
+  }
+}
 
 void recalculatePadding() {
     uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST_X)) / 2;

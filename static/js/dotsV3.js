@@ -44,6 +44,7 @@ var viewMode = "create";
 var canvasRef;
 var frameRateEl;
 var fillColorThemes = {
+    "":"",
     "(2) Complementary RO BG": [
         [240, 90, 34, 1],
         [109, 199, 190, 1]
@@ -260,6 +261,7 @@ function initGui() {
         this.U_DOT_FILL_COLOR_2 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_2);
         this.U_DOT_FILL_COLOR_3 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_3);
         this.U_DOT_FILL_THEMES = "";
+        this.U_DOT_FILL_COLOR_DIST = pOpt.U_DOT_FILL_COLOR_DIST;
         // this.U_DOT_SINGLE_FILL_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR)[3];
         this.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
         this.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
@@ -348,6 +350,10 @@ function initGui() {
             // Case where it returns a list (object type).
             pHandler.setFillColor(value, 0);
         }
+        // Hacky fix for the color themes that need to be reset
+        // since dat gui only uses onchange so can't resubmit same
+        // option for now...
+        fFill.__controllers[5].setValue("");
     });
     var cFillColor2 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_2').name("Color 2");
     cFillColor2.onChange(function(value) {
@@ -363,6 +369,10 @@ function initGui() {
             // Case where it returns a list (object type).
             pHandler.setFillColor(value, 1);
         }
+        // Hacky fix for the color themes that need to be reset
+        // since dat gui only uses onchange so can't resubmit same
+        // option for now...
+        fFill.__controllers[5].setValue("");
     });
     var cFillColor3 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_3').name("Color 3");
     cFillColor3.onChange(function(value) {
@@ -378,14 +388,16 @@ function initGui() {
             // Case where it returns a list (object type).
             pHandler.setFillColor(value, 2);
         }
+        // Hacky fix for the color themes that need to be reset
+        // since dat gui only uses onchange so can't resubmit same
+        // option for now...
+        fFill.__controllers[5].setValue("");
     });
 
     var cFillThemes = fFill.add(_opts, 'U_DOT_FILL_THEMES', Object.keys(fillColorThemes)).name("Fill Themes");
     cFillThemes.onChange(function(value) {
         var t = fillColorThemes[value];
-        if (t === null) {
-            console.log("Theme could not be loaded");
-            alert("Theme could not be loaded");
+        if (t === "") {
             return;
         }
         if (t.length > 0) {
@@ -399,6 +411,11 @@ function initGui() {
         }
         updateColors();
     });
+    var cFillColorDist = fFill.add(_opts, 'U_DOT_FILL_COLOR_DIST', ["Random","Alternating","Sorted"]).name("Color Arrangement");
+    cFillColorDist.onChange(function(value) {
+        pHandler.setFillColorDist(value);
+    });
+
 
     // STROKE
     var fStroke = gui.addFolder('Stroke');
@@ -567,6 +584,7 @@ function resetControls() {
     _opts.U_DOT_FILL_COLOR_2 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_2);
     _opts.U_DOT_FILL_COLOR_3 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_3);
     _opts.U_DOT_FILL_THEMES = "";
+    _opts.U_DOT_FILL_COLOR_DIST = pOpt.U_DOT_FILL_COLOR_DIST;
     _opts.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
     _opts.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
     _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
