@@ -476,7 +476,7 @@ function initGui() {
     // RADIUS
     var fRadius = gui.addFolder('Radius');
     folders.push(fRadius);
-    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 100).name("Radius Size");
+    var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 300).name("Radius Size");
     cRadius.onChange(function(value) {
         pHandler.setRadius(value);
     })
@@ -484,11 +484,11 @@ function initGui() {
     cRadiusRandomize.onChange(function(value) {
         pHandler.setRadiusRandomize(value);
     })
-    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 200).name("Random Min");
+    var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 300).name("Random Min");
     cRadiusMin.onChange(function(value) {
         pHandler.setRadiusMin(value);
     })
-    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 200).name("Random Max");;
+    var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 300).name("Random Max");;
     cRadiusMax.onChange(function(value) {
         pHandler.setRadiusMax(value);
     })
