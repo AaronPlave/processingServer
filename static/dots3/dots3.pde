@@ -143,8 +143,7 @@ void setUiOpt(x) {
   }
   uiOpt = newOpt;
   recalculatePadding();
-  dotArray = {
-  };
+  dotArray = {};
   initDots();
 }
 
@@ -194,7 +193,6 @@ class Dot {
     int pX = pos.x + offset.x + radius;
     int pY = pos.y + offset.y + radius;
     if (pX < 0 || pX > window.innerWidth*window.devicePixelRatio) {
-      console.log(pX);
       return false;
     } 
     if (pY < 0 || pY > window.innerHeight*window.devicePixelRatio) {
@@ -608,11 +606,11 @@ void setup() {
   smooth(3); 
   background(uiOpt.U_BG_COLOR);
   frameRate(30);
-
-  // initDots();
+  initDots();
 }
 
 void initDots() {
+  console.log("init");
   color[] colors = [uiOpt.U_DOT_FILL_COLOR_1, uiOpt.U_DOT_FILL_COLOR_2, uiOpt.U_DOT_FILL_COLOR_3];
   int curr = 0;
   for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
@@ -639,7 +637,6 @@ void initDots() {
         newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
       }
       int nextId = getNextFillColorId(curr);
-      console.log(nextId,i);
       newDot.fillColor = colors[nextId];
       newDot.fillColorId = nextId;
 
