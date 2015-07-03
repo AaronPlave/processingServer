@@ -74,38 +74,55 @@ class UIOpt {
 
   UIOpt() {
     U_DRAW = true;
-    U_DOT_FILL = true;
-    U_DOT_FILL_NUM_COLORS = 3;
-    U_DOT_STROKE = false;
-    U_DOT_STROKE_RANDOMIZE = false;
-    U_DOT_RADIUS_RANDOMIZE = true;
-    U_DOT_OFFSET = true;
+    U_DOT_FILL = randBool(0.75);
+    U_DOT_FILL_NUM_COLORS = randInt(1,3);
+
+    if (U_DOT_FILL) {
+      // small chance to combine fill + stroke
+      U_DOT_STROKE = randBool(0.15);
+    } else {
+      // if no fill, must have stroke
+      U_DOT_STROKE = true;
+    }
 
     // dot center offset
-    U_DOT_OFFSET_X_MAX = 30;
-    U_DOT_OFFSET_Y_MAX = 30;
+    U_DOT_OFFSET_X_MAX = randInt(0,100);
+    U_DOT_OFFSET_Y_MAX = randInt(0,100);
 
     // dot radius
-    U_DOT_RADIUS = 10;
-    U_DOT_RADIUS_MIN = 3;
-    U_DOT_RADIUS_MAX = 25;
+    U_DOT_RADIUS_RANDOMIZE = randBool(0.75);
+    U_DOT_RADIUS = randInt(0.1,20);
+    U_DOT_RADIUS_MIN = randInt(0.1,5);
+    U_DOT_RADIUS_MAX = int(random(U_DOT_RADIUS_MIN, 200));
 
     // background color
-    U_BG_COLOR = color(255, 249, 233, 255);
+    U_BG_COLOR = color(random(255),random(255),random(255),255);
+    U_DOT_FILL_COLOR_1 = color(abs(abs(51-red(U_BG_COLOR))-255),abs(abs(51-green(U_BG_COLOR))-255),abs(abs(51-blue(U_BG_COLOR))-255),random(255));
+    U_DOT_FILL_COLOR_2 = color(abs(abs(102-red(U_BG_COLOR))-255),abs(abs(102-green(U_BG_COLOR))-255),abs(abs(102-blue(U_BG_COLOR))-255),random(255));
+    U_DOT_FILL_COLOR_3 = color(abs(abs(153-red(U_BG_COLOR))-255),abs(abs(153-green(U_BG_COLOR))-255),abs(abs(153-blue(U_BG_COLOR))-255),random(255));
 
     // dot fill colors 
-    U_DOT_FILL_COLOR_1 = color(255, 229, 110, 255);
-    U_DOT_FILL_COLOR_2 = color(215, 25, 32, 255);
-    U_DOT_FILL_COLOR_3 = color(0, 0, 0, 255);
+    // U_DOT_FILL_COLOR_1 = color(255, 229, 110, 255);
+    // U_DOT_FILL_COLOR_2 = color(215, 25, 32, 255);
+    // U_DOT_FILL_COLOR_3 = color(0, 0, 0, 255);
 
     // dot fill color distribution
-    U_DOT_FILL_COLOR_DIST = "Random";
+    int _rand = randInt(0,3);
+    if (_rand == 1) {
+      U_DOT_FILL_COLOR_DIST = "Random";
+    } else if (_rand == 2) {
+      U_DOT_FILL_COLOR_DIST = "Alternating";
+    } else {
+      U_DOT_FILL_COLOR_DIST = "Sorted";
+    }
 
     // dot stroke
-    U_DOT_STROKE_WEIGHT = 0.5;
-    U_DOT_STROKE_WEIGHT_MIN  = 0.5;
-    U_DOT_STROKE_WEIGHT_MAX = 5;
-    U_DOT_SINGLE_STROKE_COLOR = color(255, 0, 247, 255);
+    U_DOT_STROKE_RANDOMIZE = randBool(0.4);
+    U_DOT_STROKE_WEIGHT = random(0.6);
+    U_DOT_STROKE_WEIGHT_MIN  = random(0,0.3);
+    U_DOT_STROKE_WEIGHT_MAX = random(0.3,1);
+    U_DOT_SINGLE_STROKE_COLOR = color(255-red(U_BG_COLOR),255-green(U_BG_COLOR),255-blue(U_BG_COLOR),random(0.1,255));
+
     //// END CUSTOMIZABLE PARAMS
 
     //// PREDEFINED PARAMS
@@ -113,10 +130,10 @@ class UIOpt {
     ;
     IMG_WIDTH = window.innerWidth*window.devicePixelRatio;
     ;
-    U_DOTS_PER_ROW = 10;
-    U_DOTS_PER_COL = 10;
-    U_DOT_DIST_X = 25;
-    U_DOT_DIST_Y = 25;
+    U_DOTS_PER_ROW = randInt(0,50);
+    U_DOTS_PER_COL = randInt(0,50);
+    U_DOT_DIST_X = randInt(0,50);
+    U_DOT_DIST_Y = randInt(0,50);
     IMG_PADDING_X = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST_X)) / 2;
     IMG_PADDING_Y = (IMG_HEIGHT - ((U_DOTS_PER_COL-1) * U_DOT_DIST_Y)) / 2;
     //// END PREDEFINED PARAMS
@@ -610,7 +627,6 @@ void setup() {
 }
 
 void initDots() {
-  console.log("init");
   color[] colors = [uiOpt.U_DOT_FILL_COLOR_1, uiOpt.U_DOT_FILL_COLOR_2, uiOpt.U_DOT_FILL_COLOR_3];
   int curr = 0;
   for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
@@ -641,12 +657,8 @@ void initDots() {
       newDot.fillColorId = nextId;
 
       // Init offset
-      float offsetX = 0;
-      float offsetY = 0;
-      if (uiOpt.U_DOT_OFFSET) {
-        offsetX = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
-        offsetY = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
-      }
+      float offsetX = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
+      float offsetY = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
       newDot.setOffset(offsetX, offsetY);
 
       // Add dot to array
@@ -685,4 +697,15 @@ void printColor(color c) {
 String colorToRGB(color c) {
   return [red(c), green(c), blue(c), round((alpha(c)/255.0)*100)*0.01];
 }
-
+boolean randBool(x) {
+  // where x is the chance out of 1 of true
+  if (random(1) < x) {
+    return true;
+  } 
+  return false;
+}
+int randInt(x,y) {
+  // int x is the min
+  // int y is the max
+  return int(random(x,y+1)); 
+}

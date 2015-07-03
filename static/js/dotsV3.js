@@ -549,7 +549,6 @@ function initGui() {
     });
 
     canvasRef.addEventListener("click", function() {
-        console.log("click")
         if (viewMode === "create") {
             enableFullscreen();
             viewMode = "view";
