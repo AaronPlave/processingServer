@@ -118,9 +118,9 @@ class UIOpt {
 
     // dot stroke
     U_DOT_STROKE_RANDOMIZE = randBool(0.4);
-    U_DOT_STROKE_WEIGHT = random(0.6);
-    U_DOT_STROKE_WEIGHT_MIN  = random(0,0.3);
-    U_DOT_STROKE_WEIGHT_MAX = random(0.3,1);
+    U_DOT_STROKE_WEIGHT = random(0.3, 0.6);
+    U_DOT_STROKE_WEIGHT_MIN  = random(0.3,0.5);
+    U_DOT_STROKE_WEIGHT_MAX = random(0.5,1);
     U_DOT_SINGLE_STROKE_COLOR = color(255-red(U_BG_COLOR),255-green(U_BG_COLOR),255-blue(U_BG_COLOR),random(0.1,255));
 
     //// END CUSTOMIZABLE PARAMS
@@ -130,8 +130,8 @@ class UIOpt {
     ;
     IMG_WIDTH = window.innerWidth*window.devicePixelRatio;
     ;
-    U_DOTS_PER_ROW = randInt(0,50);
-    U_DOTS_PER_COL = randInt(0,50);
+    U_DOTS_PER_ROW = randInt(1,50);
+    U_DOTS_PER_COL = randInt(1,50);
     U_DOT_DIST_X = randInt(0,50);
     U_DOT_DIST_Y = randInt(0,50);
     IMG_PADDING_X = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST_X)) / 2;
