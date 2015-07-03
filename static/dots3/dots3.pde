@@ -548,24 +548,26 @@ void setFillColorDist(d) {
 }
 
 void recalculatePadding() {
+  console.log("recalc");
   uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST_X)) / 2;
   uiOpt.IMG_PADDING_Y = (uiOpt.IMG_HEIGHT - ((uiOpt.U_DOTS_PER_COL-1) * uiOpt.U_DOT_DIST_Y)) / 2;
 }
 
 void setDotsPerRow(x) {
+  console.log("Set");
   dotArray = {
   };
   uiOpt.U_DOTS_PER_ROW = x;
-  initDots();
   recalculatePadding();
+  initDots();
 }
 
 void setDotsPerCol(x) {
   dotArray = {
   };
   uiOpt.U_DOTS_PER_COL = x;
-  initDots();
   recalculatePadding();
+  initDots();
 }
 
 void setDotDistXY(x, y) {
