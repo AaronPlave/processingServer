@@ -22,6 +22,10 @@
 //  Number of draw iterations:  change conditions randomly or in order?
 //  Shape noise, could add some amount of random *wiggliness* to each shape, uniformly or not. 
 
+
+// ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
+boolean TEST_MODE = true;
+
 class UIOpt {
   boolean U_DRAW;
   boolean U_DRAW;
@@ -34,6 +38,8 @@ class UIOpt {
   // dot center offset
   float U_DOT_OFFSET_X_MAX;
   float U_DOT_OFFSET_Y_MAX;
+
+  float U_DOT_ROTATION;
 
   // dot radius
   int U_DOT_RADIUS;
@@ -74,69 +80,91 @@ class UIOpt {
 
   UIOpt() {
     U_DRAW = true;
-    U_DOT_FILL = randBool(0.75);
-    U_DOT_FILL_NUM_COLORS = randInt(1,3);
-
-    if (U_DOT_FILL) {
-      // small chance to combine fill + stroke
-      U_DOT_STROKE = randBool(0.15);
-    } else {
-      // if no fill, must have stroke
-      U_DOT_STROKE = true;
+    if (TEST_MODE) {
+      U_DOT_FILL = true;
+      U_DOT_STROKE = false;
+      U_DOT_FILL_NUM_COLORS = 3;
+      U_DOT_ROTATION = 0;
+      U_DOTS_PER_ROW = 4;
+      U_DOTS_PER_COL = 4;
+      U_DOT_DIST_X = 40;
+      U_DOT_DIST_Y = 40;
+      U_DOT_OFFSET_X_MAX = 0;
+      U_DOT_OFFSET_Y_MAX = 0;
+      U_DOT_RADIUS_RANDOMIZE = false;
+      U_DOT_RADIUS = 30;
+      U_DOT_RADIUS_MIN = 1;
+      U_DOT_RADIUS_MAX = 5;
+      U_BG_COLOR = color(255,249,233,255);
+      U_DOT_FILL_COLOR_1 = color(255, 229, 110, 255);
+      U_DOT_FILL_COLOR_2 = color(215, 25, 32, 255);
+      U_DOT_FILL_COLOR_3 = color(0, 0, 0, 255);
+      int _rand = 3;
+      if (_rand == 1) {
+        U_DOT_FILL_COLOR_DIST = "Random";
+      } else if (_rand == 2) {
+        U_DOT_FILL_COLOR_DIST = "Alternating";
+      } else {
+        U_DOT_FILL_COLOR_DIST = "Sorted";
+      }
+       // dot stroke
+      U_DOT_STROKE_RANDOMIZE = false;
+      U_DOT_STROKE_WEIGHT = 0.5;
+      U_DOT_STROKE_WEIGHT_MIN  = 0.2;
+      U_DOT_STROKE_WEIGHT_MAX = 0.7;
+      U_DOT_SINGLE_STROKE_COLOR = color(0,0,0,0);
     }
-
-    // dot center offset
-    U_DOT_OFFSET_X_MAX = randInt(0,100);
-    U_DOT_OFFSET_Y_MAX = randInt(0,100);
-
-    // dot radius
-    U_DOT_RADIUS_RANDOMIZE = randBool(0.75);
-    U_DOT_RADIUS = randInt(0.1,20);
-    U_DOT_RADIUS_MIN = randInt(0.1,5);
-    U_DOT_RADIUS_MAX = int(random(U_DOT_RADIUS_MIN, 200));
-
-    // background color
-    U_BG_COLOR = color(random(255),random(255),random(255),255);
-    U_DOT_FILL_COLOR_1 = color(abs(abs(51-red(U_BG_COLOR))-255),abs(abs(51-green(U_BG_COLOR))-255),abs(abs(51-blue(U_BG_COLOR))-255),random(255));
-    U_DOT_FILL_COLOR_2 = color(abs(abs(102-red(U_BG_COLOR))-255),abs(abs(102-green(U_BG_COLOR))-255),abs(abs(102-blue(U_BG_COLOR))-255),random(255));
-    U_DOT_FILL_COLOR_3 = color(abs(abs(153-red(U_BG_COLOR))-255),abs(abs(153-green(U_BG_COLOR))-255),abs(abs(153-blue(U_BG_COLOR))-255),random(255));
-
-    // dot fill colors 
-    // U_DOT_FILL_COLOR_1 = color(255, 229, 110, 255);
-    // U_DOT_FILL_COLOR_2 = color(215, 25, 32, 255);
-    // U_DOT_FILL_COLOR_3 = color(0, 0, 0, 255);
-
-    // dot fill color distribution
-    int _rand = randInt(0,3);
-    if (_rand == 1) {
-      U_DOT_FILL_COLOR_DIST = "Random";
-    } else if (_rand == 2) {
-      U_DOT_FILL_COLOR_DIST = "Alternating";
-    } else {
-      U_DOT_FILL_COLOR_DIST = "Sorted";
-    }
-
-    // dot stroke
-    U_DOT_STROKE_RANDOMIZE = randBool(0.4);
-    U_DOT_STROKE_WEIGHT = random(0.3, 0.6);
-    U_DOT_STROKE_WEIGHT_MIN  = random(0.3,0.5);
-    U_DOT_STROKE_WEIGHT_MAX = random(0.5,1);
-    U_DOT_SINGLE_STROKE_COLOR = color(255-red(U_BG_COLOR),255-green(U_BG_COLOR),255-blue(U_BG_COLOR),random(0.1,255));
-
-    //// END CUSTOMIZABLE PARAMS
-
-    //// PREDEFINED PARAMS
+    else {
+      U_DOT_FILL = randBool(0.75);
+      if (U_DOT_FILL) {
+        // small chance to combine fill + stroke
+        U_DOT_STROKE = randBool(0.15);
+      } else {
+        // if no fill, must have stroke
+        U_DOT_STROKE = true;
+      }
+      // Rotation degree
+      U_DOT_ROTATION = random(0,360);
+      U_DOTS_PER_ROW = randInt(1,50);
+      U_DOTS_PER_COL = randInt(1,50);
+      U_DOT_DIST_X = randInt(0,50);
+      U_DOT_DIST_Y = randInt(0,50);
+      // dot center offset
+      U_DOT_OFFSET_X_MAX = randInt(0,100);
+      U_DOT_OFFSET_Y_MAX = randInt(0,100);
+      U_DOT_RADIUS_RANDOMIZE = randBool(0.75);
+      // dot radius
+      U_DOT_RADIUS = randInt(0.1,20);
+      U_DOT_RADIUS_MIN = randInt(0.1,5);
+      U_DOT_RADIUS_MAX = int(random(U_DOT_RADIUS_MIN, 200));
+      // background color
+      U_BG_COLOR = color(random(255),random(255),random(255),255);
+      // dot fill colors 
+      U_DOT_FILL_COLOR_1 = color(abs(abs(51-red(U_BG_COLOR))-255),abs(abs(51-green(U_BG_COLOR))-255),abs(abs(51-blue(U_BG_COLOR))-255),random(255));
+      U_DOT_FILL_COLOR_2 = color(abs(abs(102-red(U_BG_COLOR))-255),abs(abs(102-green(U_BG_COLOR))-255),abs(abs(102-blue(U_BG_COLOR))-255),random(255));
+      U_DOT_FILL_COLOR_3 = color(abs(abs(153-red(U_BG_COLOR))-255),abs(abs(153-green(U_BG_COLOR))-255),abs(abs(153-blue(U_BG_COLOR))-255),random(255));
+        // dot fill color distribution
+      int _rand = randInt(0,3);
+      if (_rand == 1) {
+        U_DOT_FILL_COLOR_DIST = "Random";
+      } else if (_rand == 2) {
+        U_DOT_FILL_COLOR_DIST = "Alternating";
+      } else {
+        U_DOT_FILL_COLOR_DIST = "Sorted";
+      }
+         // dot stroke
+      U_DOT_STROKE_RANDOMIZE = randBool(0.4);
+      U_DOT_STROKE_WEIGHT = random(0.3, 0.6);
+      U_DOT_STROKE_WEIGHT_MIN  = random(0.3,0.5);
+      U_DOT_STROKE_WEIGHT_MAX = random(0.5,1);
+      U_DOT_SINGLE_STROKE_COLOR = color(255-red(U_BG_COLOR),255-green(U_BG_COLOR),255-blue(U_BG_COLOR),random(0.1,255));
+    } 
+   
     IMG_HEIGHT = window.innerHeight*window.devicePixelRatio;
-    ;
     IMG_WIDTH = window.innerWidth*window.devicePixelRatio;
-    ;
-    U_DOTS_PER_ROW = randInt(1,50);
-    U_DOTS_PER_COL = randInt(1,50);
-    U_DOT_DIST_X = randInt(0,50);
-    U_DOT_DIST_Y = randInt(0,50);
+    
     IMG_PADDING_X = (IMG_WIDTH - ((U_DOTS_PER_ROW-1) * U_DOT_DIST_X)) / 2;
     IMG_PADDING_Y = (IMG_HEIGHT - ((U_DOTS_PER_COL-1) * U_DOT_DIST_Y)) / 2;
-    //// END PREDEFINED PARAMS
   }
 };
 
@@ -169,6 +197,7 @@ class Dot {
   // PVector origin;
   PVector pos;
   PVector offset;
+  PVector spacingFactor;
   PVector targetOffset;
   PVector offsetRate;
 
@@ -185,16 +214,11 @@ class Dot {
   int radiusDir;
 
   Dot() {
-    origin = new PVector();
     pos = new PVector();
     offset = new PVector();
+    spacingFactor = new PVector();
     targetOffset = new PVector();
   }
-
-  // void setOrigin(int x, int y) {
-  //   origin.x = x;
-  //   origin.y = y;
-  // }
 
   void setPos(int x, int y) {
     pos.x = x;
@@ -206,9 +230,21 @@ class Dot {
     offset.y = y;
   }
 
+  void setSpacingFactor(float x, float y) {
+    spacingFactor.x = x;
+    spacingFactor.y = y;
+  }
+
+  PVector getRealPos() {
+    PVector realPos = new PVector();
+    realPos.x = pos.x+uiOpt.U_DOT_DIST_X*spacingFactor.x;
+    realPos.y = pos.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y;
+    return realPos;
+  }
+
   boolean isInView() {
-    int pX = pos.x + offset.x + radius;
-    int pY = pos.y + offset.y + radius;
+    int pX = pos.x + offset.x + radius + uiOpt.U_DOT_DIST_X*spacingFactor.x;
+    int pY = pos.y + offset.y + radius + uiOpt.U_DOT_DIST_Y*spacingFactor.y;
     if (pX < 0 || pX > window.innerWidth*window.devicePixelRatio) {
       return false;
     } 
@@ -265,7 +301,10 @@ class Dot {
 
     // Determine if dot is onscreen, if so, draw.
     if (isInView()) {
-      ellipse(pos.x+offset.x, pos.y+offset.y, radius, radius);
+      ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
+              pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
+              radius, radius);
+      // console.log(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x);
     }
   }
 };
@@ -548,13 +587,11 @@ void setFillColorDist(d) {
 }
 
 void recalculatePadding() {
-  console.log("recalc");
   uiOpt.IMG_PADDING_X = (uiOpt.IMG_WIDTH - ((uiOpt.U_DOTS_PER_ROW-1) * uiOpt.U_DOT_DIST_X)) / 2;
   uiOpt.IMG_PADDING_Y = (uiOpt.IMG_HEIGHT - ((uiOpt.U_DOTS_PER_COL-1) * uiOpt.U_DOT_DIST_Y)) / 2;
 }
 
 void setDotsPerRow(x) {
-  console.log("Set");
   dotArray = {
   };
   uiOpt.U_DOTS_PER_ROW = x;
@@ -571,19 +608,57 @@ void setDotsPerCol(x) {
 }
 
 void setDotDistXY(x, y) {
+  
+  recalculatePadding();
+  // int c = 0;
+  // for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
+  //   for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
+  //     Dot cDot = dotArray[c];
+
+  //     // Init position
+  //     // Translate point to 0,0
+  //     // int xOrigin = cDot.pos.x - uiOpt.IMG_WIDTH/2;
+  //     // int yOrigin = cDot.pos.y - uiOpt.IMG_HEIGHT/2;
+
+  //     // // Rotate around 0,0
+  //     // int xR = xOrigin*cos(radians(uiOpt.U_DOT_ROTATION))+yOrigin*sin(radians(uiOpt.U_DOT_ROTATION));
+  //     // int yR = xOrigin*(-1*sin(radians(uiOpt.U_DOT_ROTATION)))+yOrigin*cos(radians(uiOpt.U_DOT_ROTATION));
+  //     // // console.log("x1R,y1R",x1R,y1R);
+
+  //     // // Translate back to original coordinate space
+  //     // int x2 = xR + uiOpt.IMG_WIDTH/2;
+  //     // int y2 = yR + uiOpt.IMG_HEIGHT/2;
+
+  //     // // Factor in new dot dist
+  //     // int x3 = (uiOpt.IMG_WIDTH/2) + i * (uiOpt.U_DOT_DIST_X);
+  //     // int y3 =(uiOpt.IMG_HEIGHT/2) + j * (uiOpt.U_DOT_DIST_Y);
+  //     // console.log(x2,y2);
+  //     // console.log(x2-uiOpt.IMG_WIDTH/2,y3 - uiOpt.IMG_HEIGHT/2);
+  //     // console.log(x3,y3);
+  //     // newDot.setPos(x2, y2);
+  //     // cDot.setPos(x3, y3);
+
+      
+      
+  //     // int distFromCenterX = cDot.pos.x - (uiOpt.IMG_WIDTH/2);
+  //     // int distFromCenterY = cDot.pos.y - (uiOpt.IMG_HEIGHT/2);
+
+  //     // calc position deltas
+  //     // float rowMiddle = (uiOpt.U_DOTS_PER_ROW+1)/2.0;
+  //     // float colMiddle = (uiOpt.U_DOTS_PER_COL+1)/2.0;
+  //     // // console.log(rowMiddle,colMiddle,uiOpt.U_DOT});
+  //     // int newPosX = cDot.pos.x + (((j+1) - rowMiddle) * (x-uiOpt.U_DOT_DIST_X));
+  //     // int newPosY = cDot.pos.y + (((i+1) - colMiddle) * (y-uiOpt.U_DOT_DIST_Y));
+  //     // cDot.setPos(newPosX,newPosY);
+  //     // cDot.spacing.x = uiOpt.U_DOT_DIST_X * j;
+  //     // cDot.spacing.y = uiOpt.U_DOT_DIST_Y * i;
+  //     // cDot.setPos(cDot.pos.x,cDot.pos.y);
+  //     // cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j, uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y);
+  //     // c += 1;
+  //   }
+  // }
   uiOpt.U_DOT_DIST_X = x;
   uiOpt.U_DOT_DIST_Y = y;
-  recalculatePadding();
-  int c = 0;
-  for (int i = 0; i < uiOpt.U_DOTS_PER_COL; i++) {
-    for (int j = 0; j < uiOpt.U_DOTS_PER_ROW; j++) {
-      Dot cDot = dotArray[c];
-
-      // Init position
-      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j, uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y);
-      c += 1;
-    }
-  }
 }
 
 void setDotDistX(x) {
@@ -592,6 +667,48 @@ void setDotDistX(x) {
 
 void setDotDistY(y) {
   setDotDistXY(uiOpt.U_DOT_DIST_X, y);
+}
+
+PVector calcRotation(Dot cDot, int a) {
+  // Rotate dot pos
+  // Translate point to 0,0
+  PVector realPos = cDot.getRealPos();
+  int xOrigin = realPos.x - uiOpt.IMG_WIDTH/2;
+  int yOrigin = realPos.y - uiOpt.IMG_HEIGHT/2;
+
+  // Rotate around 0,0
+  int xR = xOrigin*cos(radians(uiOpt.U_DOT_ROTATION-a))+yOrigin*sin(radians(uiOpt.U_DOT_ROTATION-a));
+  int yR = xOrigin*(-1*sin(radians(uiOpt.U_DOT_ROTATION-a)))+yOrigin*cos(radians(uiOpt.U_DOT_ROTATION-a));
+  // console.log("x1R,y1R",x1R,y1R);
+
+  // Translate back to original coordinate space
+  int x2 = xR + uiOpt.IMG_WIDTH/2;
+  int y2 = yR + uiOpt.IMG_HEIGHT/2;
+  PVector newPos = new PVector();
+  newPos.x = x2;
+  newPos.y = y2;
+  return newPos;
+}
+
+PVector calcSpacingFactorRotation(Dot cDot, int a){
+  // Rotate Spacing Factor
+  // Rotate around 0,0
+  PVector newSpacing = new PVector();
+  newSpacing.x = cDot.spacingFactor.x*cos(radians(uiOpt.U_DOT_ROTATION-a))+cDot.spacingFactor.y*sin(radians(uiOpt.U_DOT_ROTATION-a));
+  newSpacing.y = cDot.spacingFactor.x*(-1*sin(radians(uiOpt.U_DOT_ROTATION-a)))+cDot.spacingFactor.y*cos(radians(uiOpt.U_DOT_ROTATION-a));
+  return newSpacing;
+}
+
+
+void setRotation(a) {
+  for (int i = 0; i < dotArray.length; i++) {
+    Dot cDot = dotArray[i];
+    PVector newPos = calcRotation(cDot, a);
+    PVector newSpacing = calcSpacingFactorRotation(cDot,a);
+    cDot.setSpacingFactor(newSpacing.x,newSpacing.y);
+    cDot.setPos(newPos.x-newSpacing.x*uiOpt.U_DOT_DIST_X, newPos.y-newSpacing.y*uiOpt.U_DOT_DIST_Y);
+  }
+  uiOpt.U_DOT_ROTATION = a;
 }
 
 
@@ -609,8 +726,30 @@ void resizeImg() {
       Dot cDot = dotArray[c];
 
       // Init position
-      cDot.setPos(uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j, uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y);
-      c += 1;
+      int x1 = uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j;
+      int y1 = uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y;
+      cDot.setPos(x1, y1);
+
+      // Recalc spacing factor
+      float tmpX = ((uiOpt.U_DOTS_PER_ROW-1)/2) - j;
+      float tmpY = ((uiOpt.U_DOTS_PER_COL-1)/2) - i;
+      cDot.setSpacingFactor(tmpX,tmpY);
+      
+      // Translate point to 0,0
+      PVector realPos = cDot.getRealPos();
+      int xOrigin = realPos.x - uiOpt.IMG_WIDTH/2;
+      int yOrigin = realPos.y - uiOpt.IMG_HEIGHT/2;
+
+      // Rotate around 0,0
+      int xR = xOrigin*cos(radians(uiOpt.U_DOT_ROTATION))+yOrigin*sin(radians(uiOpt.U_DOT_ROTATION));
+      int yR = xOrigin*(-1*sin(radians(uiOpt.U_DOT_ROTATION)))+yOrigin*cos(radians(uiOpt.U_DOT_ROTATION));
+
+      // Translate back to original coordinate space
+      int x2 = xR + uiOpt.IMG_WIDTH/2;
+      int y2 = yR + uiOpt.IMG_HEIGHT/2;
+
+      cDot.setPos(x2, y2);
+      c+=1;
     }
   }
 
@@ -639,6 +778,26 @@ void initDots() {
       int x1 = uiOpt.IMG_PADDING_X + uiOpt.U_DOT_DIST_X * j;
       int y1 = uiOpt.IMG_PADDING_Y + i * uiOpt.U_DOT_DIST_Y;
       newDot.setPos(x1, y1);
+
+      // Recalc spacing factor
+      float tmpX = ((uiOpt.U_DOTS_PER_ROW-1)/2) - j;
+      float tmpY = ((uiOpt.U_DOTS_PER_COL-1)/2) - i;
+      newDot.setSpacingFactor(tmpX,tmpY);
+      
+      // Translate point to 0,0
+      PVector realPos = newDot.getRealPos();
+      int xOrigin = realPos.x - uiOpt.IMG_WIDTH/2;
+      int yOrigin = realPos.y - uiOpt.IMG_HEIGHT/2;
+
+      // Rotate around 0,0
+      int xR = xOrigin*cos(radians(uiOpt.U_DOT_ROTATION))+yOrigin*sin(radians(uiOpt.U_DOT_ROTATION));
+      int yR = xOrigin*(-1*sin(radians(uiOpt.U_DOT_ROTATION)))+yOrigin*cos(radians(uiOpt.U_DOT_ROTATION));
+
+      // Translate back to original coordinate space
+      int x2 = xR + uiOpt.IMG_WIDTH/2;
+      int y2 = yR + uiOpt.IMG_HEIGHT/2;
+
+      newDot.setPos(x2, y2);
 
       // Init radius
       if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {

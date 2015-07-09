@@ -248,6 +248,7 @@ function initGui() {
         this.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
         this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
         this.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
+        this.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
         this.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
@@ -322,6 +323,10 @@ function initGui() {
     var cDotDistY = fLayout.add(_opts, 'U_DOT_DIST_Y', 0, 100).step(1).name("Dot Spacing Y");
     cDotDistY.onChange(function(value) {
         pHandler.setDotDistY(value);
+    });
+    var cDotRotation = fLayout.add(_opts, 'U_DOT_ROTATION', 0, 360).step(1).name("Grid Rotation");
+    cDotRotation.onChange(function(value) {
+        pHandler.setRotation(value);
     });
 
     // FILL
@@ -570,6 +575,7 @@ function resetControls() {
     _opts.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
     _opts.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
     _opts.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
+    _opts.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
     _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
     _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
