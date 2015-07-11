@@ -24,7 +24,7 @@
 
 
 // ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
-boolean TEST_MODE = true;
+boolean TEST_MODE = false;
 
 class UIOpt {
   boolean U_DRAW;
@@ -129,13 +129,16 @@ class UIOpt {
         // if no fill, must have stroke
         U_DOT_STROKE = true;
       }
+      U_DOT_ANIMATION_SPEED_MIN = 1;
+      U_DOT_ANIMATION_SPEED_MIN = 1000;
+      U_DOT_ANIMATION_SPEED = randInt(U_DOT_ANIMATION_SPEED_MIN,U_DOT_ANIMATION_SPEED_MAX);
+
       // Rotation degree
       U_DOT_ROTATION = random(0,360);
       U_DOTS_PER_ROW = randInt(1,50);
       U_DOTS_PER_COL = randInt(1,50);
       U_DOT_DIST_X = randInt(0,50);
       U_DOT_DIST_Y = randInt(0,50);
-      U_DOT_ANIMATION_SPEED = randInt(0,1);
       // dot center offset
       U_DOT_OFFSET_X_MAX = randInt(0,100);
       U_DOT_OFFSET_Y_MAX = randInt(0,100);
