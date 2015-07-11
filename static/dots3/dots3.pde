@@ -92,8 +92,8 @@ class UIOpt {
       U_DOTS_PER_COL = 4;
       U_DOT_DIST_X = 40;
       U_DOT_DIST_Y = 40;
-      U_DOT_ANIMATION_SPEED_MIN = 1;
       U_DOT_ANIMATION_SPEED_MIN = 1000;
+      U_DOT_ANIMATION_SPEED_MAX = 100;
       U_DOT_ANIMATION_SPEED = randInt(U_DOT_ANIMATION_SPEED_MIN,U_DOT_ANIMATION_SPEED_MAX);
       U_DOT_OFFSET_X_MAX = 0;
       U_DOT_OFFSET_Y_MAX = 0;
@@ -129,8 +129,8 @@ class UIOpt {
         // if no fill, must have stroke
         U_DOT_STROKE = true;
       }
-      U_DOT_ANIMATION_SPEED_MIN = 1;
-      U_DOT_ANIMATION_SPEED_MIN = 1000;
+      U_DOT_ANIMATION_SPEED_MIN = 500;
+      U_DOT_ANIMATION_SPEED_MAX = 10;
       U_DOT_ANIMATION_SPEED = randInt(U_DOT_ANIMATION_SPEED_MIN,U_DOT_ANIMATION_SPEED_MAX);
 
       // Rotation degree
@@ -150,6 +150,7 @@ class UIOpt {
       // background color
       U_BG_COLOR = color(random(255),random(255),random(255),255);
       // dot fill colors 
+      U_DOT_FILL_NUM_COLORS = randInt(1,3);
       U_DOT_FILL_COLOR_1 = color(abs(abs(51-red(U_BG_COLOR))-255),abs(abs(51-green(U_BG_COLOR))-255),abs(abs(51-blue(U_BG_COLOR))-255),random(255));
       U_DOT_FILL_COLOR_2 = color(abs(abs(102-red(U_BG_COLOR))-255),abs(abs(102-green(U_BG_COLOR))-255),abs(abs(102-blue(U_BG_COLOR))-255),random(255));
       U_DOT_FILL_COLOR_3 = color(abs(abs(153-red(U_BG_COLOR))-255),abs(abs(153-green(U_BG_COLOR))-255),abs(abs(153-blue(U_BG_COLOR))-255),random(255));
@@ -208,6 +209,7 @@ class Dot {
   PVector pos;
   PVector offset;
   PVector spacingFactor;
+  PVector prevOffset;
   PVector targetOffset;
   PVector offsetRate;
 
@@ -228,6 +230,7 @@ class Dot {
     offset = new PVector();
     spacingFactor = new PVector();
     targetOffset = new PVector();
+    prevOffset = new PVector();
   }
 
   void setPos(int x, int y) {
@@ -285,8 +288,8 @@ class Dot {
       }
     }
 
+    // Determine stroke 
     if (uiOpt.U_DOT_STROKE) {
-      // Determine stroke 
       stroke(strokeColor);
       if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
         if (strokeDir == 1) {
@@ -305,9 +308,28 @@ class Dot {
     } else {
       noStroke();
     }
+
+    // Determine offset travel
     PVector dirOfTravel = PVector.sub(targetOffset, offset);
+    float totalDist = abs(dist(targetOffset.x,targetOffset.y,prevOffset.x,prevOffset.y));
+    // console.log("offset",offset,"targetOffset",targetOffset,"prev",prevOffset);
+    float progress = abs(dist(targetOffset.x,targetOffset.y,offset.x,offset.y));
+    if (totalDist == 0) {
+      float speedFactor = 0.01;
+    } else {
+      if (progress > totalDist) {
+      float speedFactor = 0.01 + sin((totalDist/progress)*PI);
+      } else {
+        float speedFactor = 0.01 + sin((progress/totalDist)*PI);
+      }
+    }
     dirOfTravel.normalize();
-    offset.add(PVector.mult(dirOfTravel, offsetRate));
+    // console.log("offsetRate:",offsetRate,"speedFactor:",speedFactor,"progress:",progress,"totalDist:",totalDist, "prev",prevOffset,"tar:",targetOffset,"off",offset);
+    // console.log("speedFactor",speedFactor);
+    // console.log("totalDist",totalDist);
+    // console.log("totalDist",totalDist);
+    // console.log("progress",progress);
+    offset.add(PVector.mult(dirOfTravel, offsetRate*speedFactor));
 
     // Determine if dot is onscreen, if so, draw.
     if (isInView()) {
@@ -352,7 +374,8 @@ void checkDotConditions() {
       }
     }
     // Check offset travel
-    if (!(dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) < 1)) {
+    console.log(dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y));
+    if (!(dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) < 3)) {
       allOffsetsReached = false;
     }
   }
@@ -479,6 +502,11 @@ void setOffsetX(x) {
   uiOpt.U_DOT_OFFSET_X_MAX = x;
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
+    if (!(cDot.targetOffset.x)) {
+      cDot.prevOffset.x = cDot.offset.x;
+    } else {
+      cDot.prevOffset.x = cDot.targetOffset.x;
+    }
     cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
     cDot.offsetRate = dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) / uiOpt.U_DOT_ANIMATION_SPEED;
   }
@@ -487,6 +515,11 @@ void setOffsetY(y) {
   uiOpt.U_DOT_OFFSET_Y_MAX = y;
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
+    if (!(cDot.targetOffset.y)) {
+      cDot.prevOffset.y = cDot.offset.y;
+    } else {
+      cDot.prevOffset.y = cDot.targetOffset.y;
+    }
     cDot.targetOffset.y = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
     cDot.offsetRate = dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) / uiOpt.U_DOT_ANIMATION_SPEED;
   }
@@ -497,6 +530,16 @@ void setOffsetXY(x, y) {
   uiOpt.U_DOT_OFFSET_Y_MAX = y;
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
+    if (!(cDot.targetOffset.x)) {
+      cDot.prevOffset.x = cDot.offset.x;
+    } else {
+      cDot.prevOffset.x = cDot.targetOffset.x;
+    }
+    if (!(cDot.targetOffset.y)) {
+      cDot.prevOffset.y = cDot.offset.y;
+    } else {
+      cDot.prevOffset.y = cDot.targetOffset.y;
+    }
     cDot.targetOffset.x = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
     cDot.targetOffset.y = random(-1*uiOpt.U_DOT_OFFSET_Y_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
     cDot.offsetRate = dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) / uiOpt.U_DOT_ANIMATION_SPEED;
@@ -547,13 +590,12 @@ void setAnimationSpeed(x) {
   if (uiOpt.U_DOT_ANIMATION_SPEED == 0) {
     uiOpt.U_DOT_ANIMATION_SPEED = 1;
   }
-  console.log(uiOpt.U_DOT_ANIMATION_SPEED);
   setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
   setStrokeRandomize(uiOpt.U_DOT_STROKE_RANDOMIZE);
   setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
 }
 
-void calcValueInRange(x,min1,max1,min2,max2) {
+int calcValueInRange(x,min1,max1,min2,max2) {
   // calculate value of x based on range of min2 max2 coming from min1 max1
   return (((max2-min2)*(x-min1))/(max1-min1))+min2;
 }
