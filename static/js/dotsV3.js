@@ -249,6 +249,7 @@ function initGui() {
         this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
         this.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
         this.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
+        this.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED,pOpt.U_DOT_ANIMATION_SPEED_MIN,pOpt.U_DOT_ANIMATION_SPEED_MAX,0,100);
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
         this.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
@@ -324,9 +325,14 @@ function initGui() {
     cDotDistY.onChange(function(value) {
         pHandler.setDotDistY(value);
     });
-    var cDotRotation = fLayout.add(_opts, 'U_DOT_ROTATION', 0, 360).step(1).name("Grid Rotation");
-    cDotRotation.onChange(function(value) {
-        pHandler.setRotation(value);
+    // var cDotRotation = fLayout.add(_opts, 'U_DOT_ROTATION', 0, 360).step(1).name("Grid Rotation");
+    // cDotRotation.onChange(function(value) {
+    //     pHandler.setRotation(value);
+    // });
+    
+    var cDotAnimationSpeed = fLayout.add(_opts, 'U_DOT_ANIMATION_SPEED', 0, 100).step(1).name("Animation Speed");
+    cDotAnimationSpeed.onChange(function(value) {
+        pHandler.setAnimationSpeed(value);
     });
 
     // FILL
@@ -576,6 +582,7 @@ function resetControls() {
     _opts.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
     _opts.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
     _opts.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
+    _opts.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED,pOpt.U_DOT_ANIMATION_SPEED_MIN,pOpt.U_DOT_ANIMATION_SPEED_MAX,0,100);
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
     _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
     _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
