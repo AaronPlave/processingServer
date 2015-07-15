@@ -10,18 +10,11 @@ function post(url, data, callback) {
     request.open("POST", url, async);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.send(data);
-    // http.onreadystatechange = function() {
-    //     if (!(http.readyState == 4 && http.status == 200)) {
-    //         var imgPath = JSON.parse(http.responseText).img;
-    //         document.getElementById("gen-image").src = imgPath;
-    //     }
-    // }
 }
 
 function postCallback(request) {
-    console.log(request.status, request.responseText);
-    var shareUrl = window.location.host + "/dotsV3/" + request.responseText;
-    document.getElementById("shareUrl").value = shareUrl;
+    var publishUrl = window.location.host + "/dotsGenerator/" + request.responseText;
+    document.getElementById("publishUrl").value = publishUrl;
 }
 
 window.onresize = function() {
@@ -44,7 +37,7 @@ var viewMode = "create";
 var canvasRef;
 var frameRateEl;
 var fillColorThemes = {
-    "":"",
+    "": "",
     "(2) Complementary RO BG": [
         [240, 90, 34, 1],
         [109, 199, 190, 1]
@@ -233,10 +226,10 @@ function initGui() {
     // Initialize save button
     var saveEl = document.getElementById("saveImg");
     saveEl.addEventListener("click", function(evt) {
-        var image = document.getElementsByTagName("canvas")[0].toDataURL();
-        window.open(image, '_blank');
-    })
-    var image = document.getElementsByTagName("canvas")[0].toDataURL();
+            var image = document.getElementsByTagName("canvas")[0].toDataURL();
+            window.open(image, '_blank');
+        })
+        // var image = document.getElementsByTagName("canvas")[0].toDataURL();
 
     // Initialize gui
     var UIOpts = function() {
@@ -249,7 +242,7 @@ function initGui() {
         this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
         this.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
         this.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
-        this.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED,pOpt.U_DOT_ANIMATION_SPEED_MIN,pOpt.U_DOT_ANIMATION_SPEED_MAX,0,100);
+        this.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED, pOpt.U_DOT_ANIMATION_SPEED_MIN, pOpt.U_DOT_ANIMATION_SPEED_MAX, 0, 100);
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
         this.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
@@ -329,7 +322,7 @@ function initGui() {
     // cDotRotation.onChange(function(value) {
     //     pHandler.setRotation(value);
     // });
-    
+
     var cDotAnimationSpeed = fLayout.add(_opts, 'U_DOT_ANIMATION_SPEED', 0, 100).step(1).name("Animation Speed");
     cDotAnimationSpeed.onChange(function(value) {
         pHandler.setAnimationSpeed(value);
@@ -422,7 +415,7 @@ function initGui() {
         }
         updateColors();
     });
-    var cFillColorDist = fFill.add(_opts, 'U_DOT_FILL_COLOR_DIST', ["Random","Alternating","Sorted"]).name("Color Arrangement");
+    var cFillColorDist = fFill.add(_opts, 'U_DOT_FILL_COLOR_DIST', ["Random", "Alternating", "Sorted"]).name("Color Arrangement");
     cFillColorDist.onChange(function(value) {
         pHandler.setFillColorDist(value);
     });
@@ -523,15 +516,44 @@ function initGui() {
 
     var exportButton = document.getElementById("exportJSON");
     exportButton.addEventListener("click", function(evt) {
-        var currOpts = optsToJSON();
+        var currOpts = JSON.stringify(optsToJSON());
         var textArea = document.getElementById("inputArea");
         textArea.value = currOpts;
     })
 
-    // Initialize share button
-    var shareEl = document.getElementById("shareButton");
-    shareEl.addEventListener("click", function(evt) {
-        post("/dotsV3/share", optsToJSON(), postCallback);
+    // Initialize publish button
+    var publishEl = document.getElementById("publishButton");
+    publishEl.addEventListener("click", function(evt) {
+        var canvas = document.getElementsByTagName("canvas")[0];
+        var dataUri = canvas.toDataURL();
+        // CROP image to smallest dimension to make square 
+        // RESIZE image to thumbnail size
+
+        var newCanvas = document.createElement("canvas");
+        var targetSize = 600;
+        var newWidth = canvas.width;
+        var newHeight = canvas.height;
+        var widthOffset = 0;
+        var heightOffset = 0;
+
+        if (canvas.width < canvas.height) {
+            // crop height
+            newHeight = newWidth;
+            heightOffset = (canvas.height - canvas.width);
+        } else {
+            // crop width
+            newWidth = newHeight;
+            widthOffset = (canvas.width - canvas.height);
+        }
+        newCanvas.width = targetSize;
+        newCanvas.height = targetSize;
+
+        newCanvas.getContext('2d').drawImage(canvas, widthOffset/2, heightOffset/2, canvas.width - widthOffset, canvas.height - heightOffset, 0, 0, targetSize, targetSize);
+        var data = {
+            "opts": optsToJSON(),
+            "img": newCanvas.toDataURL()
+        };
+        post("/dotsGenerator/publish", JSON.stringify(data), postCallback);
     })
 
     // Check for shared opts
@@ -582,7 +604,7 @@ function resetControls() {
     _opts.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
     _opts.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
     _opts.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
-    _opts.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED,pOpt.U_DOT_ANIMATION_SPEED_MIN,pOpt.U_DOT_ANIMATION_SPEED_MAX,0,100);
+    _opts.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED, pOpt.U_DOT_ANIMATION_SPEED_MIN, pOpt.U_DOT_ANIMATION_SPEED_MAX, 0, 100);
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
     _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
     _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
@@ -641,7 +663,7 @@ function optsToJSON() {
             newObj[keys[i]] = newVal;
         }
     }
-    return JSON.stringify(newObj);
+    return newObj;
 }
 
 function loadOptsFromJSON(json) {
@@ -696,4 +718,21 @@ function isRetinaDisplay() {
             return false;
         }
     }
+}
+
+function cloneCanvas(oldCanvas) {
+
+    //create a new canvas
+    var newCanvas = document.createElement('canvas');
+    var context = newCanvas.getContext('2d');
+
+    //set dimensions
+    newCanvas.width = oldCanvas.width;
+    newCanvas.height = oldCanvas.height;
+
+    //apply the old canvas to the new one
+    context.drawImage(oldCanvas, 0, 0);
+
+    //return the new canvas
+    return newCanvas;
 }

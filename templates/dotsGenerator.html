@@ -1,12 +1,13 @@
 {% extends "_base.html" %} {% block css %}
-<link href="{{ url_for('static', filename='css/dotsV3.css') }}" rel="stylesheet">{% endblock %}{% block content %}
+<link href="{{ url_for('static', filename='css/dotsGenerator.css') }}" rel="stylesheet">{% endblock %}{% block content %}
 <div id="generatorContainer">
     <span class="home"><a href="/">Home</a></span>
-    <span class="title2">Generator v2–Dots</span>
+    <span class="gallery"><a href="/dotsGallery">Gallery</a></span>
+    <span class="title2">Dots Generator</span>
     <br>
     <span id="saveImg">Snapshot</span>
-    <span id="shareButton">Share</span>
-    <input id="shareUrl"></input>
+    <span id="publishButton">Publish</span>
+    <input id="publishUrl"></input>
     <br>
     <span id="exportJSON">Export</span>
     <span id="loadJSON">Load</span>
@@ -19,7 +20,7 @@
 {% block js %}
 <script src="{{ url_for('static', filename='js/processing.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/dat.gui.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/dotsV3.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/dotsGenerator.js') }}"></script>
 <script>
 var sharedOpts = '{{ sharedOpts }}';
 </script>

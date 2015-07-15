@@ -24,7 +24,7 @@
 
 
 // ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
-boolean TEST_MODE = false;
+boolean TEST_MODE = true;
 
 class UIOpt {
   boolean U_DRAW;
@@ -92,10 +92,10 @@ class UIOpt {
       U_DOTS_PER_COL = 4;
       U_DOT_DIST_X = 40;
       U_DOT_DIST_Y = 40;
-      U_DOT_ANIMATION_SPEED_MIN = 1000;
-      U_DOT_ANIMATION_SPEED_MAX = 100;
+      U_DOT_ANIMATION_SPEED_MIN = 500;
+      U_DOT_ANIMATION_SPEED_MAX = 15;
       U_DOT_ANIMATION_SPEED = randInt(U_DOT_ANIMATION_SPEED_MIN,U_DOT_ANIMATION_SPEED_MAX);
-      U_DOT_OFFSET_X_MAX = 0;
+      U_DOT_OFFSET_X_MAX = 100;
       U_DOT_OFFSET_Y_MAX = 0;
       U_DOT_RADIUS_RANDOMIZE = false;
       U_DOT_RADIUS = 30;
@@ -137,8 +137,8 @@ class UIOpt {
       U_DOT_ROTATION = random(0,360);
       U_DOTS_PER_ROW = randInt(1,50);
       U_DOTS_PER_COL = randInt(1,50);
-      U_DOT_DIST_X = randInt(0,50);
-      U_DOT_DIST_Y = randInt(0,50);
+      U_DOT_DIST_X = randInt(0,100);
+      U_DOT_DIST_Y = randInt(0,100);
       // dot center offset
       U_DOT_OFFSET_X_MAX = randInt(0,100);
       U_DOT_OFFSET_Y_MAX = randInt(0,100);
@@ -268,7 +268,6 @@ class Dot {
   }
 
   void drawDot() {
-
     // Determine fill
     if (uiOpt.U_DOT_FILL) {
       fill(fillColor);
@@ -321,6 +320,7 @@ class Dot {
       float speedFactor = 0.01 + sin((totalDist/progress)*PI);
       } else {
         float speedFactor = 0.01 + sin((progress/totalDist)*PI);
+        // float speedFactor = 0.01 + sin((totalDist/progress)*PI);
       }
     }
     dirOfTravel.normalize();
@@ -374,7 +374,6 @@ void checkDotConditions() {
       }
     }
     // Check offset travel
-    console.log(dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y));
     if (!(dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) < 3)) {
       allOffsetsReached = false;
     }

@@ -1,0 +1,12 @@
+.img-grid {
+    margin-top: 19px;
+}
+.thumbnail {
+	overflow: hidden;
+	width: 200px;
+	height: 200px;
+	border: none;
+	padding: 0px;
+	margin: 0px;
+	display: inline-block;
+}
