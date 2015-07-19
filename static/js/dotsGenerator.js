@@ -236,7 +236,6 @@ function initGui() {
         var pOpt = pHandler.getUiOpt();
         this.U_DRAW = pOpt.U_DRAW;
         this.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
-        // this.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
         this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
@@ -257,7 +256,6 @@ function initGui() {
         this.U_DOT_FILL_COLOR_3 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_3);
         this.U_DOT_FILL_THEMES = "";
         this.U_DOT_FILL_COLOR_DIST = pOpt.U_DOT_FILL_COLOR_DIST;
-        // this.U_DOT_SINGLE_FILL_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_FILL_COLOR)[3];
         this.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
         this.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
         this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
@@ -548,7 +546,7 @@ function initGui() {
         newCanvas.width = targetSize;
         newCanvas.height = targetSize;
 
-        newCanvas.getContext('2d').drawImage(canvas, widthOffset/2, heightOffset/2, canvas.width - widthOffset, canvas.height - heightOffset, 0, 0, targetSize, targetSize);
+        newCanvas.getContext('2d').drawImage(canvas, widthOffset / 2, heightOffset / 2, canvas.width - widthOffset, canvas.height - heightOffset, 0, 0, targetSize, targetSize);
         var data = {
             "opts": optsToJSON(),
             "img": newCanvas.toDataURL()
@@ -563,6 +561,26 @@ function initGui() {
         resetControls();
         // Call resize to fit whatever shared sketch is to current window
         pHandler.resizeImg();
+    } else {
+        // Chance of randomly assigning color theme
+        if (Math.random() < 0.35) {
+            var randInt = Math.floor((Math.random() * Object.keys(fillColorThemes).length));
+            var t = fillColorThemes[Object.keys(fillColorThemes)[randInt]];
+            if (t === "") {
+                return;
+            }
+            if (t.length > 0) {
+                pHandler.setFillColor(t[0], 0);
+            }
+            if (t.length > 1) {
+                pHandler.setFillColor(t[1], 1);
+            }
+            if (t.length > 2) {
+                pHandler.setFillColor(t[2], 2);
+            }
+                console.log("asdaD?")
+            updateColors();
+        }
     }
 
 

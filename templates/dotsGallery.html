@@ -1,7 +1,11 @@
 {% extends "_base.html" %} {% block css %}
 <link href="{{ url_for('static', filename='css/dotsGallery.css') }}" rel="stylesheet">{% endblock %} {% block content %}
-<span class="home"><a href="/">Home</a></span>
-<span class="title2">Dots Gallery</span>
+<br>
+<div class="galleryContainer">
+    <span class="home"><a href="/">Home</a></span>
+    <span class="generator"><a href="/dotsGenerator">New Sketch</a></span>
+    <span class="title2">Dots Gallery</span>
+</div>
 <div class="img-grid">
     {% for key, value in dotSketches.items() %}
     <a href="dotsGenerator/{{ key }}" class="thumbnail"><img src="{{ value }}"></a>
