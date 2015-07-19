@@ -199,7 +199,7 @@ var fillColorThemes = {
 function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
     canvasRef = document.createElement('canvas');
-    canvasRef.id = "dotsSketch"
+    canvasRef.id = "dotsSketch";
     var p = Processing.loadSketchFromSources(canvasRef, ['../static/dots3/dots3.pde']);
     canvasHolder.appendChild(canvasRef);
 
@@ -583,7 +583,7 @@ function initGui() {
         }
     }
 
-
+    console.log("AASD?ASD?ASD?ASD")
     // Set Canvas height and width
     canvasRef.style.height = String(window.innerHeight) + "px";
     canvasRef.style.width = String(window.innerWidth) + "px";
@@ -593,6 +593,7 @@ function initGui() {
 
     // Set up viewing modes
     window.addEventListener("mousemove", function() {
+        console.log("window click");
         if (viewMode === "view") {
             disableFullscreen();
             viewMode = "create";
@@ -600,6 +601,7 @@ function initGui() {
     });
 
     canvasRef.addEventListener("click", function() {
+        console.log("canvasRef click");
         if (viewMode === "create") {
             enableFullscreen();
             viewMode = "view";

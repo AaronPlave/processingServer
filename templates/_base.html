@@ -11,7 +11,7 @@
     <!-- styles -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/landing.css') }}" rel="stylesheet"> {% block css %}{% endblock %}
+    {% block css %}{% endblock %}
 </head>
 
 <body>
