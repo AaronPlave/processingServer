@@ -316,10 +316,10 @@ function initGui() {
     cDotDistY.onChange(function(value) {
         pHandler.setDotDistY(value);
     });
-    // var cDotRotation = fLayout.add(_opts, 'U_DOT_ROTATION', 0, 360).step(1).name("Grid Rotation");
-    // cDotRotation.onChange(function(value) {
-    //     pHandler.setRotation(value);
-    // });
+    var cDotRotation = fLayout.add(_opts, 'U_DOT_ROTATION', 0, 360).step(1).name("Grid Rotation");
+    cDotRotation.onChange(function(value) {
+        pHandler.setRotation(value);
+    });
 
     var cDotAnimationSpeed = fLayout.add(_opts, 'U_DOT_ANIMATION_SPEED', 0, 100).step(1).name("Animation Speed");
     cDotAnimationSpeed.onChange(function(value) {
@@ -578,12 +578,10 @@ function initGui() {
             if (t.length > 2) {
                 pHandler.setFillColor(t[2], 2);
             }
-                console.log("asdaD?")
             updateColors();
         }
     }
 
-    console.log("AASD?ASD?ASD?ASD")
     // Set Canvas height and width
     canvasRef.style.height = String(window.innerHeight) + "px";
     canvasRef.style.width = String(window.innerWidth) + "px";
@@ -593,7 +591,6 @@ function initGui() {
 
     // Set up viewing modes
     window.addEventListener("mousemove", function() {
-        console.log("window click");
         if (viewMode === "view") {
             disableFullscreen();
             viewMode = "create";

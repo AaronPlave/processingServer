@@ -88,8 +88,8 @@ class UIOpt {
       U_DOT_STROKE = false;
       U_DOT_FILL_NUM_COLORS = 3;
       U_DOT_ROTATION = 0;
-      U_DOTS_PER_ROW = 4;
-      U_DOTS_PER_COL = 4;
+      U_DOTS_PER_ROW = 40;
+      U_DOTS_PER_COL = 40;
       U_DOT_DIST_X = 40;
       U_DOT_DIST_Y = 40;
       U_DOT_ANIMATION_SPEED_MIN = 500;
@@ -134,7 +134,7 @@ class UIOpt {
       U_DOT_ANIMATION_SPEED = randInt(U_DOT_ANIMATION_SPEED_MIN,U_DOT_ANIMATION_SPEED_MAX);
 
       // Rotation degree
-      U_DOT_ROTATION = random(0,360);
+      U_DOT_ROTATION = randInt(0,360);
       U_DOTS_PER_ROW = randInt(1,50);
       U_DOTS_PER_COL = randInt(1,50);
       U_DOT_DIST_X = randInt(0,100);
@@ -767,14 +767,18 @@ PVector calcSpacingFactorRotation(Dot cDot, int a){
 }
 
 
+// void setRotation(a) {
+//   for (int i = 0; i < dotArray.length; i++) {
+//     Dot cDot = dotArray[i];
+//     PVector newPos = calcRotation(cDot, a);
+//     PVector newSpacing = calcSpacingFactorRotation(cDot,a);
+//     cDot.setSpacingFactor(newSpacing.x,newSpacing.y);
+//     cDot.setPos(newPos.x-newSpacing.x*uiOpt.U_DOT_DIST_X, newPos.y-newSpacing.y*uiOpt.U_DOT_DIST_Y);
+//   }
+//   uiOpt.U_DOT_ROTATION = a;
+// }
+
 void setRotation(a) {
-  for (int i = 0; i < dotArray.length; i++) {
-    Dot cDot = dotArray[i];
-    PVector newPos = calcRotation(cDot, a);
-    PVector newSpacing = calcSpacingFactorRotation(cDot,a);
-    cDot.setSpacingFactor(newSpacing.x,newSpacing.y);
-    cDot.setPos(newPos.x-newSpacing.x*uiOpt.U_DOT_DIST_X, newPos.y-newSpacing.y*uiOpt.U_DOT_DIST_Y);
-  }
   uiOpt.U_DOT_ROTATION = a;
 }
 
@@ -912,10 +916,15 @@ void draw() {
 
   background(uiOpt.U_BG_COLOR);
 
+  translate(width/2, height/2);
+  rotate(radians(uiOpt.U_DOT_ROTATION));
+  translate(-width/2, -height/2);
+
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
     cDot.drawDot();
   }
+
   checkDotConditions();
 }
 
