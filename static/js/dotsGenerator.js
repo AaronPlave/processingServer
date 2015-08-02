@@ -241,6 +241,7 @@ function initGui() {
         this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
         this.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
         this.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
+        this.U_ZOOM = pOpt.U_ZOOM;
         this.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED, pOpt.U_DOT_ANIMATION_SPEED_MIN, pOpt.U_DOT_ANIMATION_SPEED_MAX, 0, 100);
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
@@ -319,6 +320,10 @@ function initGui() {
     var cDotRotation = fLayout.add(_opts, 'U_DOT_ROTATION', 0, 360).step(1).name("Grid Rotation");
     cDotRotation.onChange(function(value) {
         pHandler.setRotation(value);
+    });
+    var cZoom = fLayout.add(_opts, 'U_ZOOM', 0, 10).step(0.01).name("Zoom");
+    cZoom.onChange(function(value) {
+        pHandler.setZoom(value);
     });
 
     var cDotAnimationSpeed = fLayout.add(_opts, 'U_DOT_ANIMATION_SPEED', 0, 100).step(1).name("Animation Speed");
@@ -621,6 +626,7 @@ function resetControls() {
     _opts.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
     _opts.U_DOT_DIST_Y = pOpt.U_DOT_DIST_Y;
     _opts.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
+    _opts.U_ZOOM = pOpt.U_ZOOM;
     _opts.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED, pOpt.U_DOT_ANIMATION_SPEED_MIN, pOpt.U_DOT_ANIMATION_SPEED_MAX, 0, 100);
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
     _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
@@ -628,7 +634,6 @@ function resetControls() {
     _opts.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
     _opts.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
     _opts.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
-    // _opts.U_DOT_SINGLE_STROKE_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR)[3];
     _opts.U_DOT_FILL = pOpt.U_DOT_FILL;
     _opts.U_DOT_FILL_NUM_COLORS = pOpt.U_DOT_FILL_NUM_COLORS;
     _opts.U_DOT_FILL_COLOR_1 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_1);

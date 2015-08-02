@@ -28,12 +28,14 @@ boolean TEST_MODE = false;
 
 class UIOpt {
   boolean U_DRAW;
-  boolean U_DRAW;
   boolean U_DOT_STROKE;
   boolean U_DOT_STROKE_RANDOMIZE;
   boolean U_DOT_FILL;
   boolean U_DOT_RADIUS_RANDOMIZE;
   boolean U_DOT_OFFSET;
+
+  // canvas zoom
+  float U_ZOOM;
 
   // dot center offset
   float U_DOT_OFFSET_X_MAX;
@@ -87,18 +89,19 @@ class UIOpt {
       U_DOT_FILL = true;
       U_DOT_STROKE = false;
       U_DOT_FILL_NUM_COLORS = 3;
+      U_ZOOM = 2.5;
       U_DOT_ROTATION = 0;
-      U_DOTS_PER_ROW = 40;
-      U_DOTS_PER_COL = 40;
-      U_DOT_DIST_X = 40;
-      U_DOT_DIST_Y = 40;
+      U_DOTS_PER_ROW = 10;
+      U_DOTS_PER_COL = 10;
+      U_DOT_DIST_X = 20;
+      U_DOT_DIST_Y = 20;
       U_DOT_ANIMATION_SPEED_MIN = 500;
       U_DOT_ANIMATION_SPEED_MAX = 15;
-      U_DOT_ANIMATION_SPEED = randInt(U_DOT_ANIMATION_SPEED_MIN,U_DOT_ANIMATION_SPEED_MAX);
-      U_DOT_OFFSET_X_MAX = 100;
+      U_DOT_ANIMATION_SPEED = 93;
+      U_DOT_OFFSET_X_MAX = 0;
       U_DOT_OFFSET_Y_MAX = 0;
       U_DOT_RADIUS_RANDOMIZE = false;
-      U_DOT_RADIUS = 30;
+      U_DOT_RADIUS = 15;
       U_DOT_RADIUS_MIN = 1;
       U_DOT_RADIUS_MAX = 5;
       U_BG_COLOR = color(255,249,233,255);
@@ -135,6 +138,7 @@ class UIOpt {
 
       // Rotation degree
       U_DOT_ROTATION = randInt(0,360);
+      U_ZOOM = 2.5;
       U_DOTS_PER_ROW = randInt(1,50);
       U_DOTS_PER_COL = randInt(1,50);
       U_DOT_DIST_X = randInt(0,100);
@@ -256,12 +260,26 @@ class Dot {
   }
 
   boolean isInView() {
-    int pX = pos.x + offset.x + radius + uiOpt.U_DOT_DIST_X*spacingFactor.x;
-    int pY = pos.y + offset.y + radius + uiOpt.U_DOT_DIST_Y*spacingFactor.y;
-    if (pX < 0 || pX > window.innerWidth*window.devicePixelRatio) {
+    int pX = pos.x + offset.x + radius + uiOpt.U_DOT_DIST_X*spacingFactor.x - uiOpt.IMG_WIDTH/2;
+    int pY = pos.y + offset.y + radius + uiOpt.U_DOT_DIST_Y*spacingFactor.y - uiOpt.IMG_HEIGHT/2;
+
+    int pXRot = pX*cos(radians(uiOpt.U_DOT_ROTATION))+pY*sin(radians(uiOpt.U_DOT_ROTATION));
+    int pYRot = pX*(-1*sin(radians(uiOpt.U_DOT_ROTATION)))+pY*cos(radians(uiOpt.U_DOT_ROTATION));
+    
+    pXRot += uiOpt.IMG_WIDTH/2;
+    pYRot += uiOpt.IMG_HEIGHT/2;
+
+    int leftBoundX = (uiOpt.IMG_WIDTH - uiOpt.IMG_WIDTH*uiOpt.U_ZOOM)/2;
+    int leftBoundY = (uiOpt.IMG_HEIGHT - uiOpt.IMG_HEIGHT*uiOpt.U_ZOOM)/2;
+
+
+    int rightBoundX = (window.innerWidth*window.devicePixelRatio - window.innerWidth*window.devicePixelRatio*uiOpt.U_ZOOM)/2;
+    int rightBoundY = (window.innerHeight*window.devicePixelRatio - window.innerHeight*window.devicePixelRatio*uiOpt.U_ZOOM)/2;
+
+    if (pXRot < -leftBoundY || pXRot > window.innerWidth*window.devicePixelRatio) {
       return false;
     } 
-    if (pY < 0 || pY > window.innerHeight*window.devicePixelRatio) {
+    if (pYRot < -leftBoundX || pYRot > window.innerHeight*window.devicePixelRatio) {
       return false;
     }
     return true;
@@ -332,12 +350,12 @@ class Dot {
     offset.add(PVector.mult(dirOfTravel, offsetRate*speedFactor));
 
     // Determine if dot is onscreen, if so, draw.
-    if (isInView()) {
-      ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
-              pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
-              radius, radius);
+    // if (isInView()) {
+    ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
+            pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
+            radius, radius);
       // console.log(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x);
-    }
+    // }
   }
 };
 
@@ -782,6 +800,10 @@ void setRotation(a) {
   uiOpt.U_DOT_ROTATION = a;
 }
 
+void setZoom(a) {
+  uiOpt.U_ZOOM = a;
+}
+
 
 void resizeImg() {
   // Determine new height and width
@@ -911,10 +933,17 @@ void draw() {
     return;
   } 
 
-  translate(-width/2, -height/2);
-  scale(2);  
+  // 1: 0, 2: -w/2, 3: -w, 4: -1.5w,
+  // float zoomFactor = 2;
+  // float zoomFactor = 3;
+  // float zoomFactor = 4;
+  // translate(0,0);
+  // translate(-width/2,-height/2);
+  // translate(-width,-height);
+  translate((uiOpt.U_ZOOM-1)*(-width/2),(uiOpt.U_ZOOM-1)*(-height/2));
+  scale(uiOpt.U_ZOOM);  
 
-  background(uiOpt.U_BG_COLOR);
+  background(uiOpt.U_BG_COLOR); 
 
   translate(width/2, height/2);
   rotate(radians(uiOpt.U_DOT_ROTATION));
