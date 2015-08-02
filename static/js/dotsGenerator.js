@@ -235,6 +235,10 @@ function initGui() {
     var UIOpts = function() {
         var pOpt = pHandler.getUiOpt();
         this.U_DRAW = pOpt.U_DRAW;
+        this.U_RESET = function() {
+            pHandler.reset();
+            resetControls();
+        }
         this.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
@@ -271,6 +275,8 @@ function initGui() {
     vDraw.onChange(function(value) {
         pHandler.getUiOpt().U_DRAW = value;
     });
+
+    var vReset = gui.add(_opts, 'U_RESET').name("Reset");
 
     // Create folder and options
 

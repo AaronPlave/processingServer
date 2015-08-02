@@ -1,6 +1,6 @@
 // DOTS GENERATOR
 // AARON PLAVE
-// aplave@wesleyan.edu
+// aaronplave@gmail.com
 
 //// DEFAULT CUSTOMIZABLE PARAMS
 // CONFIGURABLES:
@@ -183,7 +183,15 @@ class UIOpt {
   }
 };
 
+
 UIOpt uiOpt;
+
+void reset() {
+  uiOpt = new UIOpt();
+  dotArray = {};
+  background(uiOpt.U_BG_COLOR);
+  initDots();
+};
 
 void getUiOpt() {
   uiOpt.U_DRAW = true;
