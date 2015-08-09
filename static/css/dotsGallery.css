@@ -34,9 +34,9 @@
     overflow: hidden;
     width: 200px;
     height: 200px;
-    border: 1px solid black;
     padding: 0px;
     margin: 2px;
     display: inline-block;
     border-radius: 200px;
+    border: none;
 }

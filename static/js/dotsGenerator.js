@@ -293,13 +293,13 @@ function initGui() {
             } else {
                 var tmpColor = rgbaStringToList(value);
                 // Hardcode bg opacity to 1.
-                tmpColor[3] = 1;
+                // tmpColor[3] = 1;
                 pHandler.setBG(tmpColor);
             }
         } else {
             // Case where it returns a list (object type).
             // Have to 
-            value[3] = 1;
+            // value[3] = 1;
             pHandler.setBG(value);
         }
     });
@@ -763,4 +763,8 @@ function cloneCanvas(oldCanvas) {
 
     //return the new canvas
     return newCanvas;
+}
+
+function savePDF() {
+    pHandler.saveToPDF();
 }

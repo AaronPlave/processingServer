@@ -24,7 +24,7 @@
 
 
 // ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
-boolean TEST_MODE = false;
+boolean TEST_MODE = true;
 
 class UIOpt {
   boolean U_DRAW;
@@ -339,7 +339,7 @@ class Dot {
     float totalDist = abs(dist(targetOffset.x,targetOffset.y,prevOffset.x,prevOffset.y));
     // console.log("offset",offset,"targetOffset",targetOffset,"prev",prevOffset);
     float progress = abs(dist(targetOffset.x,targetOffset.y,offset.x,offset.y));
-    if (totalDist == 0) {
+    if (totalDist < 0.1) {
       float speedFactor = 0.01;
     } else {
       if (progress > totalDist) {
@@ -374,7 +374,8 @@ void checkDotConditions() {
   // Check radius travel
   boolean allRadiiReached = true;
   boolean allStrokesReached = true;
-  boolean allOffsetsReached = true;
+
+  int numOffsetsReached = 0;
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
     if (uiOpt.U_DOT_RADIUS_RANDOMIZE) {
@@ -400,8 +401,8 @@ void checkDotConditions() {
       }
     }
     // Check offset travel
-    if (!(dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) < 3)) {
-      allOffsetsReached = false;
+    if (dist(cDot.offset.x, cDot.offset.y, cDot.targetOffset.x, cDot.targetOffset.y) < 3) {
+      numOffsetsReached += 1;
     }
   }
   // If all dots have reached their destinations, setRadiusRandomize.
@@ -418,7 +419,7 @@ void checkDotConditions() {
     }
   }
 
-  if (allOffsetsReached) {
+  if ((numOffsetsReached/float(dotArray.length)) == 1) {
     setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
   }
 }
@@ -963,6 +964,10 @@ void draw() {
   }
 
   checkDotConditions();
+}
+
+void saveToPDF() {
+  save("diagonal.pdf");
 }
 
 void printColor(color c) {
