@@ -24,7 +24,7 @@
 
 
 // ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
-boolean TEST_MODE = true;
+boolean TEST_MODE = false;
 
 class UIOpt {
   boolean U_DRAW;
