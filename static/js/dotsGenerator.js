@@ -276,7 +276,7 @@ function initGui() {
         pHandler.getUiOpt().U_DRAW = value;
     });
 
-    var vReset = gui.add(_opts, 'U_RESET').name("Reset");
+    var vReset = gui.add(_opts, 'U_RESET').name("Randomize");
 
     // Create folder and options
 
