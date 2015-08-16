@@ -33,6 +33,7 @@ class UIOpt {
   boolean U_DOT_FILL;
   boolean U_DOT_RADIUS_RANDOMIZE;
   boolean U_DOT_OFFSET;
+  String U_DOT_FILL_COLOR_MODE;
 
   // canvas zoom
   float U_ZOOM;
@@ -62,6 +63,14 @@ class UIOpt {
   // dot fill color dist
   String U_DOT_FILL_COLOR_DIST;
 
+  // dot fill rand color components
+  int U_DOT_FILL_COLOR_RAND_H_MIN;
+  int U_DOT_FILL_COLOR_RAND_H_MAX;
+  int U_DOT_FILL_COLOR_RAND_S_MIN;
+  int U_DOT_FILL_COLOR_RAND_S_MAX;
+  int U_DOT_FILL_COLOR_RAND_B_MIN;
+  int U_DOT_FILL_COLOR_RAND_B_MAX;
+
   // dot stroke
   float U_DOT_STROKE_WEIGHT;
   float U_DOT_STROKE_WEIGHT_MIN;
@@ -88,7 +97,14 @@ class UIOpt {
     if (TEST_MODE) {
       U_DOT_FILL = true;
       U_DOT_STROKE = false;
+      U_DOT_FILL_COLOR_MODE = randBool(0.5) ? "Random" : "Theme";
       U_DOT_FILL_NUM_COLORS = 3;
+      U_DOT_FILL_COLOR_RAND_H_MIN = randInt(0,300);
+      U_DOT_FILL_COLOR_RAND_H_MAX = randInt(U_DOT_FILL_COLOR_RAND_H_MIN,300);
+      U_DOT_FILL_COLOR_RAND_S_MIN = randInt(0,300);
+      U_DOT_FILL_COLOR_RAND_S_MAX = randInt(U_DOT_FILL_COLOR_RAND_S_MIN,300);
+      U_DOT_FILL_COLOR_RAND_B_MIN = randInt(0,300);
+      U_DOT_FILL_COLOR_RAND_B_MAX = randInt(U_DOT_FILL_COLOR_RAND_B_MIN,300);
       U_ZOOM = 2.5;
       U_DOT_ROTATION = 0;
       U_DOTS_PER_ROW = 10;
@@ -125,6 +141,7 @@ class UIOpt {
     }
     else {
       U_DOT_FILL = randBool(0.75);
+      U_DOT_FILL_COLOR_MODE = randBool(0.5) ? "Random" : "Theme";
       if (U_DOT_FILL) {
         // small chance to combine fill + stroke
         U_DOT_STROKE = randBool(0.15);
@@ -167,7 +184,15 @@ class UIOpt {
       } else {
         U_DOT_FILL_COLOR_DIST = "Sorted";
       }
-         // dot stroke
+
+      U_DOT_FILL_COLOR_RAND_H_MIN = randInt(0,300);
+      U_DOT_FILL_COLOR_RAND_H_MAX = randInt(U_DOT_FILL_COLOR_RAND_H_MIN,300);
+      U_DOT_FILL_COLOR_RAND_S_MIN = randInt(0,300);
+      U_DOT_FILL_COLOR_RAND_S_MAX = randInt(U_DOT_FILL_COLOR_RAND_S_MIN,300);
+      U_DOT_FILL_COLOR_RAND_B_MIN = randInt(0,300);
+      U_DOT_FILL_COLOR_RAND_B_MAX = randInt(U_DOT_FILL_COLOR_RAND_B_MIN,300);
+
+       // dot stroke
       U_DOT_STROKE_RANDOMIZE = randBool(0.4);
       U_DOT_STROKE_WEIGHT = random(0.3, 0.6);
       U_DOT_STROKE_WEIGHT_MIN  = random(0.3,0.5);
@@ -611,6 +636,18 @@ void setFillNumColors(x) {
   updateDotFills();
 }
 
+void setFillColorMode(x) {
+  uiOpt.U_DOT_FILL_COLOR_MODE = x;
+  if (x == "Random") {
+    for (int i = 0; i < dotArray.length; i++) {
+      Dot cDot = dotArray[i];
+      cDot.fillColor = generateRandColor();
+    }
+  } else {
+      updateDotFills();
+  }
+}
+
 void setAnimationSpeed(x) {
   uiOpt.U_DOT_ANIMATION_SPEED = calcValueInRange(x,0,100,uiOpt.U_DOT_ANIMATION_SPEED_MIN,uiOpt.U_DOT_ANIMATION_SPEED_MAX);
   if (uiOpt.U_DOT_ANIMATION_SPEED == 0) {
@@ -631,8 +668,13 @@ void updateDotFills() {
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
     int nextId = getNextFillColorId(i);
-    cDot.fillColor = colors[nextId];
-    cDot.fillColorId = nextId;
+    console.log(nextId);
+    if (uiOpt.U_DOT_FILL_COLOR_MODE == "Theme") {
+      cDot.fillColor = colors[nextId];
+      cDot.fillColorId = nextId;
+    } else {
+      cDot.fillColor = generateRandColor();
+    }
   }
 }
 
@@ -674,7 +716,7 @@ int getNextFillColorId(i) {
 
 void setFillColorDist(d) {
   if (d == uiOpt.U_DOT_FILL_COLOR_DIST) {
-    return ;
+    return;
   }
   uiOpt.U_DOT_FILL_COLOR_DIST = d;
   updateDotFills();
@@ -916,8 +958,12 @@ void initDots() {
         newDot.strokeWgt = uiOpt.U_DOT_STROKE_WEIGHT;
       }
       int nextId = getNextFillColorId(curr);
-      newDot.fillColor = colors[nextId];
-      newDot.fillColorId = nextId;
+      if (uiOpt.U_DOT_FILL_COLOR_MODE == "Theme") {
+        newDot.fillColor = colors[nextId];
+        newDot.fillColorId = nextId;
+      } else {
+        newDot.fillColor = generateRandColor();
+      }
 
       // Init offset
       float offsetX = random(-1*uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_X_MAX);
@@ -932,6 +978,61 @@ void initDots() {
   setRadiusRandomize(uiOpt.U_DOT_RADIUS_RANDOMIZE);
   setStrokeRandomize(uiOpt.U_DOT_STROKE_RANDOMIZE);
   setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
+}
+
+void setHSB(prop,lim,value) {
+  console.log(prop,lim,value);
+  if (prop == "H") {
+    if (lim == "MIN") {
+      uiOpt.U_DOT_FILL_COLOR_RAND_H_MIN = value;
+    } else {
+      uiOpt.U_DOT_FILL_COLOR_RAND_H_MAX = value;
+    }
+  }
+  if (prop == "S") {
+    if (lim == "MIN") {
+      uiOpt.U_DOT_FILL_COLOR_RAND_S_MIN = value;
+    } else {
+      uiOpt.U_DOT_FILL_COLOR_RAND_S_MAX = value;
+    }
+  }
+  if (prop == "B") {
+    if (lim == "MIN") {
+      uiOpt.U_DOT_FILL_COLOR_RAND_B_MIN = value;
+    } else {
+      uiOpt.U_DOT_FILL_COLOR_RAND_B_MAX = value;
+    }
+  }
+
+  // If we're not on random don't set the colors
+  if (uiOpt.U_DOT_FILL_COLOR_MODE == "Theme") {
+    return;
+  }
+
+  console.log('new vals');
+  console.log("hmin",uiOpt.U_DOT_FILL_COLOR_RAND_H_MIN);
+  console.log("hmax",uiOpt.U_DOT_FILL_COLOR_RAND_H_MAX);
+  console.log("smin",uiOpt.U_DOT_FILL_COLOR_RAND_S_MIN);
+  console.log("smin",uiOpt.U_DOT_FILL_COLOR_RAND_S_MAX);
+  console.log("bmin",uiOpt.U_DOT_FILL_COLOR_RAND_B_MIN);
+  console.log("bmin",uiOpt.U_DOT_FILL_COLOR_RAND_B_MAX);
+  // now set the new H, S, or B
+  for (int i = 0; i < dotArray.length; i++) {
+    Dot cDot = dotArray[i];
+    cDot.fillColor = generateRandColor();
+  }
+}
+
+color generateRandColor() {
+  int h = randInt(uiOpt.U_DOT_FILL_COLOR_RAND_H_MIN,
+                        uiOpt.U_DOT_FILL_COLOR_RAND_H_MAX);
+  int s = randInt(uiOpt.U_DOT_FILL_COLOR_RAND_S_MIN,
+                  uiOpt.U_DOT_FILL_COLOR_RAND_S_MAX);
+  int b = randInt(uiOpt.U_DOT_FILL_COLOR_RAND_B_MIN,
+                  uiOpt.U_DOT_FILL_COLOR_RAND_B_MAX);
+
+  color c = HSBtoRGB(h,s,b);
+  return c;
 }
 
 void draw() {
@@ -966,16 +1067,14 @@ void draw() {
   checkDotConditions();
 }
 
-void saveToPDF() {
-  save("diagonal.pdf");
-}
-
 void printColor(color c) {
   println(red(c) +", " + blue(c) + ", " + green(c));
 }
+
 String colorToRGB(color c) {
   return [red(c), green(c), blue(c), round((alpha(c)/255.0)*100)*0.01];
 }
+
 boolean randBool(x) {
   // where x is the chance out of 1 of true
   if (random(1) < x) {
@@ -983,8 +1082,27 @@ boolean randBool(x) {
   } 
   return false;
 }
+
 int randInt(x,y) {
   // int x is the min
   // int y is the max
   return int(random(x,y+1)); 
 }
+
+color HSBtoRGB(h,s,b){
+    float br = Math.round(b / 100 * 255);
+    float hue = h % 360;
+    float f = hue % 60;
+    float p = Math.round((b * (100 - s)) / 10000 * 255);
+    float q = Math.round((b * (6000 - s * f)) / 600000 * 255);
+    float t = Math.round((b * (6000 - s * (60 - f))) / 600000 * 255);
+    switch (Math.floor(hue / 60)){
+      case 0: return color(br, t, p);
+      case 1: return color(q, br, p);
+      case 2: return color(p, br, t);
+      case 3: return color(p, q, br);
+      case 4: return color(t, p, br);
+      case 5: return color(br, p, q);
+    }
+  }
+

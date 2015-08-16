@@ -1,7 +1,9 @@
 .dg .c input[type=text] {
     line-height: normal;
 }
-
+.title {
+    color: rgb(255, 223, 0);
+}
 .dg .c div {
     box-sizing: content-box;
 }

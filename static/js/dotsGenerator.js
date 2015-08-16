@@ -27,7 +27,7 @@ window.onresize = function() {
 window.onload = function() {
     initialize();
 }
-
+var randomThemeChance = 0;
 var pHandler;
 var _opts;
 var gui;
@@ -259,8 +259,15 @@ function initGui() {
         this.U_DOT_FILL_COLOR_1 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_1);
         this.U_DOT_FILL_COLOR_2 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_2);
         this.U_DOT_FILL_COLOR_3 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_3);
+        this.U_DOT_FILL_COLOR_MODE = pOpt.U_DOT_FILL_COLOR_MODE;
         this.U_DOT_FILL_THEMES = "";
         this.U_DOT_FILL_COLOR_DIST = pOpt.U_DOT_FILL_COLOR_DIST;
+        this.U_DOT_FILL_COLOR_RAND_H_MIN = pOpt.U_DOT_FILL_COLOR_RAND_H_MIN;
+        this.U_DOT_FILL_COLOR_RAND_H_MAX = pOpt.U_DOT_FILL_COLOR_RAND_H_MAX;
+        this.U_DOT_FILL_COLOR_RAND_S_MIN = pOpt.U_DOT_FILL_COLOR_RAND_S_MIN;
+        this.U_DOT_FILL_COLOR_RAND_S_MAX = pOpt.U_DOT_FILL_COLOR_RAND_S_MAX;
+        this.U_DOT_FILL_COLOR_RAND_B_MIN = pOpt.U_DOT_FILL_COLOR_RAND_B_MIN;
+        this.U_DOT_FILL_COLOR_RAND_B_MAX = pOpt.U_DOT_FILL_COLOR_RAND_B_MAX;
         this.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
         this.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
         this.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
@@ -430,6 +437,36 @@ function initGui() {
     });
 
 
+    var cFillColorMode = fFill.add(_opts, 'U_DOT_FILL_COLOR_MODE', ["Theme", "Random"]).name("Color Mode");
+    cFillColorMode.onChange(function(value) {
+        pHandler.setFillColorMode(value);
+    });
+
+    var cFillColorRandHMin = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_H_MIN", 0, 300).name("Random H Min");
+    cFillColorRandHMin.onChange(function(value) {
+        pHandler.setHSB("H", "MIN", value);
+    });
+    var cFillColorRandHMax = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_H_MAX", 0, 300).name("Random H Max");
+    cFillColorRandHMax.onChange(function(value) {
+        pHandler.setHSB("H", "MAX", value);
+    });
+    var cFillColorRandSMin = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_S_MIN", 0, 300).name("Random S Min");
+    cFillColorRandSMin.onChange(function(value) {
+        pHandler.setHSB("S", "MIN", value);
+    });
+    var cFillColorRandSMax = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_S_MAX", 0, 300).name("Random S Max");
+    cFillColorRandSMax.onChange(function(value) {
+        pHandler.setHSB("S", "MAX", value);
+    });
+    var cFillColorRandBMin = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_B_MIN", 0, 300).name("Random B Min");
+    cFillColorRandBMin.onChange(function(value) {
+        pHandler.setHSB("B", "MIN", value);
+    });
+    var cFillColorRandBMax = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_B_MAX", 0, 300).name("Random B Max");
+    cFillColorRandBMax.onChange(function(value) {
+        pHandler.setHSB("B", "MAX", value);
+    });
+
     // STROKE
     var fStroke = gui.addFolder('Stroke');
     folders.push(fStroke);
@@ -574,7 +611,7 @@ function initGui() {
         pHandler.resizeImg();
     } else {
         // Chance of randomly assigning color theme
-        if (Math.random() < 0.35) {
+        if (Math.random() < randomThemeChance) {
             var randInt = Math.floor((Math.random() * Object.keys(fillColorThemes).length));
             var t = fillColorThemes[Object.keys(fillColorThemes)[randInt]];
             if (t === "") {
@@ -619,6 +656,13 @@ function initGui() {
         }
     });
 
+    // Set up fix for stupid color picker position issue
+    //ColorPickerFix
+    $('.main').scroll(function() {
+        var scroll = $('.main').scrollTop();
+        $(".selector").css('-webkit-transform', 'translate(0px,' + (-scroll) + 'px)');
+    });
+
 }
 
 function resetControls() {
@@ -645,8 +689,15 @@ function resetControls() {
     _opts.U_DOT_FILL_COLOR_1 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_1);
     _opts.U_DOT_FILL_COLOR_2 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_2);
     _opts.U_DOT_FILL_COLOR_3 = pHandler.colorToRGB(pOpt.U_DOT_FILL_COLOR_3);
-    _opts.U_DOT_FILL_THEMES = "";
+    _opts.U_DOT_FILL_COLOR_MODE = pOpt.U_DOT_FILL_COLOR_MODE; // color mode switch
+    _opts.U_DOT_FILL_THEMES = ""; // dummy variable for UI
     _opts.U_DOT_FILL_COLOR_DIST = pOpt.U_DOT_FILL_COLOR_DIST;
+    _opts.U_DOT_FILL_COLOR_RAND_H_MIN = pOpt.U_DOT_FILL_COLOR_RAND_H_MIN;
+    _opts.U_DOT_FILL_COLOR_RAND_H_MAX = pOpt.U_DOT_FILL_COLOR_RAND_H_MAX;
+    _opts.U_DOT_FILL_COLOR_RAND_S_MIN = pOpt.U_DOT_FILL_COLOR_RAND_S_MIN;
+    _opts.U_DOT_FILL_COLOR_RAND_S_MAX = pOpt.U_DOT_FILL_COLOR_RAND_S_MAX;
+    _opts.U_DOT_FILL_COLOR_RAND_B_MIN = pOpt.U_DOT_FILL_COLOR_RAND_B_MIN;
+    _opts.U_DOT_FILL_COLOR_RAND_B_MAX = pOpt.U_DOT_FILL_COLOR_RAND_B_MAX;
     _opts.U_DOT_OFFSET_X_MAX = pOpt.U_DOT_OFFSET_X_MAX;
     _opts.U_DOT_OFFSET_Y_MAX = pOpt.U_DOT_OFFSET_Y_MAX;
     _opts.U_DOT_RADIUS = pOpt.U_DOT_RADIUS;
