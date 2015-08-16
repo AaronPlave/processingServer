@@ -661,6 +661,7 @@ function initGui() {
     $('.main').scroll(function() {
         var scroll = $('.main').scrollTop();
         $(".selector").css('-webkit-transform', 'translate(0px,' + (-scroll) + 'px)');
+        // $(".field-knob").css('-webkit-transform', 'translate(0px,' + (scroll) + 'px)');
     });
 
 }
