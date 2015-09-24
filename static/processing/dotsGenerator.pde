@@ -24,7 +24,7 @@
 
 
 // ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
-boolean TEST_MODE = false;
+boolean TEST_MODE = true;
 
 class UIOpt {
   boolean U_DRAW;
@@ -32,8 +32,8 @@ class UIOpt {
   boolean U_DOT_STROKE_RANDOMIZE;
   boolean U_DOT_FILL;
   boolean U_DOT_RADIUS_RANDOMIZE;
-  boolean U_DOT_OFFSET;
   String U_DOT_FILL_COLOR_MODE;
+  String U_DOT_SHAPE;
 
   // canvas zoom
   float U_ZOOM;
@@ -117,6 +117,7 @@ class UIOpt {
       U_DOT_OFFSET_X_MAX = 0;
       U_DOT_OFFSET_Y_MAX = 0;
       U_DOT_RADIUS_RANDOMIZE = false;
+      U_DOT_SHAPE = "Circle";
       U_DOT_RADIUS = 15;
       U_DOT_RADIUS_MIN = 1;
       U_DOT_RADIUS_MAX = 5;
@@ -164,6 +165,7 @@ class UIOpt {
       U_DOT_OFFSET_X_MAX = randInt(0,100);
       U_DOT_OFFSET_Y_MAX = randInt(0,100);
       U_DOT_RADIUS_RANDOMIZE = randBool(0.75);
+      U_DOT_SHAPE = "Circle";
       // dot radius
       U_DOT_RADIUS = randInt(0.1,20);
       U_DOT_RADIUS_MIN = randInt(0.1,5);
@@ -362,7 +364,6 @@ class Dot {
     // Determine offset travel
     PVector dirOfTravel = PVector.sub(targetOffset, offset);
     float totalDist = abs(dist(targetOffset.x,targetOffset.y,prevOffset.x,prevOffset.y));
-    // console.log("offset",offset,"targetOffset",targetOffset,"prev",prevOffset);
     float progress = abs(dist(targetOffset.x,targetOffset.y,offset.x,offset.y));
     if (totalDist < 0.1) {
       float speedFactor = 0.01;
@@ -371,24 +372,26 @@ class Dot {
       float speedFactor = 0.01 + sin((totalDist/progress)*PI);
       } else {
         float speedFactor = 0.01 + sin((progress/totalDist)*PI);
-        // float speedFactor = 0.01 + sin((totalDist/progress)*PI);
       }
     }
     dirOfTravel.normalize();
-    // console.log("offsetRate:",offsetRate,"speedFactor:",speedFactor,"progress:",progress,"totalDist:",totalDist, "prev",prevOffset,"tar:",targetOffset,"off",offset);
-    // console.log("speedFactor",speedFactor);
-    // console.log("totalDist",totalDist);
-    // console.log("totalDist",totalDist);
-    // console.log("progress",progress);
     offset.add(PVector.mult(dirOfTravel, offsetRate*speedFactor));
 
-    // Determine if dot is onscreen, if so, draw.
-    // if (isInView()) {
-    ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
-            pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
-            radius, radius);
-      // console.log(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x);
-    // }
+    if (uiOpt.U_DOT_SHAPE === "Square") {
+      rectMode(RADIUS);
+      rect(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
+        pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
+        radius, radius);
+    } else if (uiOpt.U_DOT_SHAPE === "Circle") {
+        ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
+                pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
+                radius, radius);
+    } else {
+        console.log("SHAPE NOT RECOGNIZED!",uiOpt.U_DOT_SHAPE);
+        ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
+                pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
+                radius, radius);
+    }
   }
 };
 
@@ -447,6 +450,10 @@ void checkDotConditions() {
   if ((numOffsetsReached/float(dotArray.length)) == 1) {
     setOffsetXY(uiOpt.U_DOT_OFFSET_X_MAX, uiOpt.U_DOT_OFFSET_Y_MAX);
   }
+}
+
+void setShape(x) {
+  uiOpt.U_DOT_SHAPE = x;
 }
 
 void setRadius(x) {
@@ -668,7 +675,6 @@ void updateDotFills() {
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
     int nextId = getNextFillColorId(i);
-    console.log(nextId);
     if (uiOpt.U_DOT_FILL_COLOR_MODE == "Theme") {
       cDot.fillColor = colors[nextId];
       cDot.fillColorId = nextId;
@@ -815,7 +821,6 @@ PVector calcRotation(Dot cDot, int a) {
   // Rotate around 0,0
   int xR = xOrigin*cos(radians(uiOpt.U_DOT_ROTATION-a))+yOrigin*sin(radians(uiOpt.U_DOT_ROTATION-a));
   int yR = xOrigin*(-1*sin(radians(uiOpt.U_DOT_ROTATION-a)))+yOrigin*cos(radians(uiOpt.U_DOT_ROTATION-a));
-  // console.log("x1R,y1R",x1R,y1R);
 
   // Translate back to original coordinate space
   int x2 = xR + uiOpt.IMG_WIDTH/2;
@@ -981,7 +986,6 @@ void initDots() {
 }
 
 void setHSB(prop,lim,value) {
-  console.log(prop,lim,value);
   if (prop == "H") {
     if (lim == "MIN") {
       uiOpt.U_DOT_FILL_COLOR_RAND_H_MIN = value;
@@ -1009,13 +1013,6 @@ void setHSB(prop,lim,value) {
     return;
   }
 
-  console.log('new vals');
-  console.log("hmin",uiOpt.U_DOT_FILL_COLOR_RAND_H_MIN);
-  console.log("hmax",uiOpt.U_DOT_FILL_COLOR_RAND_H_MAX);
-  console.log("smin",uiOpt.U_DOT_FILL_COLOR_RAND_S_MIN);
-  console.log("smin",uiOpt.U_DOT_FILL_COLOR_RAND_S_MAX);
-  console.log("bmin",uiOpt.U_DOT_FILL_COLOR_RAND_B_MIN);
-  console.log("bmin",uiOpt.U_DOT_FILL_COLOR_RAND_B_MAX);
   // now set the new H, S, or B
   for (int i = 0; i < dotArray.length; i++) {
     Dot cDot = dotArray[i];
@@ -1043,13 +1040,6 @@ void draw() {
     return;
   } 
 
-  // 1: 0, 2: -w/2, 3: -w, 4: -1.5w,
-  // float zoomFactor = 2;
-  // float zoomFactor = 3;
-  // float zoomFactor = 4;
-  // translate(0,0);
-  // translate(-width/2,-height/2);
-  // translate(-width,-height);
   translate((uiOpt.U_ZOOM-1)*(-width/2),(uiOpt.U_ZOOM-1)*(-height/2));
   scale(uiOpt.U_ZOOM);  
 

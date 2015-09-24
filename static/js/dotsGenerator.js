@@ -200,7 +200,7 @@ function initialize() {
     var canvasHolder = document.getElementById("canvasHolder");
     canvasRef = document.createElement('canvas');
     canvasRef.id = "dotsSketch";
-    var p = Processing.loadSketchFromSources(canvasRef, ['../static/dots3/dots3.pde']);
+    var p = Processing.loadSketchFromSources(canvasRef, ['../static/processing/dotsGenerator.pde']);
     canvasHolder.appendChild(canvasRef);
 
     // wait for sketch to load to assign handler
@@ -240,6 +240,7 @@ function initGui() {
             resetControls();
         }
         this.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
+        this.U_DOT_SHAPE = pOpt.U_DOT_SHAPE;
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
         this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
@@ -286,6 +287,15 @@ function initGui() {
     var vReset = gui.add(_opts, 'U_RESET').name("Randomize");
 
     // Create folder and options
+
+    // SHAPE
+    var fShape = gui.addFolder('Shape');
+    folders.push(fShape);
+    var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Circle", "Square"]).name("Shape");
+    cShapeType.onChange(function(value) {
+        pHandler.setShape(value);
+    });
+
 
     // BACKGROUND
     var fBG = gui.addFolder('Background');
@@ -545,6 +555,7 @@ function initGui() {
 
     // Default open folders
     fLayout.open();
+    fShape.open();
     fBG.open();
     fFill.open();
     fStroke.open();
@@ -646,7 +657,6 @@ function initGui() {
     });
 
     canvasRef.addEventListener("click", function() {
-        console.log("canvasRef click");
         if (viewMode === "create") {
             enableFullscreen();
             viewMode = "view";
@@ -671,7 +681,7 @@ function resetControls() {
     var pOpt = pHandler.getUiOpt();
     _opts.U_DRAW = pOpt.U_DRAW;
     _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
-    // _opts.U_BG_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_BG_COLOR)[3];
+    _opts.U_DOT_SHAPE = pHandler.U_DOT_SHAPE;
     _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
     _opts.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
     _opts.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;

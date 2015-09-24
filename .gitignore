@@ -2,4 +2,4 @@ static/img/*
 *.pyc
 logs/*
 *.DS_Store
-static/dots3/build-tmp/
+static/processing/build-tmp/
