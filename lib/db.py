@@ -31,11 +31,11 @@ def convertAll():
 		rId = i["id"]
 		filepath = "static/imgs/"+rId+".png"
 		data = uri.split("base64,")[1]
-	    im = Image.open(BytesIO(base64.b64decode(data)))
-	    im.save(filepath)
-	    if not filepath:
-	    	print "UH NO",rId
-	    	return
+		im = Image.open(BytesIO(base64.b64decode(data)))
+		im.save(filepath)
+		if not filepath:
+			print "UH NO",rId
+			return
 
 		i.update({"id":"allSketches"},{"$set":{"thumbnail":filepath}},upsert=True)
 
