@@ -19,10 +19,10 @@ def getSketchById(id):
 		return {"success":False,"error":"Multiple sketches with same id"}
 
 def getAllSketches():
-	allSketches = SKETCHES.find({"id":"*"},{id:1,sketch:0,_id:0,thumbnail:1})
+	allSketches = SKETCHES.find({},{"sketch":0,"_id":0}).sort()
 	if allSketches.count() == 0:
-		return {}
-	return allSketches
+		return [{}]
+	return list(allSketches)
 
 def convertAll():
 	allSketches = SKETCHES.find()
@@ -30,14 +30,25 @@ def convertAll():
 		thb = i["thumbnail"]
 		rId = i["id"]
 		filepath = "static/imgs/"+rId+".png"
-		data = uri.split("base64,")[1]
-		im = Image.open(BytesIO(base64.b64decode(data)))
-		im.save(filepath)
+		data = thb.split("base64,")[1]
+		try:
+			im = Image.open(BytesIO(base64.b64decode(data)))
+			im.save(filepath)
+		except:
+			print "NOOOO", rId
 		if not filepath:
 			print "UH NO",rId
 			return
 
-		i.update({"id":"allSketches"},{"$set":{"thumbnail":filepath}},upsert=True)
+		SKETCHES.update(
+			{"id":rId},
+			{
+				"$set":{
+					"thumbnail":filepath
+				}
+			}
+		)
+
 
 def addSketch(id,sketch,thumbnail):
 	try:

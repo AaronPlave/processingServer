@@ -6,13 +6,10 @@
     <span class="generator"><a href="/dotsGenerator">New Sketch</a></span>
     <span class="title2">Dots Gallery</span>
 </div>
-<div class="img-grid">
-    {% for key, value in dotSketches.items() %}
-    <a href="dotsGenerator/{{ key }}" class="thumbnail"><img src="{{ value }}"></a>
-    {% endfor %}
+<div id="imgGrid" class="img-grid">
+
 </div>
-<!-- <script type="text/javascript" src="{{ url_for('static', filename='js/dotsGenerator.js') }}"></script> -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/gallery.js') }}"></script>
 <script>
-// var sharedOpts = '{{ sharedOpts }}';
 </script>
 {% endblock %}

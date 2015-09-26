@@ -13,14 +13,17 @@ def landingPage():
 
 @app.route('/dotsGallery',methods=['GET'])
 def dotsGallery():
-    rv = db.getAllSketches()
-    if rv is None:
-        return render_template('dotsGallery.html',error="Unable to fetch sketches.")
-    return render_template('dotsGallery.html',error="",dotSketches=rv)
+    return render_template('dotsGallery.html')
+
+@app.route('/getAllSketches',methods=['GET'])
+def getAllSketches():
+    return json.dumps(db.getAllSketches())
 
 @app.route('/dotsGenerator/')
 def dotsGenerator():
     return render_template('dotsGenerator.html')
+
+
 
 @app.route('/dotsGenerator/publish', methods=['POST'])
 def dotsGeneratorPostPublish():
