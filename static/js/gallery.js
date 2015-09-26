@@ -9,14 +9,15 @@ function initialize() {
             var el = document.createElement("a");
             el.href = "dotsGenerator/" + sketches[i].id;
             el.className = "thumbnail";
-            el.innerHTML = "<img src=" + sketches[i].thumbnail + ">";
-	        imgGrid.appendChild(el);
+            el.innerHTML = "<img style='display:none;' onload=fadeIn(this) src=" + sketches[i].thumbnail + ">";
+            imgGrid.appendChild(el);
         }
     })
-
-
 }
 
+function fadeIn(obj) {
+    $(obj).fadeIn(1000);
+}
 
 function httpGetAsync(theUrl, callback) {
     var xmlHttp = new XMLHttpRequest();
