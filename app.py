@@ -30,10 +30,11 @@ def dotsGeneratorPostPublish():
         rId = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(7))
 
         # Pull out image
-        thumbnail = request.json.get("img")
-
+        thumbnailURI = request.json.get("img")
+        filepath = "static/imgs/"+rId+".png"
+        dataURIToImage(thumbnailURI,filepath)
         # Add sketch to db
-        if not db.addSketch(rId,request.json.get("opts"),thumbnail):
+        if not db.addSketch(rId,request.json.get("opts"),filepath):
             print "ERROR: Could not add sketch", rId
             return False
 
@@ -49,26 +50,26 @@ def dotsV3GetSketch(idx):
     print "ERROR: Unable to fetch sketch", idx
     return render_template('dotsGenerator.html',error="Unable to fetch requested sketch.",sharedOpts="")
 
-# def dataURIToImage(uri,filepath):
-#     """
-#     Converts the URI to png, resizes, and saves to filepath
-#     """
-#     data = uri.split("base64,")[1]
-#     im = Image.open(BytesIO(base64.b64decode(data)))
+def dataURIToImage(uri,filepath):
+    """
+    Converts the URI to png, resizes, and saves to filepath
+    """
+    data = uri.split("base64,")[1]
+    im = Image.open(BytesIO(base64.b64decode(data)))
 
-#     # Crop to center
-#     halfWidth = im.size[0] / 2
-#     halfHeight = im.size[1] / 2
+    # Crop to center
+    # halfWidth = im.size[0] / 2
+    # halfHeight = im.size[1] / 2
 
-#     if (halfHeight < 150) or (halfWidth < 150):
-#         basewidth = 300
-#         wpercent = (basewidth/float(im.size[0]))
-#         hsize = int((float(img.size[1]) * float(wpercent)))
-#         im = im.resize((basewidth,hsize),PIL.Image.ANTIALIAS)
+    # if (halfHeight < 150) or (halfWidth < 150):
+    #     basewidth = 300
+        # wpercent = (basewidth/float(im.size[0]))
+        # hsize = int((float(im.size[1]) * float(wpercent)))
+        # im = im.resize((basewidth,hsize),Image.ANTIALIAS)
 
-#     imCrop = im.crop(halfWidth - 150,halfHeight - 150,halfWidth+150,halfHeight+150)
-#     imCrop.save(filepath)
-#     return True
+    # imCrop = im.crop((halfWidth - 150,halfHeight - 150,halfWidth+150,halfHeight+150))
+    im.save(filepath)
+    return True
 
 if __name__ == "__main__":
     app.run(debug=True,threaded=True)

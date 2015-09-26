@@ -381,7 +381,7 @@ class Dot {
       rectMode(RADIUS);
       rect(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
         pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
-        radius, radius);
+        radius/2, radius/2);
     } else if (uiOpt.U_DOT_SHAPE === "Circle") {
         ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
                 pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 

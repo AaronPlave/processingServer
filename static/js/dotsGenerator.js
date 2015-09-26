@@ -587,7 +587,7 @@ function initGui() {
         // RESIZE image to thumbnail size
 
         var newCanvas = document.createElement("canvas");
-        var targetSize = 600;
+        var targetSize = 300;
         var newWidth = canvas.width;
         var newHeight = canvas.height;
         var widthOffset = 0;
