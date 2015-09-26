@@ -19,7 +19,7 @@ def getSketchById(id):
 		return {"success":False,"error":"Multiple sketches with same id"}
 
 def getAllSketches():
-	allSketches = SKETCHES.find({},{"sketch":0,"_id":0}).sort()
+	allSketches = SKETCHES.find({},{"sketch":0,"_id":0})
 	if allSketches.count() == 0:
 		return [{}]
 	return list(allSketches)
