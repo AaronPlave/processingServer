@@ -1,4 +1,4 @@
-static/img/*
+static/imgs/*
 *.pyc
 logs/*
 *.DS_Store
