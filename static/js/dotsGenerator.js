@@ -291,7 +291,7 @@ function initGui() {
     // SHAPE
     var fShape = gui.addFolder('Shape');
     folders.push(fShape);
-    var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Circle", "Square"]).name("Shape");
+    var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Line 1","Line 2","Triangle","Square","Pentagon","Hexagon","Circle"]).name("Shape");
     cShapeType.onChange(function(value) {
         pHandler.setShape(value);
     });

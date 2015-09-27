@@ -24,7 +24,7 @@
 
 
 // ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
-boolean TEST_MODE = true;
+boolean TEST_MODE = false;
 
 class UIOpt {
   boolean U_DRAW;
@@ -141,11 +141,17 @@ class UIOpt {
       U_DOT_SINGLE_STROKE_COLOR = color(0,0,0,0);
     }
     else {
+      String[] shapes = ["Line 1","Line 2","Triangle","Square","Pentagon","Hexagon","Circle"];
+      U_DOT_SHAPE = shapes[randInt(0,shapes.length-1)];
       U_DOT_FILL = randBool(0.75);
       U_DOT_FILL_COLOR_MODE = randBool(0.5) ? "Random" : "Theme";
       if (U_DOT_FILL) {
         // small chance to combine fill + stroke
-        U_DOT_STROKE = randBool(0.15);
+        if (U_DOT_SHAPE == "Line 1" || U_DOT_SHAPE == "Line 2") {
+            U_DOT_STROKE = true;
+        } else {
+            U_DOT_STROKE = randBool(0.15);
+        }
       } else {
         // if no fill, must have stroke
         U_DOT_STROKE = true;
@@ -165,7 +171,7 @@ class UIOpt {
       U_DOT_OFFSET_X_MAX = randInt(0,100);
       U_DOT_OFFSET_Y_MAX = randInt(0,100);
       U_DOT_RADIUS_RANDOMIZE = randBool(0.75);
-      U_DOT_SHAPE = "Circle";
+      
       // dot radius
       U_DOT_RADIUS = randInt(0.1,20);
       U_DOT_RADIUS_MIN = randInt(0.1,5);
@@ -320,6 +326,17 @@ class Dot {
     return true;
   }
 
+  void polygon(float x, float y, float radius, int npoints) {
+    float angle = TWO_PI / npoints;
+    beginShape();
+    for (float a = -PI/npoints; a < TWO_PI-PI/npoints; a += angle) {
+      float sx = x + cos(a) * radius;
+      float sy = y + sin(a) * radius;
+      vertex(sx, sy);
+    }
+    endShape(CLOSE);
+  }
+
   void drawDot() {
     // Determine fill
     if (uiOpt.U_DOT_FILL) {
@@ -378,14 +395,40 @@ class Dot {
     offset.add(PVector.mult(dirOfTravel, offsetRate*speedFactor));
 
     if (uiOpt.U_DOT_SHAPE === "Square") {
-      rectMode(RADIUS);
-      rect(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
-        pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
-        radius/2, radius/2);
+      polygon(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
+              pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
+              radius/2, 4)
+      // rotate(1.785398163);
     } else if (uiOpt.U_DOT_SHAPE === "Circle") {
         ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
                 pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
                 radius, radius);
+    } else if (uiOpt.U_DOT_SHAPE === "Line 1") {
+        line(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x-radius, 
+             pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y-radius,
+             pos.x+offset.x+uiOpt.U_DOT_DIST_Y*spacingFactor.x+radius,
+             pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y+radius
+             )
+    } else if (uiOpt.U_DOT_SHAPE === "Line 2") {
+      polygon(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
+              pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
+              radius/2, 2)
+    } else if (uiOpt.U_DOT_SHAPE === "Pentagon") {
+      polygon(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
+              pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
+              radius/2, 5)
+    } else if (uiOpt.U_DOT_SHAPE === "Hexagon") {
+      polygon(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
+              pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
+              radius/2, 6)
+    } else if (uiOpt.U_DOT_SHAPE === "Triangle") {
+        triangle(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x+radius/2, 
+                pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y+radius/2, 
+                pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x+radius/2, 
+                pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y-radius/2, 
+                pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x-radius/2, 
+                pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y-radius/2
+              )
     } else {
         console.log("SHAPE NOT RECOGNIZED!",uiOpt.U_DOT_SHAPE);
         ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
