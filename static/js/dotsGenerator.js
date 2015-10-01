@@ -241,6 +241,8 @@ function initGui() {
         }
         this.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
         this.U_DOT_SHAPE = pOpt.U_DOT_SHAPE;
+        this.U_DOT_SINE_FREQUENCY = pOpt.U_DOT_SINE_FREQUENCY;
+        this.U_DOT_SINE_AMPLITUDE = pOpt.U_DOT_SINE_AMPLITUDE;
         this.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
         this.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
         this.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;
@@ -291,11 +293,20 @@ function initGui() {
     // SHAPE
     var fShape = gui.addFolder('Shape');
     folders.push(fShape);
-    var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Line 1","Line 2","Triangle","Square","Pentagon","Hexagon","Circle"]).name("Shape");
+    var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Line 1","Line 2","Sine","Triangle","Square","Pentagon","Hexagon","Circle"]).name("Shape");
     cShapeType.onChange(function(value) {
         pHandler.setShape(value);
     });
+    console.log(_opts)
+    var cSineFrequency = fShape.add(_opts, 'U_DOT_SINE_FREQUENCY',0,100).name("Sine Frequency");
+    cSineFrequency.onChange(function(value) {
+        pHandler.setShapeSineFrequency(value);
+    });
 
+    var cSineAmplitude = fShape.add(_opts, 'U_DOT_SINE_AMPLITUDE',0,100).name("Sine Amplitude");
+    cSineAmplitude.onChange(function(value) {
+        pHandler.setShapeSineAmplitude(value);
+    });
 
     // BACKGROUND
     var fBG = gui.addFolder('Background');
@@ -554,8 +565,8 @@ function initGui() {
     })
 
     // Default open folders
-    fLayout.open();
     fShape.open();
+    fLayout.open();
     fBG.open();
     fFill.open();
     fStroke.open();
@@ -681,7 +692,9 @@ function resetControls() {
     var pOpt = pHandler.getUiOpt();
     _opts.U_DRAW = pOpt.U_DRAW;
     _opts.U_BG_COLOR = pHandler.colorToRGB(pOpt.U_BG_COLOR);
-    _opts.U_DOT_SHAPE = pHandler.U_DOT_SHAPE;
+    _opts.U_DOT_SHAPE = pOpt.U_DOT_SHAPE;
+    _opts.U_DOT_SINE_FREQUENCY = pOpt.U_DOT_SINE_FREQUENCY;
+    _opts.U_DOT_SINE_AMPLITUDE = pOpt.U_DOT_SINE_AMPLITUDE;
     _opts.U_DOTS_PER_ROW = pOpt.U_DOTS_PER_ROW;
     _opts.U_DOTS_PER_COL = pOpt.U_DOTS_PER_COL;
     _opts.U_DOT_DIST_X = pOpt.U_DOT_DIST_X;

@@ -38,6 +38,10 @@ class UIOpt {
   // canvas zoom
   float U_ZOOM;
 
+  // Shape options
+  float U_DOT_SINE_FREQUENCY;
+  float U_DOT_SINE_AMPLITUDE;
+
   // dot center offset
   float U_DOT_OFFSET_X_MAX;
   float U_DOT_OFFSET_Y_MAX;
@@ -106,6 +110,8 @@ class UIOpt {
       U_DOT_FILL_COLOR_RAND_B_MIN = randInt(0,300);
       U_DOT_FILL_COLOR_RAND_B_MAX = randInt(U_DOT_FILL_COLOR_RAND_B_MIN,300);
       U_ZOOM = 2.5;
+      U_DOT_SINE_FREQUENCY = 2;
+      U_DOT_SINE_AMPLITUDE = 10;
       U_DOT_ROTATION = 0;
       U_DOTS_PER_ROW = 10;
       U_DOTS_PER_COL = 10;
@@ -141,13 +147,13 @@ class UIOpt {
       U_DOT_SINGLE_STROKE_COLOR = color(0,0,0,0);
     }
     else {
-      String[] shapes = ["Line 1","Line 2","Triangle","Square","Pentagon","Hexagon","Circle"];
+      String[] shapes = ["Line 1","Line 2","Sine","Triangle","Square","Pentagon","Hexagon","Circle"];
       U_DOT_SHAPE = shapes[randInt(0,shapes.length-1)];
       U_DOT_FILL = randBool(0.75);
       U_DOT_FILL_COLOR_MODE = randBool(0.5) ? "Random" : "Theme";
       if (U_DOT_FILL) {
         // small chance to combine fill + stroke
-        if (U_DOT_SHAPE == "Line 1" || U_DOT_SHAPE == "Line 2") {
+        if (U_DOT_SHAPE == "Line 1" || U_DOT_SHAPE == "Line 2" || U_DOT_SHAPE == "Sine") {
             U_DOT_STROKE = true;
         } else {
             U_DOT_STROKE = randBool(0.15);
@@ -163,6 +169,8 @@ class UIOpt {
       // Rotation degree
       U_DOT_ROTATION = randInt(0,360);
       U_ZOOM = 2.5;
+      U_DOT_SINE_FREQUENCY = randInt(0,100);
+      U_DOT_SINE_AMPLITUDE = randInt(0,100);
       U_DOTS_PER_ROW = randInt(1,50);
       U_DOTS_PER_COL = randInt(1,50);
       U_DOT_DIST_X = randInt(0,100);
@@ -326,6 +334,22 @@ class Dot {
     return true;
   }
 
+  void sineTo(PVector p1, PVector p2, float freq, float amp)
+  {
+    float d = PVector.dist(p1,p2);
+    float a = atan2(p2.y-p1.y,p2.x-p1.x);
+    noFill();
+    pushMatrix();
+      translate(p1.x,p1.y);
+      rotate(a);
+      beginShape();
+        for (float i = 0; i <= d; i += 1) {
+          vertex(i,sin(i*TWO_PI*freq/d)*amp);
+        }
+      endShape();
+    popMatrix();
+  }
+
   void polygon(float x, float y, float radius, int npoints) {
     float angle = TWO_PI / npoints;
     beginShape();
@@ -398,22 +422,30 @@ class Dot {
       polygon(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
               pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
               radius/2, 4)
-      // rotate(1.785398163);
     } else if (uiOpt.U_DOT_SHAPE === "Circle") {
         ellipse(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x, 
                 pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y, 
                 radius, radius);
     } else if (uiOpt.U_DOT_SHAPE === "Line 1") {
-        line(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x-radius, 
-             pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y-radius,
-             pos.x+offset.x+uiOpt.U_DOT_DIST_Y*spacingFactor.x+radius,
-             pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y+radius
+        line(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x-radius/2, 
+             pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y-radius/2,
+             pos.x+offset.x+uiOpt.U_DOT_DIST_Y*spacingFactor.x+radius/2,
+             pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y+radius/2
              )
     } else if (uiOpt.U_DOT_SHAPE === "Line 2") {
       polygon(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
               pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
               radius/2, 2)
-    } else if (uiOpt.U_DOT_SHAPE === "Pentagon") {
+    } else if (uiOpt.U_DOT_SHAPE === "Sine") {
+        PVector x1y1 = new PVector();
+        x1y1.x = pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x-radius/2;
+        x1y1.y = pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y-radius/2;
+        PVector x2y2 = new PVector();
+        x2y2.x = pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x+radius/2;
+        x2y2.y = pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y+radius/2;
+        sineTo(x1y1,x2y2,uiOpt.U_DOT_SINE_FREQUENCY,uiOpt.U_DOT_SINE_AMPLITUDE);
+    }
+     else if (uiOpt.U_DOT_SHAPE === "Pentagon") {
       polygon(pos.x+offset.x+uiOpt.U_DOT_DIST_X*spacingFactor.x,
               pos.y+offset.y+uiOpt.U_DOT_DIST_Y*spacingFactor.y,
               radius/2, 5)
@@ -497,6 +529,14 @@ void checkDotConditions() {
 
 void setShape(x) {
   uiOpt.U_DOT_SHAPE = x;
+}
+
+void setShapeSineFrequency(x) {
+  uiOpt.U_DOT_SINE_FREQUENCY = x;
+}
+
+void setShapeSineAmplitude(x) {
+  uiOpt.U_DOT_SINE_AMPLITUDE = x;
 }
 
 void setRadius(x) {
