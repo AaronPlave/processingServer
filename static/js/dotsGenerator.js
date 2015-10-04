@@ -297,13 +297,12 @@ function initGui() {
     cShapeType.onChange(function(value) {
         pHandler.setShape(value);
     });
-    console.log(_opts)
-    var cSineFrequency = fShape.add(_opts, 'U_DOT_SINE_FREQUENCY',0,100).name("Sine Frequency");
+    var cSineFrequency = fShape.add(_opts, 'U_DOT_SINE_FREQUENCY',0,100).step(0.5).name("Sine Frequency");
     cSineFrequency.onChange(function(value) {
         pHandler.setShapeSineFrequency(value);
     });
 
-    var cSineAmplitude = fShape.add(_opts, 'U_DOT_SINE_AMPLITUDE',0,100).name("Sine Amplitude");
+    var cSineAmplitude = fShape.add(_opts, 'U_DOT_SINE_AMPLITUDE',0,100).step(0.5).name("Sine Amplitude");
     cSineAmplitude.onChange(function(value) {
         pHandler.setShapeSineAmplitude(value);
     });

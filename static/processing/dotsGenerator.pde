@@ -110,8 +110,8 @@ class UIOpt {
       U_DOT_FILL_COLOR_RAND_B_MIN = randInt(0,300);
       U_DOT_FILL_COLOR_RAND_B_MAX = randInt(U_DOT_FILL_COLOR_RAND_B_MIN,300);
       U_ZOOM = 2.5;
-      U_DOT_SINE_FREQUENCY = 2;
-      U_DOT_SINE_AMPLITUDE = 10;
+      U_DOT_SINE_FREQUENCY = 2.0;
+      U_DOT_SINE_AMPLITUDE = 10.0;
       U_DOT_ROTATION = 0;
       U_DOTS_PER_ROW = 10;
       U_DOTS_PER_COL = 10;
@@ -169,8 +169,8 @@ class UIOpt {
       // Rotation degree
       U_DOT_ROTATION = randInt(0,360);
       U_ZOOM = 2.5;
-      U_DOT_SINE_FREQUENCY = randInt(0,100);
-      U_DOT_SINE_AMPLITUDE = randInt(0,100);
+      U_DOT_SINE_FREQUENCY = random(0,100);
+      U_DOT_SINE_AMPLITUDE = random(0,100);
       U_DOTS_PER_ROW = randInt(1,50);
       U_DOTS_PER_COL = randInt(1,50);
       U_DOT_DIST_X = randInt(0,100);
