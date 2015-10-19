@@ -2,32 +2,12 @@
 // AARON PLAVE
 // aaronplave@gmail.com
 
-//// DEFAULT CUSTOMIZABLE PARAMS
-// CONFIGURABLES:
-//  +Stroke on/off, color, thickness
-//  Fill on/off, single color, random colors, ordered color scheme, random within scheme
-//  -Blend mode of dot colors (multiply, divide, etc.)
-//      This has some issues with background blending and loss of image quality (might be solved
-//      using transformation to PDF.)
-//  +Dot radius (px), randomized?
-//  +Dots per row (px)
-//  +Distance between dots (px)
-//  Dot radii:
-//    Radius1 length, radius2 length
-//  +Dot radii uniformity yes/no (if no, randomly assign within boundaries, else user defines radii)
-//  +Dot center offset
-//  Dot shape:
-//    Circle, ellipse, triangle, square, etc.
-//  More complex random effects such as using perlin noise to randomly warp the dot plane
-//  Number of draw iterations:  change conditions randomly or in order?
-//  Shape noise, could add some amount of random *wiggliness* to each shape, uniformly or not. 
-
-
 // ENABLE FOR PREDETERMINED DOT UIOPT PARAMS FOR TESTING
 boolean TEST_MODE = false;
 
 class UIOpt {
   boolean U_DRAW;
+  boolean U_RANDOMIZE_VIEW;
   boolean U_DOT_STROKE;
   boolean U_DOT_STROKE_RANDOMIZE;
   boolean U_DOT_FILL;
@@ -37,6 +17,9 @@ class UIOpt {
 
   // canvas zoom
   float U_ZOOM;
+  float U_RANDOMIZE_VIEW_ZOOM_TARGET;
+  float U_RANDOMIZE_VIEW_ROTATE_TARGET;
+  float U_RANDOMIZE_VIEW_SPEED;
 
   // Shape options
   float U_DOT_SINE_FREQUENCY;
@@ -98,6 +81,10 @@ class UIOpt {
 
   UIOpt() {
     U_DRAW = true;
+    U_RANDOMIZE_VIEW = false;
+    U_RANDOMIZE_VIEW_ZOOM_TARGET = random(0,10);
+    U_RANDOMIZE_VIEW_ROTATE_TARGET = random(0,360);
+    U_RANDOMIZE_VIEW_SPEED = random(0,100);
     if (TEST_MODE) {
       U_DOT_FILL = true;
       U_DOT_STROKE = false;
@@ -382,6 +369,7 @@ class Dot {
     }
 
     // Determine stroke 
+    strokeCap(SQUARE);
     if (uiOpt.U_DOT_STROKE) {
       stroke(strokeColor);
       if (uiOpt.U_DOT_STROKE_RANDOMIZE) {
@@ -537,6 +525,13 @@ void setShapeSineFrequency(x) {
 
 void setShapeSineAmplitude(x) {
   uiOpt.U_DOT_SINE_AMPLITUDE = x;
+}
+
+void setRandomizeView(x) {
+  uiOpt.U_RANDOMIZE_VIEW = x;
+}
+void setRandomizeViewSpeed(x) {
+  uiOpt.U_RANDOMIZE_VIEW_SPEED = x;
 }
 
 void setRadius(x) {
@@ -936,11 +931,15 @@ PVector calcSpacingFactorRotation(Dot cDot, int a){
 // }
 
 void setRotation(a) {
+  uiOpt.U_RANDOMIZE_VIEW = false;
   uiOpt.U_DOT_ROTATION = a;
+  resetCycleView();
 }
 
 void setZoom(a) {
+  uiOpt.U_RANDOMIZE_VIEW = false;
   uiOpt.U_ZOOM = a;
+  resetCycleView();
 }
 
 
@@ -1122,6 +1121,34 @@ void draw() {
   if (!uiOpt.U_DRAW) {
     return;
   } 
+
+  // Update random view
+  if (uiOpt.U_RANDOMIZE_VIEW) {
+    float dZoom = uiOpt.U_ZOOM - uiOpt.U_RANDOMIZE_VIEW_ZOOM_TARGET;
+    float dRot = uiOpt.U_DOT_ROTATION - uiOpt.U_RANDOMIZE_VIEW_ROTATE_TARGET;
+    if (abs(dZoom) < 0.1) {
+        uiOpt.U_RANDOMIZE_VIEW_ZOOM_TARGET = random(0,10);
+    } else {
+        if (dZoom < 0){
+          uiOpt.U_ZOOM += map(uiOpt.U_RANDOMIZE_VIEW_SPEED,0,100,0,0.05); 
+        } else {
+          uiOpt.U_ZOOM -= map(uiOpt.U_RANDOMIZE_VIEW_SPEED,0,100,0,0.05);; 
+        }
+    } 
+    if (abs(dRot) < 1.8) {
+        uiOpt.U_RANDOMIZE_VIEW_ROTATE_TARGET = random(0,360);
+    } else {
+        if (dRot < 0) {
+         uiOpt.U_DOT_ROTATION += map(uiOpt.U_RANDOMIZE_VIEW_SPEED,0,100,0,1.8);
+        } else {
+          uiOpt.U_DOT_ROTATION -= map(uiOpt.U_RANDOMIZE_VIEW_SPEED,0,100,0,1.8);
+        }
+    }
+    // console.log(uiOpt.U_ZOOM);
+
+    // Special call to outer javascript code to update GUI
+    resetZoomAndRotation();
+  }
 
   translate((uiOpt.U_ZOOM-1)*(-width/2),(uiOpt.U_ZOOM-1)*(-height/2));
   scale(uiOpt.U_ZOOM);  

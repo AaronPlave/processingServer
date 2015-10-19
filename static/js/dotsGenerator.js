@@ -250,11 +250,13 @@ function initGui() {
         this.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
         this.U_ZOOM = pOpt.U_ZOOM;
         this.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED, pOpt.U_DOT_ANIMATION_SPEED_MIN, pOpt.U_DOT_ANIMATION_SPEED_MAX, 0, 100);
+        this.U_RANDOMIZE_VIEW = pOpt.U_RANDOMIZE_VIEW;
+        this.U_RANDOMIZE_VIEW_SPEED = pOpt.U_RANDOMIZE_VIEW_SPEED;
         this.U_DOT_STROKE = pOpt.U_DOT_STROKE;
         this.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
         this.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
         this.U_DOT_STROKE_WEIGHT_MAX = pOpt.U_DOT_STROKE_WEIGHT_MAX;
-        this.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE
+        this.U_DOT_STROKE_RANDOMIZE = pOpt.U_DOT_STROKE_RANDOMIZE;
         this.U_DOT_SINGLE_STROKE_COLOR = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR);
         this.U_DOT_SINGLE_STROKE_COLOR_OPACITY = pHandler.colorToRGB(pOpt.U_DOT_SINGLE_STROKE_COLOR)[3];
         this.U_DOT_FILL = pOpt.U_DOT_FILL;
@@ -287,22 +289,38 @@ function initGui() {
     });
 
     var vReset = gui.add(_opts, 'U_RESET').name("Randomize");
+    
 
     // Create folder and options
+
+    // ANIMATION
+    var fAnimation = gui.addFolder('Animation');
+    folders.push(fAnimation);
+
+    var cRandomizeView = fAnimation.add(_opts, 'U_RANDOMIZE_VIEW').name("Cycle View");
+    cRandomizeView.onChange(function(value) {
+        pHandler.setRandomizeView(value);
+    });
+
+    var cRandomizeViewSpeed = fAnimation.add(_opts, 'U_RANDOMIZE_VIEW_SPEED', 0, 100).step(0.5).name("Cycle Speed");
+    cRandomizeViewSpeed.onChange(function(value) {
+        pHandler.setRandomizeViewSpeed(value);
+    });
+
 
     // SHAPE
     var fShape = gui.addFolder('Shape');
     folders.push(fShape);
-    var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Line 1","Line 2","Sine","Triangle","Square","Pentagon","Hexagon","Circle"]).name("Shape");
+    var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Line 1", "Line 2", "Sine", "Triangle", "Square", "Pentagon", "Hexagon", "Circle"]).name("Shape");
     cShapeType.onChange(function(value) {
         pHandler.setShape(value);
     });
-    var cSineFrequency = fShape.add(_opts, 'U_DOT_SINE_FREQUENCY',0,100).step(0.5).name("Sine Frequency");
+    var cSineFrequency = fShape.add(_opts, 'U_DOT_SINE_FREQUENCY', 0, 100).step(0.5).name("Sine Frequency");
     cSineFrequency.onChange(function(value) {
         pHandler.setShapeSineFrequency(value);
     });
 
-    var cSineAmplitude = fShape.add(_opts, 'U_DOT_SINE_AMPLITUDE',0,100).step(0.5).name("Sine Amplitude");
+    var cSineAmplitude = fShape.add(_opts, 'U_DOT_SINE_AMPLITUDE', 0, 100).step(0.5).name("Sine Amplitude");
     cSineAmplitude.onChange(function(value) {
         pHandler.setShapeSineAmplitude(value);
     });
@@ -564,6 +582,7 @@ function initGui() {
     })
 
     // Default open folders
+    fAnimation.open();
     fShape.open();
     fLayout.open();
     fBG.open();
@@ -686,6 +705,31 @@ function initGui() {
 
 }
 
+function resetCycleView() {
+    var pOpt = pHandler.getUiOpt();
+    _opts.U_RANDOMIZE_VIEW = pOpt.U_RANDOMIZE_VIEW;
+    // update the gui
+    for (var i = 0; i < folders.length; i++) {
+        var fc = folders[i].__controllers;
+        for (var j = 0; j < fc.length; j++) {
+            fc[j].updateDisplay();
+        }
+    }
+}
+
+function resetZoomAndRotation() {
+    var pOpt = pHandler.getUiOpt();
+    _opts.U_ZOOM = pOpt.U_ZOOM;
+    _opts.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
+    // update the gui
+    for (var i = 0; i < folders.length; i++) {
+        var fc = folders[i].__controllers;
+        for (var j = 0; j < fc.length; j++) {
+            fc[j].updateDisplay();
+        }
+    }
+}
+
 function resetControls() {
     // update the controls local vars 
     var pOpt = pHandler.getUiOpt();
@@ -701,6 +745,8 @@ function resetControls() {
     _opts.U_DOT_ROTATION = pOpt.U_DOT_ROTATION;
     _opts.U_ZOOM = pOpt.U_ZOOM;
     _opts.U_DOT_ANIMATION_SPEED = pHandler.calcValueInRange(pOpt.U_DOT_ANIMATION_SPEED, pOpt.U_DOT_ANIMATION_SPEED_MIN, pOpt.U_DOT_ANIMATION_SPEED_MAX, 0, 100);
+    _opts.U_RANDOMIZE_VIEW = pOpt.U_RANDOMIZE_VIEW;
+    _opts.U_RANDOMIZE_VIEW_SPEED = pOpt.U_RANDOMIZE_VIEW_SPEED;
     _opts.U_DOT_STROKE = pOpt.U_DOT_STROKE;
     _opts.U_DOT_STROKE_WEIGHT = pOpt.U_DOT_STROKE_WEIGHT;
     _opts.U_DOT_STROKE_WEIGHT_MIN = pOpt.U_DOT_STROKE_WEIGHT_MIN;
