@@ -1,9 +1,9 @@
 import os, datetime, json, random, string, base64
 from flask import Flask, request, render_template, url_for
-import lib.handler as handler
 import lib.db as db
 from PIL import Image
 from io import BytesIO
+import logging
 
 app = Flask(__name__)
 
@@ -38,7 +38,7 @@ def dotsGeneratorPostPublish():
         dataURIToImage(thumbnailURI,filepath)
         # Add sketch to db
         if not db.addSketch(rId,request.json.get("opts"),filepath):
-            print "ERROR: Could not add sketch", rId
+            app.logger.error("ERROR: Could not add sketch", rId)
             return False
 
         return rId
@@ -50,7 +50,7 @@ def dotsV3GetSketch(idx):
         sketch = rv.get("data").get("sketch")
         # Remove the thumbnail, don't need to send it here
         return render_template('dotsGenerator.html',error="",sharedOpts=json.dumps({"data":sketch}))
-    print "ERROR: Unable to fetch sketch", idx
+    app.logger.error("ERROR: Unable to fetch sketch", idx)
     return render_template('dotsGenerator.html',error="Unable to fetch requested sketch.",sharedOpts="")
 
 def dataURIToImage(uri,filepath):
@@ -75,5 +75,9 @@ def dataURIToImage(uri,filepath):
     return True
 
 if __name__ == "__main__":
-    app.run(debug=True,threaded=True)
+    app.run(host="0.0.0.0", port=8000,debug=True,threaded=True)
 
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
