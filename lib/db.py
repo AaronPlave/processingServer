@@ -53,6 +53,7 @@ def convertAll():
 def addSketch(id,sketch,thumbnail):
 	try:
 		add = SKETCHES.insert({"id":id, "sketch": sketch, "thumbnail": thumbnail})
+		return True if add else False
 		# allSketches = ALL_SKETCHES.find()
 		# data = {id:thumbnail}
 		# if allSketches.count() == 0:
@@ -64,6 +65,4 @@ def addSketch(id,sketch,thumbnail):
 	except Exception, e:
 		print "ERROR: Could not insert"
 		print e
-	if not add:
 		return False
-	return True

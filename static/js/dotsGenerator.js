@@ -3,7 +3,7 @@ function post(url, data, callback) {
     var async = true;
     var request = new XMLHttpRequest();
 
-    request.onload = function() {
+    request.onload = function () {
         callback(request);
     }
 
@@ -17,14 +17,14 @@ function postCallback(request) {
     document.getElementById("publishUrl").value = publishUrl;
 }
 
-window.onresize = function() {
+window.onresize = function () {
     // Set Canvas height and width
     pHandler.resizeImg();
     canvasRef.style.height = String(window.innerHeight) + "px";
     canvasRef.style.width = String(window.innerWidth) + "px";
 }
 
-window.onload = function() {
+window.onload = function () {
     initialize();
 }
 var randomThemeChance = 0;
@@ -206,7 +206,7 @@ function initialize() {
     // wait for sketch to load to assign handler
     var _timer = 0,
         _timeout = 5000,
-        _mem = setInterval(function() {
+        _mem = setInterval(function () {
             pHandler = Processing.getInstanceById("dotsSketch");
             if (pHandler) {
                 console.log("SKETCH HAS LOADED");
@@ -225,17 +225,36 @@ function initialize() {
 function initGui() {
     // Initialize save button
     var saveEl = document.getElementById("saveImg");
-    saveEl.addEventListener("click", function(evt) {
-            var image = document.getElementsByTagName("canvas")[0].toDataURL();
-            window.open(image, '_blank');
-        })
-        // var image = document.getElementsByTagName("canvas")[0].toDataURL();
+    saveEl.addEventListener("click", function (evt) {
+        var lnk = document.createElement('a');
+        var currentdate = new Date();
+        var datetime = currentdate.getDate() + "/"
+            + (currentdate.getMonth() + 1) + "/"
+            + currentdate.getFullYear() + "-"
+            + currentdate.getHours() + ":"
+            + currentdate.getMinutes() + ":"
+            + currentdate.getSeconds();
+        lnk.download = 'dots-' + datetime;
+        lnk.href = document.getElementsByTagName("canvas")[0].toDataURL("image/png;base64");
+
+        var e;
+        if (document.createEvent) {
+            e = document.createEvent("MouseEvents");
+            e.initMouseEvent("click", true, true, window,
+                0, 0, 0, 0, 0, false, false, false,
+                false, 0, null);
+
+            lnk.dispatchEvent(e);
+        } else if (lnk.fireEvent) {
+            lnk.fireEvent("onclick");
+        }
+    })
 
     // Initialize gui
-    var UIOpts = function() {
+    var UIOpts = function () {
         var pOpt = pHandler.getUiOpt();
         this.U_DRAW = pOpt.U_DRAW;
-        this.U_RESET = function() {
+        this.U_RESET = function () {
             pHandler.reset();
             resetControls();
         }
@@ -284,12 +303,12 @@ function initGui() {
     gui = new dat.GUI();
 
     var vDraw = gui.add(_opts, 'U_DRAW').name("Animate");
-    vDraw.onChange(function(value) {
+    vDraw.onChange(function (value) {
         pHandler.getUiOpt().U_DRAW = value;
     });
 
     var vReset = gui.add(_opts, 'U_RESET').name("Randomize");
-    
+
 
     // Create folder and options
 
@@ -298,12 +317,12 @@ function initGui() {
     folders.push(fAnimation);
 
     var cRandomizeView = fAnimation.add(_opts, 'U_RANDOMIZE_VIEW').name("Cycle View");
-    cRandomizeView.onChange(function(value) {
+    cRandomizeView.onChange(function (value) {
         pHandler.setRandomizeView(value);
     });
 
     var cRandomizeViewSpeed = fAnimation.add(_opts, 'U_RANDOMIZE_VIEW_SPEED', 0, 100).step(0.5).name("Cycle Speed");
-    cRandomizeViewSpeed.onChange(function(value) {
+    cRandomizeViewSpeed.onChange(function (value) {
         pHandler.setRandomizeViewSpeed(value);
     });
 
@@ -312,16 +331,16 @@ function initGui() {
     var fShape = gui.addFolder('Shape');
     folders.push(fShape);
     var cShapeType = fShape.add(_opts, 'U_DOT_SHAPE', ["Line 1", "Line 2", "Sine", "Triangle", "Square", "Pentagon", "Hexagon", "Circle"]).name("Shape");
-    cShapeType.onChange(function(value) {
+    cShapeType.onChange(function (value) {
         pHandler.setShape(value);
     });
     var cSineFrequency = fShape.add(_opts, 'U_DOT_SINE_FREQUENCY', 0, 100).step(0.5).name("Sine Frequency");
-    cSineFrequency.onChange(function(value) {
+    cSineFrequency.onChange(function (value) {
         pHandler.setShapeSineFrequency(value);
     });
 
     var cSineAmplitude = fShape.add(_opts, 'U_DOT_SINE_AMPLITUDE', 0, 100).step(0.5).name("Sine Amplitude");
-    cSineAmplitude.onChange(function(value) {
+    cSineAmplitude.onChange(function (value) {
         pHandler.setShapeSineAmplitude(value);
     });
 
@@ -329,8 +348,8 @@ function initGui() {
     var fBG = gui.addFolder('Background');
     folders.push(fBG);
     var cBG = fBG.addColor(_opts, 'U_BG_COLOR').name("Color");
-    cBG.onChange(function(value) {
-        if (typeof(value) === "string") {
+    cBG.onChange(function (value) {
+        if (typeof (value) === "string") {
             if (value.indexOf("#") === 0) {
                 // Case where alpha is set to 1, the color
                 // selector reverts to hex... Of course.
@@ -353,32 +372,32 @@ function initGui() {
     var fLayout = gui.addFolder('Layout');
     folders.push(fLayout);
     var cDotsPerRow = fLayout.add(_opts, 'U_DOTS_PER_ROW', 0, 50).step(1).name("Dots Per Row");
-    cDotsPerRow.onChange(function(value) {
+    cDotsPerRow.onChange(function (value) {
         pHandler.setDotsPerRow(value);
     });
     var cDotsPerCol = fLayout.add(_opts, 'U_DOTS_PER_COL', 0, 50).step(1).name("Dots Per Col");
-    cDotsPerCol.onChange(function(value) {
+    cDotsPerCol.onChange(function (value) {
         pHandler.setDotsPerCol(value);
     });
     var cDotDistX = fLayout.add(_opts, 'U_DOT_DIST_X', 0, 100).step(1).name("Dot Spacing X");
-    cDotDistX.onChange(function(value) {
+    cDotDistX.onChange(function (value) {
         pHandler.setDotDistX(value);
     });
     var cDotDistY = fLayout.add(_opts, 'U_DOT_DIST_Y', 0, 100).step(1).name("Dot Spacing Y");
-    cDotDistY.onChange(function(value) {
+    cDotDistY.onChange(function (value) {
         pHandler.setDotDistY(value);
     });
     var cDotRotation = fLayout.add(_opts, 'U_DOT_ROTATION', 0, 360).step(1).name("Grid Rotation");
-    cDotRotation.onChange(function(value) {
+    cDotRotation.onChange(function (value) {
         pHandler.setRotation(value);
     });
     var cZoom = fLayout.add(_opts, 'U_ZOOM', 0, 10).step(0.01).name("Zoom");
-    cZoom.onChange(function(value) {
+    cZoom.onChange(function (value) {
         pHandler.setZoom(value);
     });
 
     var cDotAnimationSpeed = fLayout.add(_opts, 'U_DOT_ANIMATION_SPEED', 0, 100).step(1).name("Animation Speed");
-    cDotAnimationSpeed.onChange(function(value) {
+    cDotAnimationSpeed.onChange(function (value) {
         pHandler.setAnimationSpeed(value);
     });
 
@@ -386,17 +405,17 @@ function initGui() {
     fFill = gui.addFolder('Fill');
     folders.push(fFill);
     var cFill = fFill.add(_opts, 'U_DOT_FILL').name("Enabled");
-    cFill.onChange(function(value) {
+    cFill.onChange(function (value) {
         pHandler.getUiOpt().U_DOT_FILL = value;
     });
     var cFillNumColors = fFill.add(_opts, 'U_DOT_FILL_NUM_COLORS', [1, 2, 3]).name("# Fill Colors");
-    cFillNumColors.onChange(function(value) {
+    cFillNumColors.onChange(function (value) {
         pHandler.setFillNumColors(value);
     });
 
     var cFillColor1 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_1').name("Color 1");
-    cFillColor1.onChange(function(value) {
-        if (typeof(value) === "string") {
+    cFillColor1.onChange(function (value) {
+        if (typeof (value) === "string") {
             if (value.indexOf("#") === 0) {
                 // Case where alpha is set to 1, the color
                 // selector reverts to hex... Of course.
@@ -414,8 +433,8 @@ function initGui() {
         fFill.__controllers[5].setValue("");
     });
     var cFillColor2 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_2').name("Color 2");
-    cFillColor2.onChange(function(value) {
-        if (typeof(value) === "string") {
+    cFillColor2.onChange(function (value) {
+        if (typeof (value) === "string") {
             if (value.indexOf("#") === 0) {
                 // Case where alpha is set to 1, the color
                 // selector reverts to hex... Of course.
@@ -433,8 +452,8 @@ function initGui() {
         fFill.__controllers[5].setValue("");
     });
     var cFillColor3 = fFill.addColor(_opts, 'U_DOT_FILL_COLOR_3').name("Color 3");
-    cFillColor3.onChange(function(value) {
-        if (typeof(value) === "string") {
+    cFillColor3.onChange(function (value) {
+        if (typeof (value) === "string") {
             if (value.indexOf("#") === 0) {
                 // Case where alpha is set to 1, the color
                 // selector reverts to hex... Of course.
@@ -453,7 +472,7 @@ function initGui() {
     });
 
     var cFillThemes = fFill.add(_opts, 'U_DOT_FILL_THEMES', Object.keys(fillColorThemes)).name("Fill Themes");
-    cFillThemes.onChange(function(value) {
+    cFillThemes.onChange(function (value) {
         var t = fillColorThemes[value];
         if (t === "") {
             return;
@@ -470,38 +489,38 @@ function initGui() {
         updateColors();
     });
     var cFillColorDist = fFill.add(_opts, 'U_DOT_FILL_COLOR_DIST', ["Random", "Alternating", "Sorted"]).name("Color Arrangement");
-    cFillColorDist.onChange(function(value) {
+    cFillColorDist.onChange(function (value) {
         pHandler.setFillColorDist(value);
     });
 
 
     var cFillColorMode = fFill.add(_opts, 'U_DOT_FILL_COLOR_MODE', ["Theme", "Random"]).name("Color Mode");
-    cFillColorMode.onChange(function(value) {
+    cFillColorMode.onChange(function (value) {
         pHandler.setFillColorMode(value);
     });
 
     var cFillColorRandHMin = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_H_MIN", 0, 300).name("Random H Min");
-    cFillColorRandHMin.onChange(function(value) {
+    cFillColorRandHMin.onChange(function (value) {
         pHandler.setHSB("H", "MIN", value);
     });
     var cFillColorRandHMax = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_H_MAX", 0, 300).name("Random H Max");
-    cFillColorRandHMax.onChange(function(value) {
+    cFillColorRandHMax.onChange(function (value) {
         pHandler.setHSB("H", "MAX", value);
     });
     var cFillColorRandSMin = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_S_MIN", 0, 300).name("Random S Min");
-    cFillColorRandSMin.onChange(function(value) {
+    cFillColorRandSMin.onChange(function (value) {
         pHandler.setHSB("S", "MIN", value);
     });
     var cFillColorRandSMax = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_S_MAX", 0, 300).name("Random S Max");
-    cFillColorRandSMax.onChange(function(value) {
+    cFillColorRandSMax.onChange(function (value) {
         pHandler.setHSB("S", "MAX", value);
     });
     var cFillColorRandBMin = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_B_MIN", 0, 300).name("Random B Min");
-    cFillColorRandBMin.onChange(function(value) {
+    cFillColorRandBMin.onChange(function (value) {
         pHandler.setHSB("B", "MIN", value);
     });
     var cFillColorRandBMax = fFill.add(_opts, "U_DOT_FILL_COLOR_RAND_B_MAX", 0, 300).name("Random B Max");
-    cFillColorRandBMax.onChange(function(value) {
+    cFillColorRandBMax.onChange(function (value) {
         pHandler.setHSB("B", "MAX", value);
     });
 
@@ -509,16 +528,16 @@ function initGui() {
     var fStroke = gui.addFolder('Stroke');
     folders.push(fStroke);
     var cStroke = fStroke.add(_opts, 'U_DOT_STROKE').name("Enable");
-    cStroke.onChange(function(value) {
+    cStroke.onChange(function (value) {
         pHandler.getUiOpt().U_DOT_STROKE = value;
     });
     var cStrokeWgt = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT', 0.05, 30).name("Weight");
-    cStrokeWgt.onChange(function(value) {
+    cStrokeWgt.onChange(function (value) {
         pHandler.getUiOpt().U_DOT_STROKE_WEIGHT = value;
     });
     var cStrokeColor = fStroke.addColor(_opts, 'U_DOT_SINGLE_STROKE_COLOR').name("Color");;
-    cStrokeColor.onChange(function(value) {
-        if (typeof(value) === "string") {
+    cStrokeColor.onChange(function (value) {
+        if (typeof (value) === "string") {
             if (value.indexOf("#") === 0) {
                 // Case where alpha is set to 1, the color
                 // selector reverts to hex... Of course.
@@ -537,15 +556,15 @@ function initGui() {
     // });
 
     var cStrokeRandomize = fStroke.add(_opts, 'U_DOT_STROKE_RANDOMIZE', 0, 30).name("Random Stroke");
-    cStrokeRandomize.onChange(function(value) {
+    cStrokeRandomize.onChange(function (value) {
         pHandler.setStrokeRandomize(value);
     });
     var cStrokeWgtMin = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MIN', 0.05, 30).name("Random Min");
-    cStrokeWgtMin.onChange(function(value) {
+    cStrokeWgtMin.onChange(function (value) {
         pHandler.setStrokeWgtMin(value);
     });
     var cStrokeWgtMax = fStroke.add(_opts, 'U_DOT_STROKE_WEIGHT_MAX', 0.05, 30).name("Random Max");
-    cStrokeWgtMax.onChange(function(value) {
+    cStrokeWgtMax.onChange(function (value) {
         pHandler.setStrokeWgtMax(value);
     });
 
@@ -553,11 +572,11 @@ function initGui() {
     var fOffset = gui.addFolder('Center Offset');
     folders.push(fOffset);
     var cOffsetX = fOffset.add(_opts, 'U_DOT_OFFSET_X_MAX', 0, 100).name("Max Offset X");
-    cOffsetX.onChange(function(value) {
+    cOffsetX.onChange(function (value) {
         pHandler.setOffsetX(value);
     })
     var cOffsetY = fOffset.add(_opts, 'U_DOT_OFFSET_Y_MAX', 0, 100).name("Max Offset Y");
-    cOffsetY.onChange(function(value) {
+    cOffsetY.onChange(function (value) {
         pHandler.setOffsetY(value);
     })
 
@@ -565,19 +584,19 @@ function initGui() {
     var fRadius = gui.addFolder('Radius');
     folders.push(fRadius);
     var cRadius = fRadius.add(_opts, 'U_DOT_RADIUS', 0, 300).name("Radius Size");
-    cRadius.onChange(function(value) {
+    cRadius.onChange(function (value) {
         pHandler.setRadius(value);
     })
     var cRadiusRandomize = fRadius.add(_opts, 'U_DOT_RADIUS_RANDOMIZE').name("Random Radius");
-    cRadiusRandomize.onChange(function(value) {
+    cRadiusRandomize.onChange(function (value) {
         pHandler.setRadiusRandomize(value);
     })
     var cRadiusMin = fRadius.add(_opts, 'U_DOT_RADIUS_MIN', 0, 300).name("Random Min");
-    cRadiusMin.onChange(function(value) {
+    cRadiusMin.onChange(function (value) {
         pHandler.setRadiusMin(value);
     })
     var cRadiusMax = fRadius.add(_opts, 'U_DOT_RADIUS_MAX', 0, 300).name("Random Max");;
-    cRadiusMax.onChange(function(value) {
+    cRadiusMax.onChange(function (value) {
         pHandler.setRadiusMax(value);
     })
 
@@ -593,7 +612,7 @@ function initGui() {
 
     // Init export and load buttons
     var loadButton = document.getElementById("loadJSON");
-    loadButton.addEventListener("click", function(evt) {
+    loadButton.addEventListener("click", function (evt) {
         var textArea = document.getElementById("inputArea");
         loadOptsFromJSON(JSON.parse(textArea.value));
         resetControls();
@@ -601,7 +620,7 @@ function initGui() {
     })
 
     var exportButton = document.getElementById("exportJSON");
-    exportButton.addEventListener("click", function(evt) {
+    exportButton.addEventListener("click", function (evt) {
         var currOpts = JSON.stringify(optsToJSON());
         var textArea = document.getElementById("inputArea");
         textArea.value = currOpts;
@@ -609,7 +628,7 @@ function initGui() {
 
     // Initialize publish button
     var publishEl = document.getElementById("publishButton");
-    publishEl.addEventListener("click", function(evt) {
+    publishEl.addEventListener("click", function (evt) {
         var canvas = document.getElementsByTagName("canvas")[0];
         var dataUri = canvas.toDataURL();
         // CROP image to smallest dimension to make square 
@@ -678,14 +697,14 @@ function initGui() {
     frameRateEl = document.getElementById("frameRate");
 
     // Set up viewing modes
-    window.addEventListener("mousemove", function() {
-        if (viewMode === "view") {
-            disableFullscreen();
-            viewMode = "create";
-        }
-    });
+    // window.addEventListener("mousemove", function () {
+    //     if (viewMode === "view") {
+    //         disableFullscreen();
+    //         viewMode = "create";
+    //     }
+    // });
 
-    canvasRef.addEventListener("click", function() {
+    canvasRef.addEventListener("click", function () {
         if (viewMode === "create") {
             enableFullscreen();
             viewMode = "view";
@@ -697,7 +716,7 @@ function initGui() {
 
     // Set up fix for stupid color picker position issue
     //ColorPickerFix
-    $('.main').scroll(function() {
+    $('.main').scroll(function () {
         var scroll = $('.main').scrollTop();
         $(".selector").css('-webkit-transform', 'translate(0px,' + (-scroll) + 'px)');
         // $(".field-knob").css('-webkit-transform', 'translate(0px,' + (scroll) + 'px)');
@@ -836,7 +855,7 @@ function rgbaStringToList(l) {
 function hexToRgb(hex) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
         return r + r + g + g + b + b;
     });
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
